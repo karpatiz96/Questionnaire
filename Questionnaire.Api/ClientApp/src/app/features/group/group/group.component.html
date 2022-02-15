@@ -1,0 +1,26 @@
+<h2>Groups you joined</h2>
+<div class="row mt-4">
+    <div class="col-sm-2 offset-9">
+        <a class="btn btn-success" [routerLink]="['/group/add']">Create new Group</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12" *ngFor="let group of groups">
+        <div class="card mt-4">
+        <div class="card-body">
+            <h4>{{group.name}}</h4>
+            <dl class="row ml-5 mt-3">
+                <dt class="col-sm-3">Created:</dt>
+                <dd class="col-sm-3">{{group.created | date: 'yyyy-MM-dd hh:mm'}}</dd>
+                <dt class="col-sm-3">Last Post:</dt>
+                <dd class="col-sm-3">{{group.lastPosted | date: 'yyyy-MM-dd hh:mm'}}</dd>
+                <dt class="col-sm-3">Members:</dt>
+                <dd class="col-sm-3">{{group.members}}</dd>
+            </dl>
+            <div class="col-sm-2 offset-8">
+                <a class="btn btn-primary" [routerLink]="['/group', group.id]">Details</a>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

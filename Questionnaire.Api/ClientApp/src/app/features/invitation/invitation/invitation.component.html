@@ -1,0 +1,34 @@
+<h2>Invitations</h2>
+<table class="table mt-5">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Group Name</th>
+        <th scope="col">Group Created</th>
+        <th scope="col">Date</th>
+        <th scope="col">Administrator</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let invitation of invitations">
+        <th scope="row"></th>
+        <td>{{invitation.groupName}}</td>
+        <td>{{invitation.groupCreated | date: 'yyyy-MM-dd'}}</td>
+        <td>{{invitation.date | date: 'yyyy-MM-dd'}}</td>
+        <td>{{invitation.adminName}}</td>
+        <td>{{Invitations[invitation.status]}}</td>
+        <td *ngIf="invitation.status === 0"><button class="btn btn-success" (click)='accept(invitation.id)'>Accept</button></td>
+        <td *ngIf="invitation.status === 0"><button class="btn btn-danger" (click)='decline(invitation.id)'>Decline</button></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td scope="col"><a class="btn btn-success" [routerLink]="['/invitation/add']">Create</a></td>
+      </tr>
+    </tbody>
+  </table>

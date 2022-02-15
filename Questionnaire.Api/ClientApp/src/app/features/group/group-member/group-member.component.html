@@ -1,0 +1,44 @@
+<h2>{{group.name}}</h2>
+<div class="row">
+    
+</div>
+<h4 class="mt-5">Members</h4>
+<table class="table mt-5">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of group.users">
+        <th scope="row"></th>
+        <td>{{user.name}}</td>
+        <td>{{user.role}}</td>
+        <td><button class="btn btn-outline-danger" (click)='removeUser(user.id)'>Remove</button></td>
+        <td><button class="btn btn-outline-danger" (click)='updateUser(user.id)'>Make Admin</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+<h4 class="mt-5">Invitations</h4>
+<table class="table mt-5">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Date</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let invitation of group.invitations">
+        <th scope="row"></th>
+        <td>{{invitation.userName}}</td>
+        <td>{{invitation.date | date: 'yyyy-MM-dd'}}</td>
+        <td>{{Invitations[invitation.status]}}</td>
+        <td><button class="btn btn-outline-danger" (click)='removeInvitaton(user.id)'>Remove</button></td>
+      </tr>
+    </tbody>
+  </table>
