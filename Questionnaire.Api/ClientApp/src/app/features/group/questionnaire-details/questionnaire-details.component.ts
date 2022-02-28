@@ -39,6 +39,8 @@ export class QuestionnaireDetailsComponent implements OnInit {
   loadQuestionnaire(id: number) {
     this.questionnaireService.getById(id).subscribe(result => {
       this.questionnaire = result;
+    }, error => {
+      console.log(error);
     });
   }
 

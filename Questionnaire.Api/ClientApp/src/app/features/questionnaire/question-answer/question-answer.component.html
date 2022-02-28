@@ -1,0 +1,62 @@
+<h2>{{question.questionnaireTitle}}</h2>
+<div class="col-sm-12">
+    <div class="row mt-4">
+        <div class="col-sm-4"><h6>{{question.questionTitle}}</h6></div>
+        <div class="col-sm-4">Points: {{question.points}}/{{question.maximumPoints}}</div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-8">{{question.description}}</div>
+    </div>
+    <div class="mt-4">
+        <div [ngSwitch]="question.type">
+            <div *ngSwitchCase="questionType.TrueOrFalse" class="row">
+                <div class="col-sm-4">
+                    <b>Answer: </b>
+                    <div *ngFor="let answer of question.answers; let i = index" class="custom-control custom-radio">
+                        <input type="radio" [value]="answer.id" [checked]="question.answerId === answer.id" id="radio{{i}}" class="custom-control-input" >
+                        <label class="custom-control-label" for="radio{{i}}">{{answer.name}}</label>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <b>Correct answer: </b>
+                    <div *ngFor="let answer of question.answers; let i = index" class="custom-control custom-radio">
+                        <input type="radio" [value]="answer.id" [checked]="answer.correct" id="radio{{i}}" class="custom-control-input" >
+                        <label class="custom-control-label" for="radio{{i}}">{{answer.name}}</label>
+                    </div>
+                </div>
+            </div>
+            <div *ngSwitchCase="questionType.MultipleChoice" class="row">
+                <div class="col-sm-4">
+                    <b>Answer: </b>
+                    <div *ngFor="let answer of question.answers; let i = index" class="custom-control custom-radio">
+                        <input type="radio" [value]="answer.id" [checked]="question.answerId === answer.id" id="radio{{i}}" class="custom-control-input" >
+                        <label class="custom-control-label" for="radio{{i}}">{{answer.name}}</label>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <b>Correct answer: </b>
+                    <div *ngFor="let answer of question.answers; let i = index" class="custom-control custom-radio">
+                        <input type="radio" [value]="answer.id" [checked]="answer.correct" id="radio{{i}}" class="custom-control-input" >
+                        <label class="custom-control-label" for="radio{{i}}">{{answer.name}}</label>
+                    </div>
+                </div>
+            </div>
+            <div *ngSwitchCase="questionType.FreeText">
+                <div class="form-group">
+                    <label for="freeText"><b>Answer: </b></label>
+                    <textarea type="text" class="form-control text-area col-sm-6" id="freeText">{{question.userAnswer}}</textarea>
+                </div>
+            </div>
+            <div *ngSwitchCase="questionType.ConcreteText" class="form-row">
+                <div class="form-group col-sm-4">
+                    <label for="concreteText"><b>Answer: </b></label>
+                    <input type="text" class="form-control" value="question.userAnswer" id="concreteText" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="correctAnswer"><b>Correct Answer: </b></label>
+                    <input type="text" class="form-control" value="question.userAnswer" id="correctAnswer" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,6 +12,8 @@ namespace Questionnaire.Dll.Entities
 
         public string UserAnswer { get; set; }
 
+        public bool QuestionCompleted { get; set; }
+
         public int QuestionId { get; set; }
 
         public Question Question { get; set; }

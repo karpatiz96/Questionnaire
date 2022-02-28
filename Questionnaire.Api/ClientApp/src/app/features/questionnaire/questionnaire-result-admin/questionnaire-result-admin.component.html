@@ -1,0 +1,46 @@
+<h2>Questionnaire Results</h2>
+<div class="col-sm-12">
+    <div class="row mt-4">
+        <div class="col-sm-6">
+            <h5>{{questionnaire.title}}</h5>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-8">
+                {{questionnaire.description}}
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-8"><b>From:</b> {{questionnaire.begining | date: 'yyyy-MM-dd hh:mm'}} - <b>To:</b> {{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-6"><b>Questions:</b> {{questionnaire.questions}} <b>Members:</b> {{questionnaire.members}}</div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-6"><b>Solved:</b> {{questionnaire.solved}}</div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <h4 class="row mt-4">Questionnaires</h4>
+    <div class="row mt-3">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Maximum</th>
+                <th scope="col">Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let result of questionnaire.results; let i = index">
+                <th scope="row">{{i}}</th>
+                <td>{{result.userName}}</td>
+                <td>{{result.maximumPoints}}</td>
+                <td>{{result.points}}</td>
+                <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/result', result.id]">Details</a></td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+</div>

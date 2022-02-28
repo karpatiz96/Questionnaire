@@ -42,6 +42,16 @@ namespace Questionnaire.Bll.Services
             }).ToList()
         };
 
+        public static Expression<Func<QuestionnaireSheet, QuestionnaireStartDto>> QuestionnaireStartSelector { get; } = q => new QuestionnaireStartDto
+        {
+            Id = q.Id,
+            Title = q.Name,
+            Description = q.Description,
+            Begining = q.Begining,
+            Finish = q.Finish,
+            Questions = q.Questions.Count
+        };
+
         public static Expression<Func<QuestionnaireSheet, QuestionnaireHeaderDto>> QuestionnaireHeaderSelector { get; } = q =>
         new QuestionnaireHeaderDto
         {
@@ -89,6 +99,17 @@ namespace Questionnaire.Bll.Services
             return questionnaire;
         }
 
+        public async Task<QuestionnaireStartDto> GetQuestionnaireStart(int questionnaireId)
+        {
+            var questionnaire = await _dbContext.QuestionnaireSheets
+                .Include(q => q.Questions)
+                .Where(q => q.Id == questionnaireId)
+                .Select(QuestionnaireStartSelector)
+                .FirstOrDefaultAsync();
+
+            return questionnaire;
+        }
+
         public async Task<IEnumerable<QuestionnaireHeaderDto>> GetQuestionnaires(int groupId, string userId)
         {
             var questionnaires = await _dbContext.QuestionnaireSheets
@@ -99,6 +120,22 @@ namespace Questionnaire.Bll.Services
                 .ToListAsync();
 
             return questionnaires;
+        }
+
+        public async Task<int> GetFirstQuestionId(int questionnaireId)
+        {
+            //random or number later
+            var question = await _dbContext.Questions
+                .Where(q => q.QuestionnaireSheetId == questionnaireId)
+                .OrderBy(q => q.Id)
+                .FirstOrDefaultAsync();
+
+            if(question == null)
+            {
+                return -1;
+            }
+
+            return question.Id;
         }
 
         public async Task<QuestionnaireDto> UpdateQuestionnaire(QuestionnaireDto questionnaireDto)

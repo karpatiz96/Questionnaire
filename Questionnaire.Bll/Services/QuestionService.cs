@@ -41,6 +41,23 @@ namespace Questionnaire.Bll.Services
             }).ToList()
         };
 
+        public static Expression<Func<Question, QuestionnaireQuestionDto>> SelectQuestionnaireQuestion { get; } = g => new QuestionnaireQuestionDto
+        {
+            Id = g.QuestionnaireSheetId,
+            QuestionId = g.Id,
+            QuestionnaireTitle = g.QuestionnaireSheet.Name,
+            QuestionTitle = g.Name,
+            Description = g.Description,
+            Points = g.MaximumPoints,
+            Type = g.Type,
+            Answers = g.Answers.Select(a => new QuestionAnswerDto
+            {
+                Id = a.Id,
+                Name = a.Name,
+                QuestionId = a.QuestionId
+            }).ToList()
+        };
+
         public async Task<QuestionDto> CreateQuestion(QuestionDto questionDto)
         {
             var question = new Question
@@ -90,6 +107,32 @@ namespace Questionnaire.Bll.Services
                 .FirstOrDefaultAsync();
 
             return question;
+        }
+
+        //Not needed
+        public async Task<QuestionnaireQuestionDto> GetQuestionnaireQuestion(int questionId)
+        {
+            var question = await _dbContext.Questions
+                .Include(q => q.QuestionnaireSheet)
+                .Include(q => q.Answers)
+                .Where(q => q.Id == questionId)
+                .Select(SelectQuestionnaireQuestion)
+                .FirstOrDefaultAsync();
+
+            return question;
+        }
+
+        public async Task<IEnumerable<QuestionnaireQuestionDto>> GetQuestionnaireQuestions(int questionnaireId)
+        {
+            var questions = await _dbContext.Questions
+                .Include(q => q.QuestionnaireSheet)
+                .Include(q => q.Answers)
+                .Where(q => q.QuestionnaireSheetId == questionnaireId)
+                .OrderBy(q => q.Id)
+                .Select(SelectQuestionnaireQuestion)
+                .ToListAsync();
+
+            return questions;
         }
 
         public async Task<QuestionDto> UpdateQuestion(QuestionDto questionDto)

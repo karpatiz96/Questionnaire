@@ -41,6 +41,7 @@ namespace Questionnaire.Api
             services.AddTransient<IAnswerService, AnswerService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserGroupService, UserGroupService>();
+            services.AddTransient<IUserQuestionnaireService, UserQuestionnaireService>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 

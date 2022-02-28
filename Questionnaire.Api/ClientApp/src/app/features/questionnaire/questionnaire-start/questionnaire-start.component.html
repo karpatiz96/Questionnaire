@@ -1,0 +1,22 @@
+<h2>Begin Questionnaire</h2>
+<div class="col-sm-12">
+    <div class="row mt-4">
+        <div class="col-sm-6">
+            <h5>{{questionnaire.title}}</h5>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-8">
+                {{questionnaire.description}}
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-8"><b>From:</b> {{questionnaire.begining | date: 'yyyy-MM-dd hh:mm'}} - <b>To:</b> {{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-6"><b>Questions:</b> {{questionnaire.questions}}</div>
+    </div>
+    <div class="row mt-4">
+        <a class="btn btn-success col-sm-8" (click)="begin()">Begin</a>
+    </div>
+</div>

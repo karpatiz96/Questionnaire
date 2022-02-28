@@ -13,6 +13,10 @@ namespace Questionnaire.Bll.IServices
 
         Task<QuestionnaireDetailsDto> GetQuestionnaire(int questionnaireId);
 
+        Task<QuestionnaireStartDto> GetQuestionnaireStart(int questionnaireId);
+
+        Task<int> GetFirstQuestionId(int questionnaireId);
+
         Task<QuestionnaireDto> CreateQuestionnaire(QuestionnaireDto questionnaireDto);
 
         Task<QuestionnaireDto> UpdateQuestionnaire(QuestionnaireDto questionnaireDto);

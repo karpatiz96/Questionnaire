@@ -1,0 +1,48 @@
+<h2>Questionnaire Results</h2>
+<div class="col-sm-12">
+    <div class="row mt-4">
+        <div class="col-sm-6">
+            <h5>{{questionnaire.title}}</h5>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-8">
+                {{questionnaire.description}}
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-8"><b>From:</b> {{questionnaire.begining | date: 'yyyy-MM-dd hh:mm'}} - <b>To:</b> {{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-6"><b>Questions:</b> {{questionnaire.questions}}</div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-6"><b>Result:</b> {{questionnaire.maximumPoints}}/{{questionnaire.points}}</div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <h4 class="row mt-4">Questions</h4>
+    <div class="row mt-3">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Maximum</th>
+                <th scope="col">Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let answer of questionnaire.answers; let i = index">
+                <th scope="row">{{i}}</th>
+                <td>{{answer.name}}</td>
+                <td>{{QuestionTypes[answer.type]}}</td>
+                <td>{{answer.maximumPoints}}</td>
+                <td>{{answer.points}}</td>
+                <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/result/question', answer.id]">Details</a></td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+</div>

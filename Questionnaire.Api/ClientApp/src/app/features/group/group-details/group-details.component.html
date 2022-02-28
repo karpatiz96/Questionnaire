@@ -35,8 +35,19 @@
                 <dt class="col-sm-3">Finish:</dt>
                 <dd class="col-sm-3">{{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</dd>
             </dl>
-            <div class="col-sm-2 offset-8">
-                <a class="btn btn-primary" [routerLink]="['/group/questionnaire', questionnaire.id]">Details</a>
+            <div class="row mt-4">
+                <div class="col-sm-1 offset-7">
+                    <a class="btn btn-primary" [routerLink]="['/group/questionnaire', questionnaire.id]">Details</a>
+                </div>
+                <div class="col-sm-1">
+                    <a class="btn btn-primary" [routerLink]="['/questionnaire', questionnaire.id, 'start']">Start</a>
+                </div>
+                <div class="col-sm-1">
+                    <a class="btn btn-success" [routerLink]="['/questionnaire/result', questionnaire.id]">Result</a>
+                </div>
+                <div class="col-sm-2">
+                    <a class="btn btn-success" [routerLink]="['/questionnaire', questionnaire.id, 'list']">Result List</a>
+                </div>
             </div>
         </div>
         </div>
