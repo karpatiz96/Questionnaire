@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AnswerDetailsDto } from '../models/answerDetailsDto';
-import { AnswerType } from '../models/answerDto';
-import { QuestionType } from '../models/questionHeaderDto';
+import { QuestionType } from '../../questionnaire/models/questionnaires/questionHeaderDto';
+import { AnswerDetailsDto } from '../models/answers/answerDetailsDto';
+import { AnswerType } from '../models/answers/answerDto';
 import { AnswerService } from '../services/answer.service';
 
 @Component({

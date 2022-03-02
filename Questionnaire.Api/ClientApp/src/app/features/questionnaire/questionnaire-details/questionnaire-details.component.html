@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="row mt-3">
-            <a class="btn btn-outline-primary offset-6 col-sm-1" [routerLink]="['/group/questionnaire/edit', questionnaire.id]">Edit</a>
+            <a class="btn btn-outline-primary offset-6 col-sm-1" [routerLink]="['/questionnaire/edit', questionnaire.id]">Edit</a>
         </div>
     </div>
 </div>
@@ -53,9 +53,9 @@
             <td>{{question.name}}</td>
             <td>{{QuestionTypes[question.type]}}</td>
             <td>{{question.value}}</td>
-            <td><a class="btn btn-outline-primary" [routerLink]="['/group/question', question.id]">Details</a></td>
-            <td><a class="btn btn-outline-primary" [routerLink]="['/group/question/edit', question.id]">Edit</a></td>
-            <td><a class="btn btn-outline-primary" [routerLink]="['/group/question/delete', question.id]">Delete</a></td>
+            <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/question', question.id]">Details</a></td>
+            <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/question/edit', question.id]">Edit</a></td>
+            <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/question/delete', question.id]">Delete</a></td>
           </tr>
           <tr>
             <td></td>
@@ -63,7 +63,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td scope="col"><a class="btn btn-outline-success" [routerLink]="['/group/question/add', questionnaire.id]">Create</a></td>
+            <td scope="col"><a class="btn btn-outline-success" [routerLink]="['/questionnaire/question/add', questionnaire.id]">Create</a></td>
           </tr>
         </tbody>
       </table>

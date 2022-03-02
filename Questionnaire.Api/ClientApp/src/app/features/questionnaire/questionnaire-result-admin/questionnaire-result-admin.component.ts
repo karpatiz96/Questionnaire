@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QuestionnaireResultListDto } from '../models/result/questionnaireResultListDto';
-import { QuestionnaireService } from '../services/questionnaire.service';
+import { UserQuestionnaireService } from '../services/userQuestionnaireService';
 
 @Component({
   selector: 'app-questionnaire-result-admin',
@@ -23,7 +23,7 @@ export class QuestionnaireResultAdminComponent implements OnInit {
   };
 
   constructor(private route: ActivatedRoute,
-    private questionnaireService: QuestionnaireService) { }
+    private userQuestionnaireService: UserQuestionnaireService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -33,7 +33,7 @@ export class QuestionnaireResultAdminComponent implements OnInit {
   }
 
   loadQuestionnaireResult(id: number) {
-    this.questionnaireService.getQuestionnaireResultAdmin(id)
+    this.userQuestionnaireService.getQuestionnaireResultAdmin(id)
       .subscribe(result => {
         this.questionnaire = result;
     }, error => {

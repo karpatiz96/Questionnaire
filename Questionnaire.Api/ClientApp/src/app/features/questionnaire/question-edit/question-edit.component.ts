@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionType } from '../models/questionHeaderDto';
+import { QuestionType } from '../../questionnaire/models/questionnaires/questionHeaderDto';
 import { QuestionService } from '../services/question.service';
 
 @Component({
-  selector: 'app-question-add',
-  templateUrl: './question-add.component.html',
-  styleUrls: ['./question-add.component.css']
+  selector: 'app-question-edit',
+  templateUrl: './question-edit.component.html',
+  styleUrls: ['./question-edit.component.css']
 })
-export class QuestionAddComponent implements OnInit {
+export class QuestionEditComponent implements OnInit {
   questionForm: FormGroup;
   loading = false;
   submitted = false;
   error = '';
-  questionnaireId: number;
+  questionId: number;
   eQuestionType = QuestionType;
   keys = Object.keys(QuestionType).filter(key => !isNaN(+key));
 
@@ -33,7 +33,22 @@ export class QuestionAddComponent implements OnInit {
       type: [0, Validators.required]
     });
     this.route.params.subscribe(params => {
-      this.questionnaireId = params['id'];
+      this.questionId = params['id'];
+      this.loadQuestion(this.questionId);
+    });
+  }
+
+  private loadQuestion(id: number) {
+    this.questionService.getById(id)
+    .subscribe(result => {
+      this.questionForm.patchValue({
+        name: result.name,
+        description: result.description,
+        number: result.number,
+        value: result.value,
+        suggestedTime: result.suggestedTime,
+        type: result.type
+      });
     });
   }
 
@@ -49,10 +64,10 @@ export class QuestionAddComponent implements OnInit {
     }
 
     this.loading = true;
-    this.questionService.create(this.questionForm.value, this.questionnaireId)
+    this.questionService.update(this.questionForm.value, this.questionId)
       .subscribe(
         result => {
-          this.router.navigate(['/group/questionnaire', this.questionnaireId]);
+          this.router.navigate(['/questionnaire/question', this.questionId]);
         },
         error => {
           this.error = error;

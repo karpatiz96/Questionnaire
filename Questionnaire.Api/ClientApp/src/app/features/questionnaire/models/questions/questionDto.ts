@@ -1,4 +1,4 @@
-import { QuestionType } from './questionHeaderDto';
+import { QuestionType } from '../questionnaires/questionHeaderDto';
 
 export interface QuestionDto {
     id: number;

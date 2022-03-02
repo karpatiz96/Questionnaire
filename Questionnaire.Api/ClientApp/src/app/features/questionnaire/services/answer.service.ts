@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AnswerDetailsDto } from '../models/answerDetailsDto';
-import { AnswerDto } from '../models/answerDto';
+import { AnswerDetailsDto } from '../models/answers/answerDetailsDto';
+import { AnswerDto } from '../models/answers/answerDto';
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,5 @@
 import { AnswerType } from './answerDto';
-import { QuestionType } from './questionHeaderDto';
+import { QuestionType } from '../questionnaires/questionHeaderDto';
 
 export interface AnswerDetailsDto {
     id: number;

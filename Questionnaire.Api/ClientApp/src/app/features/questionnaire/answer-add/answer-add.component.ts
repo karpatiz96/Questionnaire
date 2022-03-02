@@ -1,29 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AnswerType } from '../models/answerDto';
+import { AnswerType } from '../models/answers/answerDto';
 import { AnswerService } from '../services/answer.service';
 import { QuestionService } from '../services/question.service';
 
 @Component({
-  selector: 'app-answer-edit',
-  templateUrl: './answer-edit.component.html',
-  styleUrls: ['./answer-edit.component.css']
+  selector: 'app-answer-add',
+  templateUrl: './answer-add.component.html',
+  styleUrls: ['./answer-add.component.css']
 })
-export class AnswerEditComponent implements OnInit {
+export class AnswerAddComponent implements OnInit {
   answerForm: FormGroup;
   loading = false;
   submitted = false;
   error = '';
-  answerId: number;
+  questionId: number;
   eAnswerType = AnswerType;
   keys = Object.keys(AnswerType).filter(key => !isNaN(+key));
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(
+    private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private questionService: QuestionService,
-    private answerService: AnswerService) { }
+    private answerService: AnswerService) {
+     }
 
   ngOnInit() {
     this.answerForm = this.formBuilder.group({
@@ -34,20 +36,7 @@ export class AnswerEditComponent implements OnInit {
     });
 
     this.route.params.subscribe(params => {
-      this.answerId = params['id'];
-      this.loadAnswer(this.answerId);
-    });
-  }
-
-  private loadAnswer(id: number) {
-    this.answerService.getById(id)
-    .subscribe(result => {
-      this.answerForm.patchValue({
-        name: result.name,
-        userAnswer: result.userAnswer,
-        points: result.value,
-        type: result.type
-      });
+      this.questionId = params['id'];
     });
   }
 
@@ -63,10 +52,10 @@ export class AnswerEditComponent implements OnInit {
     }
 
     this.loading = true;
-    this.answerService.update(this.answerForm.value, this.answerId)
+    this.answerService.create(this.answerForm.value, this.questionId)
       .subscribe(
         result => {
-          this.router.navigate(['/group/answer', this.answerId]);
+          this.router.navigate(['/questionnaire/question', this.questionId]);
         },
         error => {
           this.error = error;

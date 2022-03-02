@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { QuestionDetailsDto } from '../models/questionDetailsDto';
-import { QuestionType } from '../models/questionHeaderDto';
+import { QuestionType } from '../../questionnaire/models/questionnaires/questionHeaderDto';
+import { QuestionDetailsDto } from '../models/questions/questionDetailsDto';
 import { QuestionService } from '../services/question.service';
 
 @Component({

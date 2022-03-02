@@ -1,4 +1,4 @@
-import { QuestionType } from 'src/app/features/group/models/questionHeaderDto';
+import { QuestionType } from 'src/app/features/questionnaire/models/questionnaires/questionHeaderDto';
 import { QuestionAnswerResultDto } from './questionAnswerResultDto';
 
 export interface UserQuestionnaireAnswerDetailsDto {

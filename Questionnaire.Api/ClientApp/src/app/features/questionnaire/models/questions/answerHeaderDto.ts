@@ -1,4 +1,4 @@
-import { AnswerType } from './answerDto';
+import { AnswerType } from '../answers/answerDto';
 
 export interface AnswerHeaderDto {
     id: number;

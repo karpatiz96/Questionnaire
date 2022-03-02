@@ -64,7 +64,7 @@ export class QuestionnaireEditComponent implements OnInit {
       this.questionnaireService.update(this.questionnaireId, this.questionnaireForm.value)
         .subscribe(
           result => {
-            this.router.navigate(['/group/questionnaire', this.questionnaireId]);
+            this.router.navigate(['/questionnaire', this.questionnaireId]);
           },
           error => {
             this.error = error;

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionType } from '../models/questionnaireQuestionDto';
 import { UserQuestionnaireAnswerDetailsDto } from '../models/result/userQuestionnaireAnswerDetailsDto';
-import { QuestionnaireService } from '../services/questionnaire.service';
+import { UserQuestionnaireService } from '../services/userQuestionnaireService';
 
 @Component({
   selector: 'app-question-answer-edit',
@@ -34,7 +34,7 @@ export class QuestionAnswerEditComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private questionnaireService: QuestionnaireService) { }
+    private userQuestionnaireService: UserQuestionnaireService) { }
 
   ngOnInit() {
     this.userQuestionnaireAnswerForm = this.formBuilder.group({
@@ -48,7 +48,7 @@ export class QuestionAnswerEditComponent implements OnInit {
   }
 
   loadUserQuestionnaireAnswerById(id: number) {
-    this.questionnaireService.getUserQuestionnaireAnswerById(id)
+    this.userQuestionnaireService.getUserQuestionnaireAnswerById(id)
       .subscribe(result => {
         this.question = result;
     }, error => {
@@ -68,7 +68,7 @@ export class QuestionAnswerEditComponent implements OnInit {
     }
 
     this.loading = true;
-    this.questionnaireService.evaluateQuestion(this.userQuestionnaireAnswerId, this.userQuestionnaireAnswerForm.value)
+    this.userQuestionnaireService.evaluateQuestion(this.userQuestionnaireAnswerId, this.userQuestionnaireAnswerForm.value)
       .subscribe(
         result => {
           this.router.navigate(['/questionnaire/result/question', this.userQuestionnaireAnswerId]);

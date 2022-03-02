@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionnaireQuestionDto, QuestionType } from '../models/questionnaireQuestionDto';
 import { UserQuestionnaireAnswerDto } from '../models/userQuestionnaireAnswerDto';
-import { QuestionnaireService } from '../services/questionnaire.service';
+import { UserQuestionnaireService } from '../services/userQuestionnaireService';
 
 @Component({
   selector: 'app-questionnaire-answer',
@@ -35,7 +35,7 @@ export class QuestionnaireAnswerComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private questionnaireService: QuestionnaireService) { }
+    private userQuestionnaireService: UserQuestionnaireService) { }
 
   ngOnInit() {
     this.questionnaireAnswerForm = this.formBuilder.group({
@@ -50,7 +50,7 @@ export class QuestionnaireAnswerComponent implements OnInit {
   }
 
   loadQuestion(questionId: number) {
-    this.questionnaireService.getQuestionnaireQuestions(this.questionnaireId).subscribe(result => {
+    this.userQuestionnaireService.getQuestionnaireQuestions(this.questionnaireId).subscribe(result => {
       this.questions = result;
       if (this.questions.length > 0) {
         this.question = this.questions[0];
@@ -91,7 +91,7 @@ export class QuestionnaireAnswerComponent implements OnInit {
       this.questionnaireAnswerForm.controls['answerId'].value,
       this.questionnaireAnswerForm.controls['userAnswer'].value);
 
-    this.questionnaireService.answer(answerDto)
+    this.userQuestionnaireService.answer(answerDto)
       .subscribe(
         result => {
           this.next();

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QuestionnaireResultDto } from '../models/result/questionnaireResultDto';
-import { QuestionnaireService } from '../services/questionnaire.service';
+import { UserQuestionnaireService } from '../services/userQuestionnaireService';
 
 @Component({
   selector: 'app-questionnaire-result',
@@ -25,7 +25,7 @@ export class QuestionnaireResultComponent implements OnInit {
   QuestionTypes = ['True or False', 'Multiple Choice', 'Free Text', 'Concrete Text'];
 
   constructor(private route: ActivatedRoute,
-    private questionnaireService: QuestionnaireService) { }
+    private userQuestionnaireService: UserQuestionnaireService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -35,7 +35,7 @@ export class QuestionnaireResultComponent implements OnInit {
   }
 
   loadQuestionnaireResult(id: number) {
-    this.questionnaireService.getQuestionnaireResult(id)
+    this.userQuestionnaireService.getQuestionnaireResult(id)
       .subscribe(result => {
         this.questionnaire = result;
     }, error => {

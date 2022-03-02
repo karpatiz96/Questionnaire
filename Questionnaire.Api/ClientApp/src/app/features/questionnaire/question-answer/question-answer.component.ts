@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { QuestionType } from '../../group/models/questionHeaderDto';
+import { QuestionType } from '../models/questionnaires/questionHeaderDto';
 import { UserQuestionnaireAnswerDetailsDto } from '../models/result/userQuestionnaireAnswerDetailsDto';
-import { QuestionnaireService } from '../services/questionnaire.service';
+import { UserQuestionnaireService } from '../services/userQuestionnaireService';
 
 @Component({
   selector: 'app-question-answer',
@@ -28,7 +28,7 @@ export class QuestionAnswerComponent implements OnInit {
   QuestionTypes = ['True or False', 'Multiple Choice', 'Free Text', 'Concrete Text'];
 
   constructor(private route: ActivatedRoute,
-    private questionnaireService: QuestionnaireService) { }
+    private userQuestionnaireService: UserQuestionnaireService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -38,7 +38,7 @@ export class QuestionAnswerComponent implements OnInit {
   }
 
   loadUserQuestionnaireAnswerById(id: number) {
-    this.questionnaireService.getUserQuestionnaireAnswerById(id)
+    this.userQuestionnaireService.getUserQuestionnaireAnswerById(id)
       .subscribe(result => {
         this.question = result;
     }, error => {
