@@ -23,5 +23,7 @@ namespace Questionnaire.Bll.IServices
         public Task<QuestionnaireResultListDto> GetQuestionnaireResultList(int questionnaireId);
 
         public Task<UserQuestionnaireAnswerDetailsDto> GetUserQuestionnaireAnswerDetails(int userQuestionnaireAnswerId);
+
+        public Task EvaluateUserQuestionnaireAnswer(UserQuestionnaireAnswerEvaluationDto evaluationDto);
     }
 }

@@ -5,6 +5,7 @@ import { QuestionnaireStartDto } from '../models/questionnaireStartDto';
 import { QuestionnaireResultDto } from '../models/result/questionnaireResultDto';
 import { QuestionnaireResultListDto } from '../models/result/questionnaireResultListDto';
 import { UserQuestionnaireAnswerDetailsDto } from '../models/result/userQuestionnaireAnswerDetailsDto';
+import { UserQuestionnaireAnswerEvaluationDto } from '../models/result/userQuestionnaireAnswerEvaluationDto';
 import { UserQuestionnaireAnswerDto } from '../models/userQuestionnaireAnswerDto';
 
 @Injectable({
@@ -36,6 +37,11 @@ export class QuestionnaireService {
 
    getUserQuestionnaireAnswerById(userQuestionnaireAnswerId: number) {
     return this.http.get<UserQuestionnaireAnswerDetailsDto>(`${this.baseUrl}/question/answer/${userQuestionnaireAnswerId}`);
+  }
+
+  evaluateQuestion(userQuestionnaireAnswerId: number, evaluationDto: UserQuestionnaireAnswerEvaluationDto) {
+    evaluationDto.id = userQuestionnaireAnswerId;
+    return this.http.post(`${this.baseUrl}/question/answer/evaluate`, evaluationDto);
   }
 
    getQuestionnaireQuestions(questionnaireId: number) {

@@ -238,5 +238,22 @@ namespace Questionnaire.Bll.Services
 
             return userQuestionnaireAnswer;
         }
+
+        public async Task EvaluateUserQuestionnaireAnswer(UserQuestionnaireAnswerEvaluationDto evaluationDto)
+        {
+            var userQuestionnaireAnswer = await _dbContext.UserQuestionnaireAnswers
+                .Include(u => u.Question)
+                .Where(u => u.Id == evaluationDto.Id)
+                .FirstOrDefaultAsync();
+
+            if(evaluationDto.Points > userQuestionnaireAnswer.Question.MaximumPoints || evaluationDto.Points < 0)
+            {
+                //Todo Error
+            }
+
+            userQuestionnaireAnswer.UserPoints = evaluationDto.Points;
+
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

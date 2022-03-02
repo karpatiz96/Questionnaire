@@ -23,6 +23,7 @@ export class QuestionnaireService {
   }
 
   update(id: number, questionnaireDto: QuestionnaireDto) {
+    questionnaireDto.id = id;
     return this.http.put(`${this.baseUrl}/questionnaire/${id}`, questionnaireDto);
   }
 }

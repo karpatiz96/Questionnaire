@@ -77,6 +77,22 @@ namespace Questionnaire.Api.Controllers
             return Ok(userQuestionnaireAnswerDetailsDto);
         }
 
+        [HttpPost("answer/evaluate")]
+        public async Task<IActionResult> PostUserQuestionnaireAnswerEvaluation([FromBody] UserQuestionnaireAnswerEvaluationDto evaluationDto)
+        {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await _userQuestionnaireService.EvaluateUserQuestionnaireAnswer(evaluationDto);
+
+            return Ok();
+        }
+
         /*[HttpGet("answer/{id}")]
         public async Task<ActionResult<QuestionnaireQuestionDto>> GetQuestionnaireQuestion(int id)
         {

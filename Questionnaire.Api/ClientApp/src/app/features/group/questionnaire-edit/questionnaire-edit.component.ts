@@ -42,8 +42,8 @@ export class QuestionnaireEditComponent implements OnInit {
         this.questionnaireForm.patchValue({
           title: result.title,
           description: result.description,
-          begining: formatDate(result.begining, 'yyyy-MM-dd', 'en_US'),
-          finish: formatDate(result.finish, 'yyyy-MM-dd', 'en_US'),
+          begining: formatDate(result.begining, 'yyyy-MM-ddThh:mm', 'en_US'),
+          finish: formatDate(result.finish, 'yyyy-MM-ddThh:mm', 'en_US'),
           visibleToGroup: result.visibleToGroup
         });
       });

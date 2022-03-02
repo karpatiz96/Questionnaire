@@ -59,9 +59,26 @@
             </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-sm-6">
-            <a class="btn btn-primary float-right" [routerLink]="['/questionnaire/result/question', userQuestionnaireAnswerId, 'edit']">Re-evaluate</a>
-        </div>
+    <div class="mt-4">
+        <form [formGroup]="userQuestionnaireAnswerForm" (ngSubmit)="onSubmit()" >
+            <div class="form-row">
+                <div class="form-group col-sm-4">
+                    <label for="points">User Points:</label>
+                    <input type="number" formControlName="points" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.points.errors }" />
+                    <div *ngIf="submitted && form.points.errors" class="invalid-feedback">
+                        <div *ngIf="form.points.errors.required">User Points is required.</div>
+                        <div *ngIf="form.points.errors.min">User Points must be greater than 0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mt-3">
+                <button [disabled]="loading" class="btn btn-primary">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    Save
+                </button>
+                <a [routerLink]="['/questionnaire/result/question', userQuestionnaireAnswerId]" class="btn btn-link">Cancle</a>
+            </div>
+            <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+        </form>
     </div>
 </div>

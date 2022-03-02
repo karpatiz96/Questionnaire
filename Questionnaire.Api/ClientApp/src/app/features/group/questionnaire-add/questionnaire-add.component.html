@@ -21,14 +21,14 @@
     <div class="form-row mt-3">
         <div class="form-group col-sm-3">
             <label for="begining">Begining:</label>
-            <input type="date" formControlName="begining" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.begining.errors }" />
+            <input type="datetime-local" formControlName="begining" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.begining.errors }" />
             <div *ngIf="submitted && form.begining.errors" class="invalid-feedback">
                 <div *ngIf="form.begining.errors.required">Begining is required</div>
             </div>
         </div>
         <div class="form-group col-sm-3">
             <label for="finish">Finish:</label>
-            <input type="date" formControlName="finish" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.finish.errors }" />
+            <input type="datetime-local" formControlName="finish" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.finish.errors }" />
             <div *ngIf="submitted && form.finish.errors" class="invalid-feedback">
                 <div *ngIf="form.finish.errors.required">Finish is required</div>
             </div>
