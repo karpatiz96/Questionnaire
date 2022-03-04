@@ -17,7 +17,8 @@ export class GroupDetailsComponent implements OnInit {
     created: new Date(2021, 1, 1),
     lastPost: new Date(2021, 1, 1),
     groupRole: 'User',
-    members: 1
+    members: 1,
+    questionnaires: []
   };
 
   constructor(

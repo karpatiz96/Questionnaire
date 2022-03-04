@@ -20,7 +20,7 @@ export class QuestionDetailsComponent implements OnInit {
     suggestedTime: 0,
     type: QuestionType.ConcreteText,
     value: 0,
-    Answers: []
+    answers: []
   };
 
   QuestionTypes = ['True or False', 'Multiple Choice', 'Free Text', 'Concrete Text'];

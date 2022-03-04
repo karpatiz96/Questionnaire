@@ -1,3 +1,5 @@
+import { QuestionnaireHeaderDto } from './questionnaireHeaderDto';
+
 export interface GroupDetailsDto {
     id: number;
     name: String;
@@ -6,4 +8,5 @@ export interface GroupDetailsDto {
     created: Date;
     lastPost: Date;
     members: number;
+    questionnaires: QuestionnaireHeaderDto[];
 }

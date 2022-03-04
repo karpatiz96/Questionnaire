@@ -21,7 +21,7 @@
     <div class="form-row mt-3">
         <div class="form-group col-sm-3">
             <label for="begining">Begining:</label>
-            <input type="datetime-local" [ngModel]="begining | date:'yyyy-MM-dd'" formControlName="begining" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.begining.errors }" />
+            <input type="datetime-local" formControlName="begining" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.begining.errors }" />
             <div *ngIf="submitted && form.begining.errors" class="invalid-feedback">
                 <div *ngIf="form.begining.errors.required">Begining is required</div>
             </div>
