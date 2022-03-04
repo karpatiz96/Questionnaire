@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QuestionType } from '../../questionnaire/models/questionnaires/questionHeaderDto';
+import { ConfirmationDialogService } from '../../shared/services/confirmationDialog.service';
 import { QuestionDetailsDto } from '../models/questions/questionDetailsDto';
 import { QuestionService } from '../services/question.service';
 
@@ -28,7 +29,8 @@ export class QuestionDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private questionService: QuestionService) { }
+    private questionService: QuestionService,
+    private confirmationDialogService: ConfirmationDialogService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -41,6 +43,13 @@ export class QuestionDetailsComponent implements OnInit {
     this.questionService.getById(id).subscribe(result => {
       this.question = result;
     });
+  }
+
+  delete(answerId: number) {
+    this.confirmationDialogService.confirm('Delete Answer', 'Do you really want to delete the answer?').then(result => {
+      console.log(result);
+    }).catch(() => {});
+
   }
 
 }

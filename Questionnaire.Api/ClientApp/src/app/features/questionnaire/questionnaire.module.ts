@@ -18,6 +18,8 @@ import { QuestionDetailsComponent } from './question-details/question-details.co
 import { AnswerAddComponent } from './answer-add/answer-add.component';
 import { AnswerEditComponent } from './answer-edit/answer-edit.component';
 import { AnswerDetailsComponent } from './answer-details/answer-details.component';
+import { SharedModule } from '../shared/shared.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -40,7 +42,8 @@ import { AnswerDetailsComponent } from './answer-details/answer-details.componen
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    QuestionnaireRoutingModule
+    QuestionnaireRoutingModule,
+    SharedModule
   ]
 })
 export class QuestionnaireModule { }

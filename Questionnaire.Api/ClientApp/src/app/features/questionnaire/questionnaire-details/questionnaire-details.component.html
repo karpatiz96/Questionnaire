@@ -55,7 +55,7 @@
             <td>{{question.value}}</td>
             <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/question', question.id]">Details</a></td>
             <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/question/edit', question.id]">Edit</a></td>
-            <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/question/delete', question.id]">Delete</a></td>
+            <td><a class="btn btn-outline-primary" (click)="delete(question.id)">Delete</a></td>
           </tr>
           <tr>
             <td></td>
