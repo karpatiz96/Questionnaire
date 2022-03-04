@@ -1,5 +1,6 @@
 export interface QuestionnaireHeaderDto {
     id: number;
+    userQuestionnaireId: number;
     title: String;
     created: Date;
     begining: Date;

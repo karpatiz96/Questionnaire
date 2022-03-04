@@ -8,6 +8,8 @@ namespace Questionnaire.Bll.Dtos
     {
         public int Id { get; set; }
 
+        public int UserQuestionnaireId { get; set; }
+
         public String Title { get; set; }
 
         public DateTime Created { get; set; }

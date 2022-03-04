@@ -22,12 +22,13 @@ namespace Questionnaire.Bll.Services
             Name = g.Name,
             Description = g.Description,
             Created = g.Created,
-            GroupAdmin = "Admin",//To be updated
+            GroupRole = "User",
             LastPost = DateTime.Now, //To be updated
             Members = g.UserGroups.Count,
             Questionnaires = g.QuestionnaireSheets.Select<QuestionnaireSheet, QuestionnaireHeaderDto>(q => 
             new QuestionnaireHeaderDto {
                 Id = q.Id,
+                UserQuestionnaireId = -1,
                 Title = q.Name,
                 Begining = q.Begining,
                 Finish = q.Finish,
@@ -106,9 +107,18 @@ namespace Questionnaire.Bll.Services
             return groupDto;
         }
 
-        public async Task<GroupDetailsDto> GetGroup(int groupId)
+        public async Task<GroupDetailsDto> GetGroup(string userId, int groupId)
         {
-            var group = await _dbContext.Groups
+            var userGroup = await _dbContext.UserGroups
+                .Where(g => g.UserId == userId && g.GroupId == groupId)
+                .FirstOrDefaultAsync();
+
+            if(userGroup == null)
+            {
+                throw new Exception("User is not member of the group.");
+            }
+
+            var groupDetailsDto = await _dbContext.Groups
                 .Include(g => g.UserGroups)
                     .ThenInclude(g => g.User)
                 .Include(g => g.QuestionnaireSheets)
@@ -116,7 +126,21 @@ namespace Questionnaire.Bll.Services
                 .Select(GroupDetailsSelector)
                 .FirstOrDefaultAsync();
 
-            return group;
+            if(groupDetailsDto != null)
+            {
+                groupDetailsDto.GroupRole = userGroup.Role;
+
+                foreach(var questionnaire in groupDetailsDto.Questionnaires)
+                {
+                    var userQuestionnaire = await _dbContext.UserQuestionnaires
+                        .Where(u => u.UserId == userId && u.QuestionnaireSheetId == questionnaire.Id)
+                        .FirstOrDefaultAsync();
+
+                    questionnaire.UserQuestionnaireId = userQuestionnaire?.Id ?? -1;
+                }
+            }
+
+            return groupDetailsDto;
         }
 
         public async Task<GroupMemberDto> GetGroupMembers(int groupId)

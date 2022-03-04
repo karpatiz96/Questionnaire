@@ -19,7 +19,7 @@ export class UserQuestionnaireService {
    }
 
    start(id: number) {
-       return this.http.post(`${this.baseUrl}/questionnaire/start`, id);
+       return this.http.post(`${this.baseUrl}/userquestionnaire/start`, id);
    }
 
    getStartById(id: number) {
@@ -27,7 +27,7 @@ export class UserQuestionnaireService {
    }
 
    answer(answerDto: UserQuestionnaireAnswerDto) {
-     return this.http.post(`${this.baseUrl}/question/answer`, answerDto);
+     return this.http.post(`${this.baseUrl}/userquestionnaire/answer`, answerDto);
    }
 
    //Remove
@@ -36,12 +36,12 @@ export class UserQuestionnaireService {
    }*/
 
    getUserQuestionnaireAnswerById(userQuestionnaireAnswerId: number) {
-    return this.http.get<UserQuestionnaireAnswerDetailsDto>(`${this.baseUrl}/question/answer/${userQuestionnaireAnswerId}`);
+    return this.http.get<UserQuestionnaireAnswerDetailsDto>(`${this.baseUrl}/userquestionnaire/answer/${userQuestionnaireAnswerId}`);
   }
 
   evaluateQuestion(userQuestionnaireAnswerId: number, evaluationDto: UserQuestionnaireAnswerEvaluationDto) {
     evaluationDto.id = userQuestionnaireAnswerId;
-    return this.http.post(`${this.baseUrl}/question/answer/evaluate`, evaluationDto);
+    return this.http.post(`${this.baseUrl}/userquestionnaire/answer/evaluate`, evaluationDto);
   }
 
    getQuestionnaireQuestions(questionnaireId: number) {
@@ -49,10 +49,10 @@ export class UserQuestionnaireService {
    }
 
    getQuestionnaireResultAdmin(questionnaireId: number) {
-     return this.http.get<QuestionnaireResultListDto>(`${this.baseUrl}/questionnaire/result/admin/${questionnaireId}`);
+     return this.http.get<QuestionnaireResultListDto>(`${this.baseUrl}/userquestionnaire/result/admin/${questionnaireId}`);
    }
 
    getQuestionnaireResult(userQuestionnaireId: number) {
-     return this.http.get<QuestionnaireResultDto>(`${this.baseUrl}/questionnaire/result/${userQuestionnaireId}`);
+     return this.http.get<QuestionnaireResultDto>(`${this.baseUrl}/userquestionnaire/result/${userQuestionnaireId}`);
    }
 }

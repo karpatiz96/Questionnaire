@@ -1,7 +1,7 @@
 export interface GroupDetailsDto {
     id: number;
     name: String;
-    groupAdmin: String;
+    groupRole: String;
     description: String;
     created: Date;
     lastPost: Date;

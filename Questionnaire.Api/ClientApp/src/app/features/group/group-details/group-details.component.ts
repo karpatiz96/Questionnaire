@@ -16,7 +16,7 @@ export class GroupDetailsComponent implements OnInit {
     name: 'Test Group',
     created: new Date(2021, 1, 1),
     lastPost: new Date(2021, 1, 1),
-    groupAdmin: 'Admin',
+    groupRole: 'User',
     members: 1
   };
 
@@ -34,6 +34,8 @@ export class GroupDetailsComponent implements OnInit {
     this.groupService.getById(id)
     .pipe(first()).subscribe(result => {
       this.group = result;
+    }, error => {
+
     });
   }
 

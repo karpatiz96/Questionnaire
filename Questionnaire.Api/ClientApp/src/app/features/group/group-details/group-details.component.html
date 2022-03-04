@@ -10,23 +10,23 @@
             <dt class="col-sm-3">Members:</dt>
             <dd class="col-sm-3">{{group.members}}</dd>
             <dt class="col-sm-3">
-                <a class="btn btn-primary" [routerLink]="['/group/member', group.id]">Members</a>    
+                <a class="btn btn-primary" [routerLink]="['/group/member', group.id]" *ngIf="group.groupRole === 'Admin'">Members</a>    
             </dt>
         </dl>
         <h5>Group Description:</h5>
         <div class="row mt-3">
             <p class="ml-5">{{group.description}}</p>
-            <a class="btn btn-primary offset-8" [routerLink]="['/group/edit', group.id]">Edit</a>    
+            <a class="btn btn-primary offset-8" [routerLink]="['/group/edit', group.id]" *ngIf="group.groupRole === 'Admin'">Edit</a>    
         </div>
     </div>
 </div>
 <h4 class="mt-5">Questionnaires</h4>
-<div class="row mt-3">
+<div class="row mt-3" *ngIf="group.groupRole === 'Admin'">
     <a class="btn btn-success offset-8" [routerLink]="['/questionnaire/add', group.id]">New Questionnaire</a>    
 </div>
 <div class="row mt-4">
     <div class="col-sm-12" *ngFor="let questionnaire of group.questionnaires">
-        <div class="card mt-4">
+        <div class="card mt-4" *ngIf="group.groupRole === 'Admin' || questionnaire.visibleToGroup">
         <div class="card-body">
             <h4>{{questionnaire.title}}</h4>
             <dl class="row ml-5 mt-3">
@@ -36,16 +36,16 @@
                 <dd class="col-sm-3">{{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</dd>
             </dl>
             <div class="row mt-4">
-                <div class="col-sm-1 offset-7">
+                <div class="col-sm-1 offset-7" *ngIf="group.groupRole === 'Admin'">
                     <a class="btn btn-primary" [routerLink]="['/questionnaire', questionnaire.id]">Details</a>
                 </div>
                 <div class="col-sm-1">
                     <a class="btn btn-primary" [routerLink]="['/questionnaire', questionnaire.id, 'start']">Start</a>
                 </div>
-                <div class="col-sm-1">
-                    <a class="btn btn-success" [routerLink]="['/questionnaire/result', questionnaire.id]">Result</a>
+                <div class="col-sm-1" *ngIf="questionnaire.userQuestionnaireId > 0">
+                    <a class="btn btn-success" [routerLink]="['/questionnaire/result', questionnaire.userQuestionnaireId]">Result</a>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2" *ngIf="group.groupRole === 'Admin'">
                     <a class="btn btn-success" [routerLink]="['/questionnaire', questionnaire.id, 'list']">Result List</a>
                 </div>
             </div>

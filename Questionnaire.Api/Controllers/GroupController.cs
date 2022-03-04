@@ -61,7 +61,9 @@ namespace Questionnaire.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GroupDetailsDto>> GetGroup(int id)
         {
-            var group = await _groupService.GetGroup(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var group = await _groupService.GetGroup(userId, id);
 
             if(group == null)
             {

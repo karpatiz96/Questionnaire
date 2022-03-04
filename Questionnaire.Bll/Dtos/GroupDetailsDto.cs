@@ -10,7 +10,7 @@ namespace Questionnaire.Bll.Dtos
 
         public String Name { get; set; }
 
-        public String GroupAdmin { get; set; }
+        public String GroupRole { get; set; }
 
         public String Description { get; set; }
 
