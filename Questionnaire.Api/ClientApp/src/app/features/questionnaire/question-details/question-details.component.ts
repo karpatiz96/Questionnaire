@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { QuestionType } from '../../questionnaire/models/questionnaires/questionHeaderDto';
 import { ConfirmationDialogService } from '../../shared/services/confirmationDialog.service';
 import { QuestionDetailsDto } from '../models/questions/questionDetailsDto';
+import { AnswerService } from '../services/answer.service';
 import { QuestionService } from '../services/question.service';
 
 @Component({
@@ -30,6 +31,7 @@ export class QuestionDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private questionService: QuestionService,
+    private answerService: AnswerService,
     private confirmationDialogService: ConfirmationDialogService) { }
 
   ngOnInit() {
@@ -47,7 +49,14 @@ export class QuestionDetailsComponent implements OnInit {
 
   delete(answerId: number) {
     this.confirmationDialogService.confirm('Delete Answer', 'Do you really want to delete the answer?').then(result => {
-      console.log(result);
+      if (result) {
+        this.answerService.delete(answerId)
+        .subscribe(() => {
+
+        }, error => {
+
+        });
+      }
     }).catch(() => {});
 
   }

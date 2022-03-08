@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Questionnaire.Bll.Dtos;
 using Questionnaire.Bll.Dtos.ResultDtos;
+using Questionnaire.Bll.Exceptions;
 using Questionnaire.Bll.IServices;
 using Questionnaire.Dll.Entities;
 using System;
@@ -53,11 +54,25 @@ namespace Questionnaire.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<QuestionnaireDetailsDto>> GetQuestionnaire(int id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var userGroup = await _questionnaireService.GetUserGroupByQuestionnaireAndUser(userId, id);
+
+            if(userGroup == null)
+            {
+
+            }
+
+            if(userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
             var questionnaireDto = await _questionnaireService.GetQuestionnaire(id);
 
             if (questionnaireDto == null)
             {
-                return NotFound();
+                return NotFound("Questionnaire doesn't exists!");
             }
 
             return Ok(questionnaireDto);
@@ -66,6 +81,15 @@ namespace Questionnaire.Api.Controllers
         [HttpGet("start/{id}")]
         public async Task<ActionResult<QuestionnaireStartDto>> GetQuestionnaireStart(int id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var userGroup = await _questionnaireService.GetUserGroupByQuestionnaireAndUser(userId, id);
+
+            if (userGroup == null)
+            {
+                throw new UserGroupNotFoundExcetpion("User is not member of group!");
+            }
+
             var questionnaireStartDto = await _questionnaireService.GetQuestionnaireStart(id);
 
             if(questionnaireStartDto == null)
@@ -73,84 +97,37 @@ namespace Questionnaire.Api.Controllers
                 return NotFound();
             }
 
+            //Todo error if questionnaire is visible
+
             return Ok(questionnaireStartDto);
-        }
-
-        [HttpGet("result/admin/{id}")]
-        public async Task<ActionResult<QuestionnaireResultListDto>> GetResultList(int id)
-        {
-            //User is admin of group
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var questionnaireResultListDto = await _userQuestionnaireService.GetQuestionnaireResultList(id);
-
-            return Ok(questionnaireResultListDto);
-        }
-
-        [HttpGet("result/{id}")]
-        public async Task<ActionResult<QuestionnaireResultDto>> GetResult(int id)
-        {
-            //User is admin or solver
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            //var questionnaireResultDto
-            var questionnaireResultDto = await _userQuestionnaireService.GetQuestionnaireResult(id);
-
-            return Ok(questionnaireResultDto);
         }
 
         [HttpPost]
         public async Task<ActionResult<QuestionnaireDto>> Post([FromBody] QuestionnaireDto questionnaireDto)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            //check user is admin
-
-            var questionnaire = await _questionnaireService.CreateQuestionnaire(questionnaireDto);
+            var questionnaire = await _questionnaireService.CreateQuestionnaire(userId, questionnaireDto);
 
             return Ok(questionnaire);
         }
 
-        [HttpPost("start")]
-        public async Task<IActionResult> PostStart([FromBody] int questionnaireId)
+        [HttpPost("hide")]
+        public async Task<IActionResult> PostHide([FromBody] int id)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+            await _questionnaireService.HideQuestionnaire(userId, id);
 
-            //check user is part of questionnaire group
+            return Ok();
+        }
 
-            //check userQuestionnaire exists
+        [HttpPost("show")]
+        public async Task<IActionResult> PostShow([FromBody] int id)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var userQuestionnaireExists = await _userQuestionnaireService.UserQuestionnaireExists(userId, questionnaireId);
-            if (userQuestionnaireExists)
-            {
-                BadRequest("Questionnaire is already Solved!");
-            }
-
-            await _userQuestionnaireService.CreateUserQuestionnaire(userId, questionnaireId);
+            await _questionnaireService.ShowQuestionnaire(userId, id);
 
             return Ok();
         }
@@ -158,17 +135,11 @@ namespace Questionnaire.Api.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] QuestionnaireDto questionnaireDto)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             //check user is admin and questionnaire is not started
 
-            var questionnaire = await _questionnaireService.UpdateQuestionnaire(questionnaireDto);
+            var questionnaire = await _questionnaireService.UpdateQuestionnaire(userId, questionnaireDto);
 
             return NoContent();
         }

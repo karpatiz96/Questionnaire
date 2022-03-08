@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Questionnaire.Api.Data;
+using Questionnaire.Api.Middleware;
 using Questionnaire.Api.Models;
 using Questionnaire.Api.Services;
 using Questionnaire.Bll.IServices;
@@ -94,6 +95,9 @@ namespace Questionnaire.Api
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
+
+            app.UseMiddleware<GlobalErrorHandlerMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

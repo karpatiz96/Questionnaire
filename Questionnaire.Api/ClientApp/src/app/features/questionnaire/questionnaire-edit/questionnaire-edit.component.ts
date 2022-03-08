@@ -27,8 +27,7 @@ export class QuestionnaireEditComponent implements OnInit {
         title: ['', Validators.required],
         description: ['', Validators.required],
         begining: ['', Validators.required],
-        finish: ['', Validators.required],
-        visibleToGroup: false
+        finish: ['', Validators.required]
       });
       this.route.params.subscribe(params => {
         this.loadQuestionnaire(params['id']);
@@ -43,8 +42,7 @@ export class QuestionnaireEditComponent implements OnInit {
           title: result.title,
           description: result.description,
           begining: formatDate(result.begining, 'yyyy-MM-ddThh:mm', 'en_US'),
-          finish: formatDate(result.finish, 'yyyy-MM-ddThh:mm', 'en_US'),
-          visibleToGroup: result.visibleToGroup
+          finish: formatDate(result.finish, 'yyyy-MM-ddThh:mm', 'en_US')
         });
       });
     }

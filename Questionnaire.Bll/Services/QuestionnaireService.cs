@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Questionnaire.Bll.Dtos;
+using Questionnaire.Bll.Exceptions;
 using Questionnaire.Bll.IServices;
 using Questionnaire.Dll;
 using Questionnaire.Dll.Entities;
@@ -63,8 +64,15 @@ namespace Questionnaire.Bll.Services
             Created = q.Created
         };
 
-        public async Task<QuestionnaireDto> CreateQuestionnaire(QuestionnaireDto questionnaireDto)
+        public async Task<QuestionnaireDto> CreateQuestionnaire(string userId, QuestionnaireDto questionnaireDto)
         {
+            var userGroup = await GetUserGroupByGroupAndUser(userId, questionnaireDto.GroupId);
+
+            if(userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
             var questionnaire = new QuestionnaireSheet
             {
                 GroupId = questionnaireDto.GroupId,
@@ -122,38 +130,106 @@ namespace Questionnaire.Bll.Services
             return questionnaires;
         }
 
-        public async Task<int> GetFirstQuestionId(int questionnaireId)
+        public async Task<QuestionnaireDto> UpdateQuestionnaire(string userId, QuestionnaireDto questionnaireDto)
         {
-            //random or number later
-            var question = await _dbContext.Questions
-                .Where(q => q.QuestionnaireSheetId == questionnaireId)
-                .OrderBy(q => q.Id)
-                .FirstOrDefaultAsync();
+            var userGroup = await GetUserGroupByQuestionnaireAndUser(userId, questionnaireDto.Id);
 
-            if(question == null)
+            if (userGroup == null || userGroup.Role != "Admin")
             {
-                return -1;
+                throw new UserNotAdminException("User is not admin in group!");
             }
 
-            return question.Id;
-        }
-
-        public async Task<QuestionnaireDto> UpdateQuestionnaire(QuestionnaireDto questionnaireDto)
-        {
             var questionnaire = await _dbContext.QuestionnaireSheets
                 .FirstOrDefaultAsync(g => g.Id == questionnaireDto.Id);
+
+            //Todo Questionnaire is visible exception
+            if (questionnaire.VisibleToGroup)
+            {
+                throw new QuestionnaireNotEditableException("Questionnaire is visible, it can't be edited!");
+            }
 
             questionnaire.Name = questionnaireDto.Title;
             questionnaire.Description = questionnaireDto.Description;
             questionnaire.Begining = questionnaireDto.Begining;
-            questionnaire.Finish = questionnaire.Finish;
-            questionnaire.VisibleToGroup = questionnaireDto.VisibleToGroup;
+            questionnaire.Finish = questionnaireDto.Finish;
+            //questionnaire.VisibleToGroup = questionnaireDto.VisibleToGroup;
             questionnaire.LastEdited = DateTime.Now;
 
             _dbContext.Attach(questionnaire).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 
             return questionnaireDto;
+        }
+
+        public async Task HideQuestionnaire(string userId, int questionnaireId)
+        {
+            var userGroup = await GetUserGroupByQuestionnaireAndUser(userId, questionnaireId);
+
+            if (userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
+            var questionnaire = await _dbContext.QuestionnaireSheets
+                .Include(q => q.UserQuestionnaires)
+                .Where(q => q.Id == questionnaireId)
+                .FirstOrDefaultAsync();
+
+            if (questionnaire.UserQuestionnaires.Any())
+            {
+                throw new QuestionnaireNotEditableException("Questionnaire can't be edited, it is already started!");
+            }
+
+            questionnaire.VisibleToGroup = false;
+
+            _dbContext.Attach(questionnaire).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task ShowQuestionnaire(string userId, int questionnaireId)
+        {
+            var userGroup = await GetUserGroupByQuestionnaireAndUser(userId, questionnaireId);
+
+            if(userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
+            var questionnaire = await _dbContext.QuestionnaireSheets
+                .Where(q => q.Id == questionnaireId)
+                .FirstOrDefaultAsync();
+
+            questionnaire.VisibleToGroup = true;
+
+            _dbContext.Attach(questionnaire).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<UserGroup> GetUserGroupByQuestionnaireAndUser(string userId, int questionnaireId)
+        {
+            var questionnaire = await _dbContext.QuestionnaireSheets
+                .Where(q => q.Id == questionnaireId)
+                .FirstOrDefaultAsync();
+
+            if(questionnaire == null)
+            {
+                return null;
+            }
+
+            var userGroup = await _dbContext.UserGroups
+                .Where(u => u.UserId == userId && u.GroupId == questionnaire.GroupId)
+                .FirstOrDefaultAsync();
+
+            return userGroup;
+        }
+
+        private async Task<UserGroup> GetUserGroupByGroupAndUser(string userId, int groupId)
+        {
+            var userGroup = await _dbContext.UserGroups
+                .Where(u => u.UserId == userId && u.GroupId == groupId)
+                .FirstOrDefaultAsync();
+
+            return userGroup;
         }
     }
 }

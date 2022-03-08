@@ -24,9 +24,13 @@ export class QuestionService {
     return this.http.get<QuestionDetailsDto>(`${this.baseUrl}/question/${id}`);
   }
 
-  update(questionDto: QuestionDto, questionId: number) {
-    questionDto.id = questionId;
+  update(questionDto: QuestionDto, id: number) {
+    questionDto.id = id;
     questionDto.type = Number(questionDto.type);
     return this.http.put(`${this.baseUrl}/question/${questionDto.id}`, questionDto);
+  }
+
+  delete(id: number) {
+    return this.http.delete(`${this.baseUrl}/question/${id}`);
   }
 }

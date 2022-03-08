@@ -8,8 +8,4 @@
     <ProjectReference Include="..\Questionnaire.Dll\Questionnaire.Dll.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Exceptions\" />
-  </ItemGroup>
-
 </Project>

@@ -39,7 +39,7 @@
                 <div class="col-sm-1 offset-7" *ngIf="group.groupRole === 'Admin'">
                     <a class="btn btn-primary" [routerLink]="['/questionnaire', questionnaire.id]">Details</a>
                 </div>
-                <div class="col-sm-1">
+                <div class="col-sm-1" *ngIf="questionnaire.visibleToGroup && questionnaire.userQuestionnaireId <= 0">
                     <a class="btn btn-primary" [routerLink]="['/questionnaire', questionnaire.id, 'start']">Start</a>
                 </div>
                 <div class="col-sm-1" *ngIf="questionnaire.userQuestionnaireId > 0">

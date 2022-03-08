@@ -1,5 +1,6 @@
 ﻿using Questionnaire.Bll.Dtos;
 using Questionnaire.Bll.Dtos.ResultDtos;
+using Questionnaire.Dll.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +15,20 @@ namespace Questionnaire.Bll.IServices
 
         public Task AnswerQuestion(UserQuestionnaireAnswerDto answerDto, string userId);
 
-        public Task<int> GetUserQuestionnaireQuestion(string userId, int questionnaireId);
-
         public Task<bool> UserQuestionnaireExists(string userId, int questionnaireId);
 
-        public Task<QuestionnaireResultDto> GetQuestionnaireResult(int userQuestionnaireId);
+        public Task<QuestionnaireResultDto> GetQuestionnaireResult(string userId, int userQuestionnaireId);
 
         public Task<QuestionnaireResultListDto> GetQuestionnaireResultList(int questionnaireId);
 
-        public Task<UserQuestionnaireAnswerDetailsDto> GetUserQuestionnaireAnswerDetails(int userQuestionnaireAnswerId);
+        public Task<UserQuestionnaireAnswerDetailsDto> GetUserQuestionnaireAnswerDetails(string userId, int userQuestionnaireAnswerId);
 
-        public Task EvaluateUserQuestionnaireAnswer(UserQuestionnaireAnswerEvaluationDto evaluationDto);
+        public Task EvaluateUserQuestionnaireAnswer(string userId, UserQuestionnaireAnswerEvaluationDto evaluationDto);
+
+        public Task<UserGroup> GetUserGroupByUserAndQuestionnaire(string userId, int questionnaireId);
+
+        public Task<UserGroup> GetUserGroupByUserAndUserQuestionnaire(string userId, int userQuestionnaireId);
+
+        public Task<UserGroup> GetUserGroupByUserAndUserQuestionnaireAnswer(string userId, int userQuestionnaireAnswerId);
     }
 }

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationDialogService } from '../../shared/services/confirmationDialog.service';
+import { QuestionHeaderDto } from '../models/questionnaires/questionHeaderDto';
 import { QuestionnaireDetailsDto } from '../models/questionnaires/questionnaireDetailsDto';
+import { QuestionService } from '../services/question.service';
 import { QuestionnaireService } from '../services/questionnaire.service';
 
 @Component({
@@ -28,6 +30,7 @@ export class QuestionnaireDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private questionnaireService: QuestionnaireService,
+    private questionService: QuestionService,
     private confirmationDialogService: ConfirmationDialogService) { }
 
   ngOnInit() {
@@ -41,14 +44,31 @@ export class QuestionnaireDetailsComponent implements OnInit {
     this.questionnaireService.getById(id).subscribe(result => {
       this.questionnaire = result;
     }, error => {
-      console.log(error);
+      console.log(error.error.message);
     });
   }
 
-  delete(questionId: number) {
+  delete(question: QuestionHeaderDto) {
     this.confirmationDialogService.confirm('Delete Answer', 'Do you really want to delete the answer?').then(result => {
-      console.log(result);
+      this.questionService.delete(question.id)
+      .subscribe(result => {
+        const index = this.questionnaire.questions.indexOf(question);
+        this.questionnaire.questions.splice(index, 1);
+      }, error => {
+        console.log(error);
+      });
     }).catch(() => {});
+  }
 
+  hide(id: number) {
+    this.questionnaireService.hide(id).subscribe(() => {
+      this.questionnaire.visibleToGroup = false;
+    }, error => {});
+  }
+
+  show(id: number) {
+    this.questionnaireService.show(id).subscribe(() => {
+      this.questionnaire.visibleToGroup = true;
+    }, error => {});
   }
 }

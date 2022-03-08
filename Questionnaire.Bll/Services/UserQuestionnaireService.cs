@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Questionnaire.Bll.Dtos;
 using Questionnaire.Bll.Dtos.ResultDtos;
+using Questionnaire.Bll.Exceptions;
 using Questionnaire.Bll.IServices;
 using Questionnaire.Dll;
 using Questionnaire.Dll.Entities;
@@ -32,6 +33,16 @@ namespace Questionnaire.Bll.Services
                 .Include(q => q.Questions)
                 .Where(q => q.Id == questionnaireId).FirstOrDefaultAsync();
 
+            if(!questionnaire.VisibleToGroup || questionnaire.Begining > DateTime.UtcNow)
+            {
+                throw new QuestionnaireStartValidationException("Questionnaire can't be started yet!");
+            }
+
+            if(questionnaire.Finish < DateTime.UtcNow)
+            {
+                throw new QuestionnaireStartValidationException("Questionnaire is already finished!");
+            }
+
             var userQuestionnaire = new UserQuestionnaire
             {
                 QuestionnaireSheetId = questionnaire.Id,
@@ -58,20 +69,6 @@ namespace Questionnaire.Bll.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> UserQuestionnaireExists(string userId, int questionnaireId)
-        {
-            var userQuestionnaire = await _dbContext.UserQuestionnaires
-                .Where(u => u.UserId == userId && u.QuestionnaireSheetId == questionnaireId)
-                .FirstOrDefaultAsync();
-
-            if(userQuestionnaire == null)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         public async Task AnswerQuestion(UserQuestionnaireAnswerDto answerDto, string userId)
         {
             var userQuestionnaire = await _dbContext.UserQuestionnaires
@@ -88,7 +85,12 @@ namespace Questionnaire.Bll.Services
 
             if (userQuestionnaire == null || userQuestionnaireAnswer == null)
             {
-                //Todo
+                throw new QuestionAnswerValidationException("Questionnaire is not started yet!");
+            }
+
+            if (userQuestionnaireAnswer.QuestionCompleted)
+            {
+                throw new QuestionAnswerValidationException("Question is already answered");
             }
 
             switch (userQuestionnaireAnswer.Question.Type)
@@ -137,13 +139,25 @@ namespace Questionnaire.Bll.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public Task<int> GetUserQuestionnaireQuestion(string userId, int questionnaireId)
+        public async Task<QuestionnaireResultDto> GetQuestionnaireResult(string userId, int userQuestionnaireId)
         {
-            throw new NotImplementedException();
-        }
+            //check user is admin or solver
+            var userGroup = await GetUserGroupByUserAndUserQuestionnaire(userId, userQuestionnaireId);
+            if(userGroup == null)
+            {
+                throw new UserGroupNotFoundExcetpion("User is not member of group!");
+            }
 
-        public async Task<QuestionnaireResultDto> GetQuestionnaireResult(int userQuestionnaireId)
-        {
+            var userQuestionnaire = await _dbContext.UserQuestionnaires
+                .Where(u => u.Id == userQuestionnaireId)
+                .FirstOrDefaultAsync();
+
+            if(userGroup.Role != "Admin" && userQuestionnaire.UserId != userId)
+            {
+                //Todo exception
+                throw new QuestionnaireResultValidationException("User is not admin or solver!");
+            }
+
             var userQuestionnaireResult = await _dbContext.UserQuestionnaires
                 .Include(u => u.QuestionnaireSheet)
                 .Include(u => u.UserQuestionnaireAnswers)
@@ -208,8 +222,24 @@ namespace Questionnaire.Bll.Services
             return questionnaireResultList;
         }
 
-        public async Task<UserQuestionnaireAnswerDetailsDto> GetUserQuestionnaireAnswerDetails(int userQuestionnaireAnswerId)
+        public async Task<UserQuestionnaireAnswerDetailsDto> GetUserQuestionnaireAnswerDetails(string userId, int userQuestionnaireAnswerId)
         {
+            var userGroup = await GetUserGroupByUserAndUserQuestionnaireAnswer(userId, userQuestionnaireAnswerId);
+            if (userGroup == null)
+            {
+                throw new UserGroupNotFoundExcetpion("User is not memeber of group!");
+            }
+
+            var questionnaireAnswer = await _dbContext.UserQuestionnaireAnswers
+                .Include(u => u.UserQuestionnaire)
+                .Where(u => u.Id == userQuestionnaireAnswerId)
+                .FirstOrDefaultAsync();
+
+            if(userGroup.Role != "Admin" && questionnaireAnswer.UserQuestionnaire.UserId != userId)
+            {
+                throw new QuestionnaireResultValidationException("User is not admin or solver!");
+            }
+
             var userQuestionnaireAnswer = await _dbContext.UserQuestionnaireAnswers
                 .Include(u => u.Question)
                     .ThenInclude(q => q.QuestionnaireSheet)
@@ -239,8 +269,15 @@ namespace Questionnaire.Bll.Services
             return userQuestionnaireAnswer;
         }
 
-        public async Task EvaluateUserQuestionnaireAnswer(UserQuestionnaireAnswerEvaluationDto evaluationDto)
+        public async Task EvaluateUserQuestionnaireAnswer(string userId, UserQuestionnaireAnswerEvaluationDto evaluationDto)
         {
+            var userGroup = await GetUserGroupByUserAndUserQuestionnaireAnswer(userId, evaluationDto.Id);
+
+            if(userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
             var userQuestionnaireAnswer = await _dbContext.UserQuestionnaireAnswers
                 .Include(u => u.Question)
                 .Where(u => u.Id == evaluationDto.Id)
@@ -254,6 +291,77 @@ namespace Questionnaire.Bll.Services
             userQuestionnaireAnswer.UserPoints = evaluationDto.Points;
 
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> UserQuestionnaireExists(string userId, int questionnaireId)
+        {
+            var userQuestionnaire = await _dbContext.UserQuestionnaires
+                .Where(u => u.UserId == userId && u.QuestionnaireSheetId == questionnaireId)
+                .FirstOrDefaultAsync();
+
+            if (userQuestionnaire == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<UserGroup> GetUserGroupByUserAndQuestionnaire(string userId, int questionnaireId)
+        {
+            var questionnaire = await _dbContext.QuestionnaireSheets
+                .Where(q => q.Id == questionnaireId)
+                .FirstOrDefaultAsync();
+
+            if(questionnaire == null)
+            {
+                return null;
+            }
+
+            var userGroup = await _dbContext.UserGroups
+                .Where(u => u.UserId == userId && u.GroupId == questionnaire.GroupId)
+                .FirstOrDefaultAsync();
+            
+            return userGroup;
+        }
+
+        public async Task<UserGroup> GetUserGroupByUserAndUserQuestionnaire(string userId, int userQuestionnaireId)
+        {
+            var userQuestionnaire = await _dbContext.UserQuestionnaires
+                .Include(u => u.QuestionnaireSheet)
+                .Where(u => u.Id == userQuestionnaireId)
+                .FirstOrDefaultAsync();
+
+            if(userQuestionnaire == null)
+            {
+                return null;
+            }
+
+            var userGroup = await _dbContext.UserGroups
+               .Where(u => u.UserId == userId && u.GroupId == userQuestionnaire.QuestionnaireSheet.GroupId)
+               .FirstOrDefaultAsync();
+
+            return userGroup;
+        }
+
+        public async Task<UserGroup> GetUserGroupByUserAndUserQuestionnaireAnswer(string userId, int userQuestionnaireAnswerId)
+        {
+            var userQuestionnaireAnswer = await _dbContext.UserQuestionnaireAnswers
+                .Include(u => u.UserQuestionnaire)
+                    .ThenInclude(q => q.QuestionnaireSheet)
+                .Where(u => u.Id == userQuestionnaireAnswerId)
+                .FirstOrDefaultAsync();
+
+            if(userQuestionnaireAnswer == null)
+            {
+                return null;
+            }
+
+            var userGroup = await _dbContext.UserGroups
+               .Where(u => u.UserId == userId && u.GroupId == userQuestionnaireAnswer.UserQuestionnaire.QuestionnaireSheet.GroupId)
+               .FirstOrDefaultAsync();
+
+            return userGroup;
         }
     }
 }

@@ -4,6 +4,8 @@
         <dl class="row mt-4">
             <dt class="col-sm-2"><h5>Title:</h5></dt>
             <dd class="col-sm-4"><h5>{{questionnaire.title}}</h5></dd>
+            <dd class="col-sm-4" *ngIf="questionnaire.visibleToGroup"><a class="btn btn-outline-danger" (click)="hide(questionnaire.id)">Hide Questionnaire</a></dd>
+            <dd class="col-sm-4" *ngIf="!questionnaire.visibleToGroup"><a class="btn btn-outline-success" (click)="show(questionnaire.id)">Show Questionnaire</a></dd>
         </dl>
         <div class="row mt-4">
             <h5 class="col-sm-3">Group Description:</h5>
@@ -55,7 +57,7 @@
             <td>{{question.value}}</td>
             <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/question', question.id]">Details</a></td>
             <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/question/edit', question.id]">Edit</a></td>
-            <td><a class="btn btn-outline-primary" (click)="delete(question.id)">Delete</a></td>
+            <td><a class="btn btn-outline-primary" (click)="delete(question)">Delete</a></td>
           </tr>
           <tr>
             <td></td>

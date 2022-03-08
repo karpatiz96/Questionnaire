@@ -64,8 +64,7 @@ export class QuestionEditComponent implements OnInit {
     }
 
     this.loading = true;
-    this.questionService.update(this.questionForm.value, this.questionId)
-      .subscribe(
+    this.questionService.update(this.questionForm.value, this.questionId).subscribe(
         result => {
           this.router.navigate(['/questionnaire/question', this.questionId]);
         },

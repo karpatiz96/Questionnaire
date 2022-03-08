@@ -28,4 +28,8 @@ export class AnswerService {
     answerDto.type = Number(answerDto.type);
     return this.http.put(`${this.baseUrl}/answer/${answerDto.id}`, answerDto);
   }
+
+  delete(id: number) {
+    return this.http.delete(`${this.baseUrl}/answer/${id}`);
+  }
 }

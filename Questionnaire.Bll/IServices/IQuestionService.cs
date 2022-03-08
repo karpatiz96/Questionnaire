@@ -16,10 +16,13 @@ namespace Questionnaire.Bll.IServices
 
         Task<IEnumerable<QuestionnaireQuestionDto>> GetQuestionnaireQuestions(int questionnaireId);
 
-        Task<QuestionDto> CreateQuestion(QuestionDto questionDto);
+        Task<QuestionDto> CreateQuestion(string userId, QuestionDto questionDto);
 
-        Task<QuestionDto> UpdateQuestion(QuestionDto questionnaireDto);
+        Task<QuestionDto> UpdateQuestion(string userId, QuestionDto questionDto);
 
-        Task<Question> DeleteQuestion(int questionId);
+        Task<Question> DeleteQuestion(string userId, int questionId);
+
+        //Return null if userGroup does not exists
+        Task<UserGroup> GetUserGroupByQuestionAndUser(string userId, int questionId);
     }
 }

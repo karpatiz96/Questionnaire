@@ -26,4 +26,12 @@ export class QuestionnaireService {
     questionnaireDto.id = id;
     return this.http.put(`${this.baseUrl}/questionnaire/${id}`, questionnaireDto);
   }
+
+  hide(id: number) {
+    return this.http.post(`${this.baseUrl}/questionnaire/hide`, id);
+  }
+
+  show(id: number) {
+    return this.http.post(`${this.baseUrl}/questionnaire/show`, id);
+  }
 }
