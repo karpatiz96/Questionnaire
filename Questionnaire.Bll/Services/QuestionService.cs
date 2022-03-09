@@ -33,6 +33,7 @@ namespace Questionnaire.Bll.Services
             Type = q.Type,
             SuggestedTime = q.SuggestedTime,
             Value = q.MaximumPoints,
+            VisibleToGroup = q.QuestionnaireSheet.VisibleToGroup,
             Answers = q.Answers.Select(q => new AnswerHeaderDto 
             {
                 Id = q.Id,
@@ -156,6 +157,7 @@ namespace Questionnaire.Bll.Services
         public async Task<QuestionDetailsDto> GetQuestion(int questionId)
         {
             var question = await _dbContext.Questions
+                .Include(q => q.QuestionnaireSheet)
                 .Where(q => q.Id == questionId)
                 .Select(SelectQuestionDetails)
                 .FirstOrDefaultAsync();

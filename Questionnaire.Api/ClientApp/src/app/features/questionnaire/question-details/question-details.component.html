@@ -19,7 +19,7 @@
             <dt class="col-sm-2">suggested Time:</dt>
             <dd class="col-sm-2">{{question.suggestedTime}} minute</dd>
         </dl>
-        <div class="row mt-3">
+        <div class="row mt-3" *ngIf="!question.visibleToGroup">
             <a class="btn btn-outline-primary offset-6 col-sm-1" [routerLink]="['/questionnaire/question/edit', question.id]">Edit</a>
         </div>
     </div>
@@ -44,8 +44,8 @@
             <td>{{AnswerTypes[answer.type]}}</td>
             <td>{{answer.value}}</td>
             <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/answer', answer.id]">Details</a></td>
-            <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/answer/edit', answer.id]">Edit</a></td>
-            <td><a class="btn btn-outline-primary" (click)="delete(answer.id)">Delete</a></td>
+            <td><a class="btn btn-outline-primary" *ngIf="!question.visibleToGroup" [routerLink]="['/questionnaire/answer/edit', answer.id]">Edit</a></td>
+            <td><a class="btn btn-outline-primary" *ngIf="!question.visibleToGroup" (click)="delete(answer)">Delete</a></td>
           </tr>
           <tr>
             <td></td>
@@ -53,7 +53,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td scope="col"><a class="btn btn-outline-success" [routerLink]="['/questionnaire/answer/add', question.id]">Create</a></td>
+            <td scope="col"><a class="btn btn-outline-success" *ngIf="!question.visibleToGroup" [routerLink]="['/questionnaire/answer/add', question.id]">Create</a></td>
           </tr>
         </tbody>
       </table>

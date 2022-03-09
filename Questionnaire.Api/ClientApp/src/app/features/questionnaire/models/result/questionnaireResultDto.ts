@@ -2,6 +2,7 @@ import { QuestionType } from '../questionnaireQuestionDto';
 
 export interface QuestionnaireResultDto {
     id: number;
+    userName: string;
     title: string;
     description: string;
     begining: Date;

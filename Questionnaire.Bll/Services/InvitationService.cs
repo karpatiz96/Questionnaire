@@ -41,7 +41,7 @@ namespace Questionnaire.Bll.Services
             {
                 UserId = user.Id,
                 GroupId = invitationNewDto.GroupId,
-                Created = DateTime.Now,
+                Created = DateTime.UtcNow,
                 Status = InvitationStatus.Undecided
             };
 

@@ -76,7 +76,9 @@ namespace Questionnaire.Api.Controllers
         [HttpGet("member/{id}")]
         public async Task<ActionResult<GroupMemberDto>> GetGroupMember(int id)
         {
-            var groupMemberDto = await _groupService.GetGroupMembers(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var groupMemberDto = await _groupService.GetGroupMembers(userId, id);
 
             if (groupMemberDto == null)
             {
@@ -105,7 +107,9 @@ namespace Questionnaire.Api.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] GroupDto groupDto)
         {
-            await _groupService.UpdateGroup(groupDto);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            await _groupService.UpdateGroup(userId, groupDto);
 
             return NoContent();
         }

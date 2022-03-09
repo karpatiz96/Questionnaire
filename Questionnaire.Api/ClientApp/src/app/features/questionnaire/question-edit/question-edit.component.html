@@ -57,7 +57,7 @@
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
             Save
         </button>
-        <a routerLink="/group" class="btn btn-link">Cancle</a>
+        <a [routerLink]="['/questionnaire/question', questionId]" class="btn btn-link">Cancle</a>
     </div>
     <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
 </form>

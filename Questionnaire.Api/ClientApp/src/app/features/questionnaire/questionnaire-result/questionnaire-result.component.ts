@@ -12,6 +12,7 @@ export class QuestionnaireResultComponent implements OnInit {
   userQuestionnaireId: number;
   questionnaire: QuestionnaireResultDto = {
     id: 0,
+    userName: '',
     title: '',
     description: '',
     begining: new Date(2020, 1, 1),

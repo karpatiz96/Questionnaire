@@ -50,16 +50,16 @@
             <div *ngSwitchCase="questionType.ConcreteText" class="form-row">
                 <div class="form-group col-sm-4">
                     <label for="concreteText"><b>Answer: </b></label>
-                    <input type="text" class="form-control" value="question.userAnswer" id="concreteText" />
+                    <input type="text" class="form-control" value="{{question.userAnswer}}" id="concreteText" />
                 </div>
                 <div class="form-group col-sm-4">
                     <label for="correctAnswer"><b>Correct Answer: </b></label>
-                    <input type="text" class="form-control" value="question.userAnswer" id="correctAnswer" />
+                    <input type="text" class="form-control" value="" id="correctAnswer" />
                 </div>
             </div>
         </div>
     </div>
-    <div class="row mt-4">
+    <div class="row mt-4" *ngIf="question.role === 'Admin'">
         <div class="col-sm-6">
             <a class="btn btn-primary float-right" [routerLink]="['/questionnaire/result/question', userQuestionnaireAnswerId, 'edit']">Re-evaluate</a>
         </div>

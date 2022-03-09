@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Questionnaire.Bll.Dtos;
+using Questionnaire.Bll.Exceptions;
 using Questionnaire.Bll.IServices;
 using Questionnaire.Dll;
 using Questionnaire.Dll.Entities;
@@ -23,7 +24,7 @@ namespace Questionnaire.Bll.Services
             Description = g.Description,
             Created = g.Created,
             GroupRole = "User",
-            LastPost = DateTime.Now, //To be updated
+            LastPost = DateTime.UtcNow, //To be updated
             Members = g.UserGroups.Count,
             Questionnaires = g.QuestionnaireSheets.Select<QuestionnaireSheet, QuestionnaireHeaderDto>(q => 
             new QuestionnaireHeaderDto {
@@ -43,7 +44,7 @@ namespace Questionnaire.Bll.Services
             Name = g.Name,
             Created = g.Created,
             Members = g.UserGroups.Count,
-            LastPost = DateTime.Now
+            LastPost = DateTime.UtcNow
         };
 
         public static Expression<Func<UserGroup, UserGroupDto>> UserGroupSelector { get; } = g => new UserGroupDto
@@ -85,7 +86,7 @@ namespace Questionnaire.Bll.Services
             {
                 Name = groupDto.Name,
                 Description = groupDto.Description,
-                Created = DateTime.Now
+                Created = DateTime.UtcNow
             };
 
             _dbContext.Groups.Add(group);
@@ -115,7 +116,7 @@ namespace Questionnaire.Bll.Services
 
             if(userGroup == null)
             {
-                throw new Exception("User is not member of the group.");
+                throw new UserGroupNotFoundExcetpion("User is not member of the group.");
             }
 
             var groupDetailsDto = await _dbContext.Groups
@@ -143,8 +144,17 @@ namespace Questionnaire.Bll.Services
             return groupDetailsDto;
         }
 
-        public async Task<GroupMemberDto> GetGroupMembers(int groupId)
+        public async Task<GroupMemberDto> GetGroupMembers(string userId, int groupId)
         {
+            var userGroup = await _dbContext.UserGroups
+                .Where(g => g.UserId == userId && g.GroupId == groupId)
+                .FirstOrDefaultAsync();
+
+            if (userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
             var members = await _dbContext.UserGroups
                 .Include(ug => ug.User)
                 .Where(ug => ug.GroupId == groupId)
@@ -193,8 +203,17 @@ namespace Questionnaire.Bll.Services
             return groups;
         }
 
-        public async Task UpdateGroup(GroupDto groupDto)
+        public async Task UpdateGroup(string userId, GroupDto groupDto)
         {
+            var userGroup = await _dbContext.UserGroups
+                .Where(g => g.UserId == userId && g.GroupId == groupDto.Id)
+                .FirstOrDefaultAsync();
+
+            if (userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
             var group = await _dbContext.Groups
                 .FirstOrDefaultAsync(g => g.Id == groupDto.Id);
 

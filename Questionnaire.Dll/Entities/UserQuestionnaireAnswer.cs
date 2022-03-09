@@ -12,7 +12,11 @@ namespace Questionnaire.Dll.Entities
 
         public string UserAnswer { get; set; }
 
+        public DateTime Completed { get; set; }
+
         public bool QuestionCompleted { get; set; }
+
+        public bool AnswerEvaluated { get; set; }
 
         public int QuestionId { get; set; }
 

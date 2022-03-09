@@ -8,4 +8,5 @@ export interface AnswerDetailsDto {
     name: String;
     userAnswer: String;
     value: number;
+    visibleToGroup: boolean;
 }

@@ -31,7 +31,8 @@ namespace Questionnaire.Bll.Services
             Value = a.Points,
             Type = a.Type ? AnswerType.Correct : AnswerType.False,
             QuestionType = a.Question.Type,
-            UserAnswer = a.UserAnswer
+            UserAnswer = a.UserAnswer,
+            VisibleToGroup = a.Question.QuestionnaireSheet.VisibleToGroup
         };
 
         public static Expression<Func<Answer, AnswerHeaderDto>> SelectAnswerHeader { get; } = a =>
@@ -47,7 +48,7 @@ namespace Questionnaire.Bll.Services
         {
             var userGroup = await GetUserGroupByQuestionAndUser(userId, answerDto.QuestionId);
 
-            if(userGroup == null || userGroup.Role == "Admin")
+            if(userGroup == null || userGroup.Role != "Admin")
             {
                 throw new UserNotAdminException("User is not admin is group!");
             }
@@ -88,7 +89,7 @@ namespace Questionnaire.Bll.Services
         {
             var userGroup = await GetUserGroupByAnswerAndUser(userId, answerId);
 
-            if (userGroup == null || userGroup.Role == "Admin")
+            if (userGroup == null || userGroup.Role != "Admin")
             {
                 throw new UserNotAdminException("User is not admin is group!");
             }
@@ -122,6 +123,7 @@ namespace Questionnaire.Bll.Services
         {
             var result = await _dbContext.Answers
                 .Include(a => a.Question)
+                    .ThenInclude(q => q.QuestionnaireSheet)
                 .Where(a => a.Id == answerId)
                 .Select(SelectAnswerDetails)
                 .FirstOrDefaultAsync();
@@ -144,7 +146,7 @@ namespace Questionnaire.Bll.Services
         {
             var userGroup = await GetUserGroupByAnswerAndUser(userId, answerDto.Id);
             
-            if (userGroup == null || userGroup.Role == "Admin")
+            if (userGroup == null || userGroup.Role != "Admin")
             {
                 throw new UserNotAdminException("User is not admin is group!");
             }

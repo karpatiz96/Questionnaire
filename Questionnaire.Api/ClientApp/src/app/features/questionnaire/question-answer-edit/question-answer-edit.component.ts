@@ -28,7 +28,8 @@ export class QuestionAnswerEditComponent implements OnInit {
     points: 0,
     userAnswer: '',
     answerId: 0,
-    answers: []
+    answers: [],
+    role: 'User'
   };
 
   constructor(private formBuilder: FormBuilder,

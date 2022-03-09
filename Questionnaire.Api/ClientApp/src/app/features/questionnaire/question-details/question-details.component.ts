@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QuestionType } from '../../questionnaire/models/questionnaires/questionHeaderDto';
 import { ConfirmationDialogService } from '../../shared/services/confirmationDialog.service';
+import { AnswerHeaderDto } from '../models/questions/answerHeaderDto';
 import { QuestionDetailsDto } from '../models/questions/questionDetailsDto';
 import { AnswerService } from '../services/answer.service';
 import { QuestionService } from '../services/question.service';
@@ -22,7 +23,8 @@ export class QuestionDetailsComponent implements OnInit {
     suggestedTime: 0,
     type: QuestionType.ConcreteText,
     value: 0,
-    answers: []
+    answers: [],
+    visibleToGroup: false
   };
 
   QuestionTypes = ['True or False', 'Multiple Choice', 'Free Text', 'Concrete Text'];
@@ -47,12 +49,13 @@ export class QuestionDetailsComponent implements OnInit {
     });
   }
 
-  delete(answerId: number) {
+  delete(answer: AnswerHeaderDto) {
     this.confirmationDialogService.confirm('Delete Answer', 'Do you really want to delete the answer?').then(result => {
       if (result) {
-        this.answerService.delete(answerId)
+        this.answerService.delete(answer.id)
         .subscribe(() => {
-
+          const index = this.question.answers.indexOf(answer);
+          this.question.answers.splice(index, 1);
         }, error => {
 
         });

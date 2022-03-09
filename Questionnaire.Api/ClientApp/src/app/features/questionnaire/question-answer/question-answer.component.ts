@@ -21,7 +21,8 @@ export class QuestionAnswerComponent implements OnInit {
     points: 0,
     userAnswer: '',
     answerId: 0,
-    answers: []
+    answers: [],
+    role: 'User'
   };
 
   questionType = QuestionType;

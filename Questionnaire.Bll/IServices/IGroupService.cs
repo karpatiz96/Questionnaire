@@ -13,12 +13,12 @@ namespace Questionnaire.Bll.IServices
 
         Task<IEnumerable<GroupHeaderDto>> GetMyGroups(string userId);
 
-        Task<GroupMemberDto> GetGroupMembers(int groupId);
+        Task<GroupMemberDto> GetGroupMembers(string userId, int groupId);
 
         Task<GroupDetailsDto> GetGroup(string userId, int groupId);
 
         Task<GroupDto> CreateGroup(GroupDto groupDto, string userId);
 
-        Task UpdateGroup(GroupDto groupDto);
+        Task UpdateGroup(string userId, GroupDto groupDto);
     }
 }

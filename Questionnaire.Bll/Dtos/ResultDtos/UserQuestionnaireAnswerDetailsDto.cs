@@ -11,6 +11,8 @@ namespace Questionnaire.Bll.Dtos.ResultDtos
     {
         public int Id { get; set; }
 
+        public string Role { get; set; }
+
         public string QuestionnaireTitle { get; set; }
 
         public string QuestionTitle { get; set; }

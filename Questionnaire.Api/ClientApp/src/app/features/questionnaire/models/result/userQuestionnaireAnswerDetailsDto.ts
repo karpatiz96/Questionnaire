@@ -12,4 +12,5 @@ export interface UserQuestionnaireAnswerDetailsDto {
     maximumPoints: number;
     points: number;
     answers: QuestionAnswerResultDto[];
+    role: string;
 }

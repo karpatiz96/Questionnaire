@@ -18,7 +18,8 @@ export class AnswerDetailsComponent implements OnInit {
     name: '',
     type: AnswerType.Correct,
     userAnswer: '',
-    value: 0
+    value: 0,
+    visibleToGroup: false
   };
 
   AnswerTypes = ['Correct', 'False'];

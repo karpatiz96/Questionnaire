@@ -31,7 +31,7 @@
                 <label for="visibleToGroup" class="form-check-label">Visible to group</label>
             </div>
         </div>
-        <div class="row mt-3">
+        <div class="row mt-3" *ngIf="!questionnaire.visibleToGroup">
             <a class="btn btn-outline-primary offset-6 col-sm-1" [routerLink]="['/questionnaire/edit', questionnaire.id]">Edit</a>
         </div>
     </div>
@@ -56,8 +56,8 @@
             <td>{{QuestionTypes[question.type]}}</td>
             <td>{{question.value}}</td>
             <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/question', question.id]">Details</a></td>
-            <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/question/edit', question.id]">Edit</a></td>
-            <td><a class="btn btn-outline-primary" (click)="delete(question)">Delete</a></td>
+            <td><a class="btn btn-outline-primary" *ngIf="!questionnaire.visibleToGroup" [routerLink]="['/questionnaire/question/edit', question.id]">Edit</a></td>
+            <td><a class="btn btn-outline-primary" *ngIf="!questionnaire.visibleToGroup" (click)="delete(question)">Delete</a></td>
           </tr>
           <tr>
             <td></td>
@@ -65,7 +65,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td scope="col"><a class="btn btn-outline-success" [routerLink]="['/questionnaire/question/add', questionnaire.id]">Create</a></td>
+            <td scope="col"><a class="btn btn-outline-success" *ngIf="!questionnaire.visibleToGroup" [routerLink]="['/questionnaire/question/add', questionnaire.id]">Create</a></td>
           </tr>
         </tbody>
       </table>

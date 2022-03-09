@@ -11,7 +11,7 @@
             <dt class="col-sm-2">Points:</dt>
             <dd class="col-sm-4">{{answer.value}}</dd>
         </dl>
-        <div class="row mt-3">
+        <div class="row mt-3" *ngIf="!answer.visibleToGroup">
             <a class="btn btn-outline-primary offset-6 col-sm-1" [routerLink]="['/questionnaire/answer/edit', answer.id]">Edit</a>
         </div>
     </div>

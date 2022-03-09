@@ -81,8 +81,8 @@ namespace Questionnaire.Bll.Services
                 Begining = questionnaireDto.Begining,
                 Finish = questionnaireDto.Finish,
                 VisibleToGroup = questionnaireDto.VisibleToGroup,
-                Created = DateTime.Now,
-                LastEdited = DateTime.Now
+                Created = DateTime.UtcNow,
+                LastEdited = DateTime.UtcNow
             };
 
             var group = await _dbContext.Groups
@@ -153,7 +153,7 @@ namespace Questionnaire.Bll.Services
             questionnaire.Begining = questionnaireDto.Begining;
             questionnaire.Finish = questionnaireDto.Finish;
             //questionnaire.VisibleToGroup = questionnaireDto.VisibleToGroup;
-            questionnaire.LastEdited = DateTime.Now;
+            questionnaire.LastEdited = DateTime.UtcNow;
 
             _dbContext.Attach(questionnaire).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
