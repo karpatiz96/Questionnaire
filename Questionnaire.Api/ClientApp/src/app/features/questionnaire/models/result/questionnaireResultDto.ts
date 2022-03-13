@@ -20,4 +20,6 @@ export interface UserQuestionAnswerHeaderDto {
     type: QuestionType;
     maximumPoints: number;
     points: number;
+    evaluated: boolean;
+    finished: Date;
 }

@@ -39,7 +39,7 @@ export class QuestionAnswerEditComponent implements OnInit {
 
   ngOnInit() {
     this.userQuestionnaireAnswerForm = this.formBuilder.group({
-      points: [0, [Validators.required, Validators.min(0)]]
+      points: [0]
     });
 
     this.route.params.subscribe(params => {
@@ -52,6 +52,7 @@ export class QuestionAnswerEditComponent implements OnInit {
     this.userQuestionnaireService.getUserQuestionnaireAnswerById(id)
       .subscribe(result => {
         this.question = result;
+        this.form['points'].setValidators([Validators.required, Validators.min(0), Validators.max(result.maximumPoints)]);
     }, error => {
       console.log(error);
     });

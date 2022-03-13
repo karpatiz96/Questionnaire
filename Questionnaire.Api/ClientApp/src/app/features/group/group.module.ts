@@ -8,6 +8,7 @@ import { GroupEditComponent } from './group-edit/group-edit.component';
 import { GroupListComponent } from './group-list/group-list.component';
 import { GroupMemberComponent } from './group-member/group-member.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -22,7 +23,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    GroupRoutingModule
+    GroupRoutingModule,
+    SharedModule
   ]
 })
 export class GroupModule { }

@@ -196,7 +196,9 @@ namespace Questionnaire.Bll.Services
                             Name = a.Question.Name,
                             Type = a.Question.Type,
                             Points = a.UserPoints,
-                            MaximumPoints = a.Question.MaximumPoints
+                            MaximumPoints = a.Question.MaximumPoints,
+                            Evaluated = a.AnswerEvaluated,
+                            Finished = a.Completed
                         }).ToList(),
                     MaximumPoints = u.UserQuestionnaireAnswers.Sum(q => q.Question.MaximumPoints),
                     Points = u.UserQuestionnaireAnswers.Sum(q => q.UserPoints)

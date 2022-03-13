@@ -10,5 +10,7 @@ namespace Questionnaire.Bll.IServices
     public interface IUserGroupService
     {
         Task<UserGroup> GetUserGroup(string userId, int groupId);
+
+        Task<UserGroup> UpdateUserGroupRole(string userId, int userGroupId, string role);
     }
 }

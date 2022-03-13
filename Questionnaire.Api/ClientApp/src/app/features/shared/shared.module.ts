@@ -3,17 +3,19 @@ import { CommonModule } from '@angular/common';
 import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { ConfirmationDialogService } from './services/confirmationDialog.service';
+import { AlertComponent } from './alert/alert.component';
 
 
 
 @NgModule({
-  declarations: [ConfirmationDialogComponent],
+  declarations: [ConfirmationDialogComponent, AlertComponent],
   imports: [
     CommonModule,
     NgbModule
   ],
   exports: [
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    AlertComponent
   ],
   providers: [ConfirmationDialogService],
   entryComponents: [ConfirmationDialogComponent]

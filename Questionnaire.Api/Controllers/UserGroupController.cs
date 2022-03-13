@@ -26,6 +26,8 @@ namespace Questionnaire.Api.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
+            var userGroup = await _userGroupService.UpdateUserGroupRole(userId, id, "Admin");
+
             return Ok();
         }
 
@@ -33,6 +35,16 @@ namespace Questionnaire.Api.Controllers
         public async Task<IActionResult> MakeUser(int id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var userGroup = await _userGroupService.UpdateUserGroupRole(userId, id, "User");
+
+            return Ok();
+        }
+
+        [HttpDelete("id")]
+        public async Task<IActionResult> Delete(int id)
+        {
+
 
             return Ok();
         }

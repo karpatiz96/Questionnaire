@@ -14,10 +14,10 @@
         <div class="col-sm-8"><b>From:</b> {{questionnaire.begining | date: 'yyyy-MM-dd hh:mm'}} - <b>To:</b> {{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</div>
     </div>
     <div class="row mt-4">
-        <div class="col-sm-6"><b>Questions:</b> {{questionnaire.questions}}</div>
+        <div class="col-sm-8"><b>Questions:</b> {{questionnaire.questions}} <b>Result:</b> {{questionnaire.maximumPoints}}/{{questionnaire.points}}</div>
     </div>
     <div class="row mt-4">
-        <div class="col-sm-6"><b>Result:</b> {{questionnaire.maximumPoints}}/{{questionnaire.points}}</div>
+      <div class="col-sm-6"><b>Solver:</b> {{questionnaire.userName}}</div>
     </div>
 </div>
 <div class="col-sm-12">
@@ -29,8 +29,9 @@
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Type</th>
-                <th scope="col">Maximum</th>
                 <th scope="col">Points</th>
+                <th scope="col">Finished</th>
+                <th scope="col">Evaluated</th>
               </tr>
             </thead>
             <tbody>
@@ -38,8 +39,9 @@
                 <th scope="row">{{i}}</th>
                 <td>{{answer.name}}</td>
                 <td>{{QuestionTypes[answer.type]}}</td>
-                <td>{{answer.maximumPoints}}</td>
-                <td>{{answer.points}}</td>
+                <td>{{answer.maximumPoints}}/{{answer.points}}</td>
+                <td>{{answer.finished | date: 'yyyy-MM-dd hh:mm'}}</td>
+                <td>{{answer.evaluated}}</td>
                 <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/result/question', answer.id]">Details</a></td>
               </tr>
             </tbody>

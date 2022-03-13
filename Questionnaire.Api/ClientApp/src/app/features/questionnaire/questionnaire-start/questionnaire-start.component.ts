@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertService } from '../../shared/services/alert.service';
 import { QuestionnaireStartDto } from '../models/questionnaireStartDto';
 import { UserQuestionnaireService } from '../services/userQuestionnaireService';
 
@@ -22,7 +23,8 @@ export class QuestionnaireStartComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private userQuestionnaireService: UserQuestionnaireService) { }
+    private userQuestionnaireService: UserQuestionnaireService,
+    private alertService: AlertService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -41,7 +43,7 @@ export class QuestionnaireStartComponent implements OnInit {
     this.userQuestionnaireService.start(this.questionnaire.id).subscribe(result => {
       this.router.navigate(['../answer'], { relativeTo: this.route });
     }, error => {
-      console.log(error);
+      this.alertService.error(error.error.message, {id: 'alert-1'});
     });
   }
 }

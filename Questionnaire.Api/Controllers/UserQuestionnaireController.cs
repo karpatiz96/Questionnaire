@@ -83,7 +83,7 @@ namespace Questionnaire.Api.Controllers
             var userQuestionnaireExists = await _userQuestionnaireService.UserQuestionnaireExists(userId, questionnaireId);
             if (userQuestionnaireExists)
             {
-                BadRequest("Questionnaire is already Solved!");
+                return BadRequest("Questionnaire is already Solved!");
             }
 
             await _userQuestionnaireService.CreateUserQuestionnaire(userId, questionnaireId);
