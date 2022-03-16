@@ -9,6 +9,7 @@ import { GroupListComponent } from './group-list/group-list.component';
 import { GroupMemberComponent } from './group-member/group-member.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -23,6 +24,7 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    NgbModule,
     GroupRoutingModule,
     SharedModule
   ]

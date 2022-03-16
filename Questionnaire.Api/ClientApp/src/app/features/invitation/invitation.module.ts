@@ -4,6 +4,8 @@ import { InvitationComponent } from './invitation/invitation.component';
 import { InvitationAddComponent } from './invitation-add/invitation-add.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InvitationRoutingModule } from './invitation-routing.module';
+import { SharedModule } from '../shared/shared.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -13,7 +15,9 @@ import { InvitationRoutingModule } from './invitation-routing.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    InvitationRoutingModule
+    NgbModule,
+    InvitationRoutingModule,
+    SharedModule
   ]
 })
 export class InvitationModule { }

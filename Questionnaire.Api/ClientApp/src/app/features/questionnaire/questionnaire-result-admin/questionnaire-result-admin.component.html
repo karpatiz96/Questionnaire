@@ -26,15 +26,13 @@
         <table class="table">
             <thead>
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">User Name</th>
+                <th scope="col" sortable="userName" (sort)="onSort($event)">User Name</th>
                 <th scope="col">Maximum</th>
-                <th scope="col">Points</th>
+                <th scope="col" sortable="points" (sort)="onSort($event)">Points</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let result of questionnaire.results; let i = index">
-                <th scope="row">{{i}}</th>
+              <tr *ngFor="let result of results">
                 <td>{{result.userName}}</td>
                 <td>{{result.maximumPoints}}</td>
                 <td>{{result.points}}</td>
@@ -42,5 +40,16 @@
               </tr>
             </tbody>
           </table>
+          <div class="d-flex justify-content-between">
+            <ngb-pagination
+              [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="refressResults()">
+            </ngb-pagination>
+        
+            <select class="custom-select ml-2" style="width: auto" name="pageSize" [(ngModel)]="pageSize" (ngModelChange)="refressResults()">
+              <option [ngValue]="2">2 items per page</option>
+              <option [ngValue]="4">4 items per page</option>
+              <option [ngValue]="10">10 items per page</option>
+            </select>
+          </div>
     </div>
 </div>

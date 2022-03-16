@@ -26,17 +26,15 @@
         <table class="table">
             <thead>
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Type</th>
-                <th scope="col">Points</th>
-                <th scope="col">Finished</th>
-                <th scope="col">Evaluated</th>
+                <th scope="col" sortable="name" (sort)="onSort($event)">Name</th>
+                <th scope="col" sortable="type" (sort)="onSort($event)">Type</th>
+                <th scope="col" sortable="points" (sort)="onSort($event)">Points</th>
+                <th scope="col" (sort)="onSort($event)">Finished</th>
+                <th scope="col" (sort)="onSort($event)">Evaluated</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let answer of questionnaire.answers; let i = index">
-                <th scope="row">{{i}}</th>
+              <tr *ngFor="let answer of answers">
                 <td>{{answer.name}}</td>
                 <td>{{QuestionTypes[answer.type]}}</td>
                 <td>{{answer.maximumPoints}}/{{answer.points}}</td>
@@ -46,5 +44,16 @@
               </tr>
             </tbody>
           </table>
+          <div class="d-flex justify-content-between">
+            <ngb-pagination
+              [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="refressAnswers()">
+            </ngb-pagination>
+        
+            <select class="custom-select ml-2" style="width: auto" name="pageSize" [(ngModel)]="pageSize" (ngModelChange)="refressAnswers()">
+              <option [ngValue]="2">2 items per page</option>
+              <option [ngValue]="4">4 items per page</option>
+              <option [ngValue]="10">10 items per page</option>
+            </select>
+          </div>
     </div>
 </div>

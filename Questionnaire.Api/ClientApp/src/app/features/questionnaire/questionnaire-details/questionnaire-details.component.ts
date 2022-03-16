@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationDialogService } from '../../shared/services/confirmationDialog.service';
+import { SortableDirective, SortDirection, SortEvent } from '../../shared/directives/sortable.directive';
 import { QuestionHeaderDto } from '../models/questionnaires/questionHeaderDto';
 import { QuestionnaireDetailsDto } from '../models/questionnaires/questionnaireDetailsDto';
 import { QuestionService } from '../services/question.service';
@@ -27,6 +28,16 @@ export class QuestionnaireDetailsComponent implements OnInit {
 
   QuestionTypes = ['True or False', 'Multiple Choice', 'Free Text', 'Concrete Text'];
 
+  @ViewChildren(SortableDirective) headers: QueryList<SortableDirective>;
+
+  questions: QuestionHeaderDto[] = [];
+
+  page = 1;
+  pageSize = 4;
+  sortColumn = '';
+  sortDirection: SortDirection = '';
+  total = 0;
+
   constructor(
     private route: ActivatedRoute,
     private questionnaireService: QuestionnaireService,
@@ -43,6 +54,9 @@ export class QuestionnaireDetailsComponent implements OnInit {
   loadQuestionnaire(id: number) {
     this.questionnaireService.getById(id).subscribe(result => {
       this.questionnaire = result;
+      this.questions = this.questionnaire.questions;
+      this.total = this.questionnaire.questions.length;
+      this.refressQuestions();
     }, error => {
       console.log(error.error.message);
     });
@@ -54,6 +68,7 @@ export class QuestionnaireDetailsComponent implements OnInit {
       .subscribe(result => {
         const index = this.questionnaire.questions.indexOf(question);
         this.questionnaire.questions.splice(index, 1);
+        this.refressQuestions();
       }, error => {
         console.log(error);
       });
@@ -70,5 +85,39 @@ export class QuestionnaireDetailsComponent implements OnInit {
     this.questionnaireService.show(id).subscribe(() => {
       this.questionnaire.visibleToGroup = true;
     }, error => {});
+  }
+
+  onSort({column, direction}: SortEvent) {
+    this.headers.forEach(header => {
+      if (header.sortable !== column) {
+        header.direction = '';
+      }
+    });
+
+    this.sortColumn = column;
+    this.sortDirection = direction;
+
+    this.refressQuestions();
+  }
+
+  refressQuestions() {
+    let sortResult = this.sort(this.sortColumn, this.sortDirection);
+    sortResult = sortResult.slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize);
+    this.questions = sortResult;
+  }
+
+  sort(column: string, direction: string): QuestionHeaderDto[] {
+    if (direction === '' || column === '') {
+      return this.questionnaire.questions;
+    } else {
+      return [...this.questionnaire.questions].sort((a, b) => {
+        const res = this.compare(a[column], b[column]);
+        return direction === 'asc' ? res : -res;
+      });
+    }
+  }
+
+  compare(v1: string | number, v2: string | number ) {
+    return v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
   }
 }

@@ -2,17 +2,15 @@
 <table class="table mt-5">
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">Group Name</th>
-        <th scope="col">Group Created</th>
-        <th scope="col">Date</th>
-        <th scope="col">Administrator</th>
+        <th scope="col" sortable="groupName" (sort)="onSort($event)">Group Name</th>
+        <th scope="col" sortable="groupCreated" (sort)="onSort($event)">Group Created</th>
+        <th scope="col" sortable="date" (sort)="onSort($event)">Date</th>
+        <th scope="col" sortable="adminName" (sort)="onSort($event)">Administrator</th>
         <th scope="col">Status</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let invitation of invitations">
-        <th scope="row"></th>
         <td>{{invitation.groupName}}</td>
         <td>{{invitation.groupCreated | date: 'yyyy-MM-dd'}}</td>
         <td>{{invitation.date | date: 'yyyy-MM-dd'}}</td>
@@ -32,3 +30,14 @@
       </tr>
     </tbody>
   </table>
+  <div class="d-flex justify-content-between">
+    <ngb-pagination
+      [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="refressInvitations()">
+    </ngb-pagination>
+
+    <select class="custom-select ml-2" style="width: auto" name="pageSize" [(ngModel)]="pageSize" (ngModelChange)="refressInvitations()">
+      <option [ngValue]="2">2 items per page</option>
+      <option [ngValue]="4">4 items per page</option>
+      <option [ngValue]="10">10 items per page</option>
+    </select>
+  </div>

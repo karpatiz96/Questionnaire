@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '../../shared/services/alert.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { QuestionnaireStartDto } from '../models/questionnaireStartDto';
 import { UserQuestionnaireService } from '../services/userQuestionnaireService';
 
@@ -24,6 +25,7 @@ export class QuestionnaireStartComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private userQuestionnaireService: UserQuestionnaireService,
+    private errorHandlerService: ErrorHandlerService,
     private alertService: AlertService) { }
 
   ngOnInit() {
@@ -43,6 +45,7 @@ export class QuestionnaireStartComponent implements OnInit {
     this.userQuestionnaireService.start(this.questionnaire.id).subscribe(result => {
       this.router.navigate(['../answer'], { relativeTo: this.route });
     }, error => {
+      this.errorHandlerService.handleError(error);
       this.alertService.error(error.error.message, {id: 'alert-1'});
     });
   }

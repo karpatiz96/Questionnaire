@@ -5,7 +5,7 @@ import { QuestionnaireRoutingModule } from './questionnaire-routing.module';
 import { QuestionnaireStartComponent } from './questionnaire-start/questionnaire-start.component';
 import { QuestionAnswerComponent } from './question-answer/question-answer.component';
 import { QuestionnaireAnswerComponent } from './questionnaire-answer/questionnaire-answer.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuestionnaireResultComponent } from './questionnaire-result/questionnaire-result.component';
 import { QuestionnaireResultAdminComponent } from './questionnaire-result-admin/questionnaire-result-admin.component';
 import { QuestionAnswerEditComponent } from './question-answer-edit/question-answer-edit.component';
@@ -42,6 +42,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
+    NgbModule,
     QuestionnaireRoutingModule,
     SharedModule
   ]
