@@ -57,6 +57,7 @@ namespace Questionnaire.Bll.Services
         new QuestionnaireHeaderDto
         {
             Id = q.Id,
+            UserQuestionnaireId = -1,
             Title = q.Name,
             Begining = q.Begining,
             Finish = q.Finish,
@@ -118,16 +119,42 @@ namespace Questionnaire.Bll.Services
             return questionnaire;
         }
 
-        public async Task<IEnumerable<QuestionnaireHeaderDto>> GetQuestionnaires(int groupId, string userId)
+        public async Task<IEnumerable<QuestionnaireHeaderDto>> GetQuestionnaires(string userId, QuestionnaireListQueryDto queryDto)
         {
-            var questionnaires = await _dbContext.QuestionnaireSheets
+            var userGroup = await _dbContext.UserGroups
+                .Where(g => g.UserId == userId && g.GroupId == queryDto.GroupId)
+                .FirstOrDefaultAsync();
+
+            if (userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
+            var questionnaires = _dbContext.QuestionnaireSheets
                 .Include(q => q.Group)
-                    .ThenInclude(g => g.UserGroups)
-                .Where(q => q.GroupId == groupId && q.Group.UserGroups.Any(ug => ug.UserId == userId))
+                .Where(q => q.GroupId == queryDto.GroupId);
+
+            if (queryDto.From != null)
+                questionnaires = questionnaires.Where(q => q.Begining >= queryDto.From);
+            if(queryDto.To != null)
+                questionnaires = questionnaires.Where(q => q.Finish <= queryDto.To);
+            if (!queryDto.Visible)
+                questionnaires = questionnaires.Where(q => q.VisibleToGroup);
+
+            var result = await questionnaires.OrderByDescending(q => q.Begining)
                 .Select(QuestionnaireHeaderSelector)
                 .ToListAsync();
 
-            return questionnaires;
+            foreach (var questionnaire in result)
+            {
+                var userQuestionnaire = await _dbContext.UserQuestionnaires
+                    .Where(u => u.UserId == userId && u.QuestionnaireSheetId == questionnaire.Id)
+                    .FirstOrDefaultAsync();
+
+                questionnaire.UserQuestionnaireId = userQuestionnaire?.Id ?? -1;
+            }
+
+            return result;
         }
 
         public async Task<QuestionnaireDto> UpdateQuestionnaire(string userId, QuestionnaireDto questionnaireDto)

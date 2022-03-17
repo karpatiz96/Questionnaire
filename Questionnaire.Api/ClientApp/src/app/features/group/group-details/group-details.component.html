@@ -20,12 +20,40 @@
         </div>
     </div>
 </div>
-<h4 class="mt-5">Questionnaires</h4>
-<div class="row mt-3" *ngIf="group.groupRole === 'Admin'">
-    <a class="btn btn-success offset-8" [routerLink]="['/questionnaire/add', group.id]">New Questionnaire</a>    
+<div class="row mt-3 d-flex justify-content-between">
+    <h4 class="ml-3">Questionnaires</h4>
+    <div *ngIf="group.groupRole === 'Admin'">
+        <a class="btn btn-success" [routerLink]="['/questionnaire/add', group.id]">New Questionnaire</a>    
+    </div>
 </div>
-<div class="row mt-4">
-    <div class="col-sm-12" *ngFor="let questionnaire of group.questionnaires">
+<form [formGroup]="questionnaireForm" (ngSubmit)="searchQuestionnaires()" class="mt-2 ml-2">
+    <div class="form-row d-flex align-items-end">
+        <div class="col-sm-3 my-1">
+            <label for="from">From</label>
+            <input type="date" formControlName="from" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.from.errors }" />
+        </div>
+        <div class="col-sm-3 my-1">
+            <label for="to">To</label>
+            <input type="date" formControlName="to" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.to.errors }" />
+        </div>
+        <div class="col-sm-1 my-1">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="visible" formControlName="visible">
+                <label class="form-check-label" for="visible">
+                  Visible
+                </label>
+              </div>
+        </div>
+        <div class="col-sm-1 my-1">
+            <button [disabled]="loading" class="btn btn-success">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Search
+            </button>
+        </div>
+    </div>
+</form>
+<div class="row">
+    <div class="col-sm-12" *ngFor="let questionnaire of questionnaires">
         <div class="card mt-4" *ngIf="group.groupRole === 'Admin' || questionnaire.visibleToGroup">
         <div class="card-body">
             <h4>{{questionnaire.title}}</h4>
@@ -52,4 +80,15 @@
         </div>
         </div>
     </div>
+</div>
+<div class="d-flex justify-content-left mt-4">
+    <ngb-pagination
+      [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="refressQuestionnaires()">
+    </ngb-pagination>
+
+    <select class="custom-select ml-2" style="width: auto" name="pageSize" [(ngModel)]="pageSize" (ngModelChange)="refressQuestionnaires()">
+      <option [ngValue]="2">2 items per page</option>
+      <option [ngValue]="4">4 items per page</option>
+      <option [ngValue]="10">10 items per page</option>
+    </select>
 </div>

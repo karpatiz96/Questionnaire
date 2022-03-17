@@ -31,22 +31,11 @@ namespace Questionnaire.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<QuestionnaireHeaderDto>>> GetQuestionnaires(int groupId)
+        public async Task<ActionResult<IEnumerable<QuestionnaireHeaderDto>>> GetQuestionnaires([FromQuery] QuestionnaireListQueryDto queryDto)
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var questionnairesDto = await _questionnaireService.GetQuestionnaires(groupId, userId);
-
-            if (questionnairesDto == null)
-            {
-                return NotFound();
-            }
+            var questionnairesDto = await _questionnaireService.GetQuestionnaires(userId, queryDto);
 
             return Ok(questionnairesDto);
         }

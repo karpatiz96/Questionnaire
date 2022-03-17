@@ -10,7 +10,7 @@ namespace Questionnaire.Bll.IServices
 {
     public interface IQuestionnaireService
     {
-        Task<IEnumerable<QuestionnaireHeaderDto>> GetQuestionnaires(int groupId, string userId);
+        Task<IEnumerable<QuestionnaireHeaderDto>> GetQuestionnaires(string userId, QuestionnaireListQueryDto queryDto);
 
         Task<QuestionnaireDetailsDto> GetQuestionnaire(int questionnaireId);
 

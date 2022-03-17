@@ -26,16 +26,17 @@ namespace Questionnaire.Bll.Services
             GroupRole = "User",
             LastPost = DateTime.UtcNow, //To be updated
             Members = g.UserGroups.Count,
-            Questionnaires = g.QuestionnaireSheets.Select<QuestionnaireSheet, QuestionnaireHeaderDto>(q => 
-            new QuestionnaireHeaderDto {
-                Id = q.Id,
-                UserQuestionnaireId = -1,
-                Title = q.Name,
-                Begining = q.Begining,
-                Finish = q.Finish,
-                Created = q.Created,
-                VisibleToGroup = q.VisibleToGroup
-            }).ToList()
+            Questionnaires = g.QuestionnaireSheets.Where(q => q.VisibleToGroup).OrderByDescending(q => q.Begining)
+            .Select<QuestionnaireSheet, QuestionnaireHeaderDto>(q => 
+                new QuestionnaireHeaderDto {
+                    Id = q.Id,
+                    UserQuestionnaireId = -1,
+                    Title = q.Name,
+                    Begining = q.Begining,
+                    Finish = q.Finish,
+                    Created = q.Created,
+                    VisibleToGroup = q.VisibleToGroup
+                }).ToList()
         };
 
         public static Expression<Func<Group, GroupHeaderDto>> GroupHeaderSelector { get; } = g => new GroupHeaderDto
