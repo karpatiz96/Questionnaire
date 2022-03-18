@@ -2,6 +2,7 @@ import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { SortableDirective, SortDirection, SortEvent } from '../../shared/directives/sortable.directive';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { QuestionType } from '../models/questionnaireQuestionDto';
 import { QuestionnaireResultDto, UserQuestionAnswerHeaderDto } from '../models/result/questionnaireResultDto';
 import { UserQuestionnaireService } from '../services/userQuestionnaireService';
@@ -38,32 +39,9 @@ export class QuestionnaireResultComponent implements OnInit {
   sortDirection: SortDirection = '';
   total = 0;
 
-  /*private _answers = new BehaviorSubject<UserQuestionAnswerHeaderDto[]>([]);
-  private _page = 1;
-  private _pageSize = 4;
-  private _sortColumn = '';
-  private _sortDirection: SortDirection = '';
-  private _total = new BehaviorSubject<Number>(0);
-
-  get answers() { return this._answers.asObservable(); }
-  get page() { return this._page; }
-  set page(page: number) {
-    this._page = page;
-    this.onSort({column: this.sortColumn, direction: this.sortDirection});
-  }
-  get pageSize() { return this._pageSize; }
-  set pageSize(pageSize: number) {
-    this._pageSize = pageSize;
-    this.onSort({column: this.sortColumn, direction: this._sortDirection});
-  }
-  get sortColumn() { return this._sortColumn; }
-  set sortColumn(column: string) { this._sortColumn = column; }
-  get sortDirection() { return this._sortDirection; }
-  set sortDirection(direction: SortDirection) { this._sortDirection = direction; }
-  get total() { return this._total.asObservable(); }*/
-
   constructor(private route: ActivatedRoute,
-    private userQuestionnaireService: UserQuestionnaireService) { }
+    private userQuestionnaireService: UserQuestionnaireService,
+    private errorHandlerService: ErrorHandlerService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -80,7 +58,7 @@ export class QuestionnaireResultComponent implements OnInit {
         this.total = result.answers.length;
         this.refressAnswers();
     }, error => {
-      console.log(error);
+      this.errorHandlerService.handleError(error);
     });
   }
 

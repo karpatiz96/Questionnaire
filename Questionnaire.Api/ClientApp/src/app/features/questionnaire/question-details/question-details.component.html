@@ -1,5 +1,8 @@
 <h2>Question Details</h2>
 <div class="row mt-4">
+  <app-alert id="alert-1" class="col-sm-6"></app-alert>
+</div>
+<div class="row mt-4">
     <div class="col-sm-12">
         <dl class="row mt-4">
             <dt class="col-sm-2"><h5>Title:</h5></dt>
@@ -30,7 +33,6 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Number</th>
             <th scope="col">Title</th>
             <th scope="col">Type</th>
             <th scope="col">Value</th>
@@ -39,7 +41,6 @@
         <tbody>
           <tr *ngFor="let answer of question.answers">
             <th scope="row"></th>
-            <td></td>
             <td>{{answer.name}}</td>
             <td>{{AnswerTypes[answer.type]}}</td>
             <td>{{answer.value}}</td>
@@ -48,7 +49,6 @@
             <td><a class="btn btn-outline-primary" *ngIf="!question.visibleToGroup" (click)="delete(answer)">Delete</a></td>
           </tr>
           <tr>
-            <td></td>
             <td></td>
             <td></td>
             <td></td>

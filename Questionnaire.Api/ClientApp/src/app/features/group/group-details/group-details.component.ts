@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { GroupDetailsDto } from '../models/groupDetailsDto';
 import { QuestionnaireHeaderDto } from '../models/questionnaireHeaderDto';
 import { GroupService } from '../services/group.service';
@@ -38,13 +39,14 @@ export class GroupDetailsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private groupService: GroupService,
-    private questionnaireService: QuestionnaireService) { }
+    private questionnaireService: QuestionnaireService,
+    private errorHandlerSerive: ErrorHandlerService) { }
 
   ngOnInit() {
     this.questionnaireForm = this.formBuilder.group({
       to: [null],
       from: [null],
-      visible: [false]
+      visible: [true]
     });
 
     this.route.params.subscribe(params => {
@@ -53,13 +55,12 @@ export class GroupDetailsComponent implements OnInit {
   }
 
   loadGroup(id: number) {
-    this.groupService.getById(id)
-    .pipe(first()).subscribe(result => {
+    this.groupService.getById(id).subscribe(result => {
       this.group = result;
       this.total = result.questionnaires.length;
       this.refressQuestionnaires();
     }, error => {
-
+      this.errorHandlerSerive.handleError(error);
     });
   }
 
@@ -83,6 +84,7 @@ export class GroupDetailsComponent implements OnInit {
       this.refressQuestionnaires();
     }, error => {
       this.loading = false;
+      this.errorHandlerSerive.handleError(error);
     });
   }
 

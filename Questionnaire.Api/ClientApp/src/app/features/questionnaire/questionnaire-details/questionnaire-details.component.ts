@@ -6,6 +6,8 @@ import { QuestionHeaderDto } from '../models/questionnaires/questionHeaderDto';
 import { QuestionnaireDetailsDto } from '../models/questionnaires/questionnaireDetailsDto';
 import { QuestionService } from '../services/question.service';
 import { QuestionnaireService } from '../services/questionnaire.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
+import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-questionnaire-details',
@@ -42,7 +44,9 @@ export class QuestionnaireDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private questionnaireService: QuestionnaireService,
     private questionService: QuestionService,
-    private confirmationDialogService: ConfirmationDialogService) { }
+    private confirmationDialogService: ConfirmationDialogService,
+    private errorHandlerService: ErrorHandlerService,
+    private alertService: AlertService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -58,7 +62,7 @@ export class QuestionnaireDetailsComponent implements OnInit {
       this.total = this.questionnaire.questions.length;
       this.refressQuestions();
     }, error => {
-      console.log(error.error.message);
+      this.errorHandlerService.handleError(error);
     });
   }
 
@@ -70,7 +74,8 @@ export class QuestionnaireDetailsComponent implements OnInit {
         this.questionnaire.questions.splice(index, 1);
         this.refressQuestions();
       }, error => {
-        console.log(error);
+        this.errorHandlerService.handleError(error);
+        this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
       });
     }).catch(() => {});
   }
@@ -78,13 +83,19 @@ export class QuestionnaireDetailsComponent implements OnInit {
   hide(id: number) {
     this.questionnaireService.hide(id).subscribe(() => {
       this.questionnaire.visibleToGroup = false;
-    }, error => {});
+    }, error => {
+      this.errorHandlerService.handleError(error);
+      this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+    });
   }
 
   show(id: number) {
     this.questionnaireService.show(id).subscribe(() => {
       this.questionnaire.visibleToGroup = true;
-    }, error => {});
+    }, error => {
+      this.errorHandlerService.handleError(error);
+      this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+    });
   }
 
   onSort({column, direction}: SortEvent) {

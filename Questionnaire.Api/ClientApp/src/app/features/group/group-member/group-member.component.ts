@@ -2,7 +2,9 @@ import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { SortableDirective, SortDirection, SortEvent } from '../../shared/directives/sortable.directive';
+import { AlertService } from '../../shared/services/alert.service';
 import { ConfirmationDialogService } from '../../shared/services/confirmationDialog.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { GroupMemberDto } from '../models/groupMemberDto';
 import { InvitationGroupDto } from '../models/invitationGroupDto';
 import { UserGroupDto } from '../models/userGroupDto';
@@ -42,7 +44,9 @@ export class GroupMemberComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private groupService: GroupService,
-    private confirmationDialogService: ConfirmationDialogService) { }
+    private confirmationDialogService: ConfirmationDialogService,
+    private errorHandlerService: ErrorHandlerService,
+    private alertService: AlertService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -51,13 +55,14 @@ export class GroupMemberComponent implements OnInit {
   }
 
   loadGroupMembers(id: number) {
-    this.groupService.getMembers(id)
-    .pipe(first()).subscribe(result => {
+    this.groupService.getMembers(id).subscribe(result => {
       this.group = result;
       this.users = result.users;
       this.invitations = result.invitations;
       this.userTotal = result.users.length;
       this.invitationTotal = result.invitations.length;
+    }, error => {
+      this.errorHandlerService.handleError(error);
     });
   }
 

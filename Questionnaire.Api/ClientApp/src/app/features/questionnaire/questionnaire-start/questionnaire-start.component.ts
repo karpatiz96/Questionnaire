@@ -38,6 +38,8 @@ export class QuestionnaireStartComponent implements OnInit {
   loadQuestionnaire(id: number) {
     this.userQuestionnaireService.getStartById(id).subscribe(result => {
       this.questionnaire = result;
+    }, error => {
+      this.errorHandlerService.handleError(error);
     });
   }
 

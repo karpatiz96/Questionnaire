@@ -22,8 +22,6 @@ namespace Questionnaire.Bll.Services
             _dbContext = dbContext;
         }
 
-        
-
         public async Task CreateUserQuestionnaire(string userId, int questionnaireId)
         {
             var user = await _dbContext.Users.Where(u => u.Id == userId)

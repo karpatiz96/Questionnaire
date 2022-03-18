@@ -4,6 +4,7 @@ import { ErrorHandlerService } from '../../shared/services/error-handler.service
 import { SortableDirective, SortDirection, SortEvent } from '../../shared/directives/sortable.directive';
 import { QuestionnaireResultHeaderDto, QuestionnaireResultListDto } from '../models/result/questionnaireResultListDto';
 import { UserQuestionnaireService } from '../services/userQuestionnaireService';
+import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-questionnaire-result-admin',

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertService } from '../../shared/services/alert.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { QuestionnaireQuestionDto, QuestionType } from '../models/questionnaireQuestionDto';
 import { UserQuestionnaireAnswerDto } from '../models/userQuestionnaireAnswerDto';
 import { UserQuestionnaireService } from '../services/userQuestionnaireService';
@@ -35,7 +37,9 @@ export class QuestionnaireAnswerComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private userQuestionnaireService: UserQuestionnaireService) { }
+    private userQuestionnaireService: UserQuestionnaireService,
+    private errorHandlerService: ErrorHandlerService,
+    private alertService: AlertService) { }
 
   ngOnInit() {
     this.questionnaireAnswerForm = this.formBuilder.group({
@@ -60,7 +64,8 @@ export class QuestionnaireAnswerComponent implements OnInit {
         }
       }
     }, error => {
-      console.log(error);
+      this.errorHandlerService.handleError(error);
+      this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1'});
     });
   }
 
@@ -97,7 +102,9 @@ export class QuestionnaireAnswerComponent implements OnInit {
           this.next();
         },
         error => {
-          console.error(error);
+          this.errorHandlerService.handleError(error);
+          this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1'});
+          this.next();
           this.loading = false;
       });
   }

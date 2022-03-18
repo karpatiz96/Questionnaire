@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { GroupService } from '../services/group.service';
 
 @Component({
@@ -19,7 +20,8 @@ export class GroupEditComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private groupService: GroupService) { }
+    private groupService: GroupService,
+    private errorHandlerService: ErrorHandlerService) { }
 
   ngOnInit() {
     this.groupForm = this.formBuilder.group({
@@ -39,6 +41,8 @@ export class GroupEditComponent implements OnInit {
           name: result.name,
           description: result.description
         });
+      }, error => {
+        this.errorHandlerService.handleError(error);
       });
 
     this.groupId = id;
@@ -62,8 +66,7 @@ export class GroupEditComponent implements OnInit {
           this.router.navigate(['/group']);
         },
         error => {
-          this.error = error;
-          console.error(error);
+          this.errorHandlerService.handleError(error);
           this.loading = false;
       });
   }

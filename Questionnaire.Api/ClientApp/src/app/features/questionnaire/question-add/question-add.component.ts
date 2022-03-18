@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertService } from '../../shared/services/alert.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { QuestionType } from '../models/questionnaires/questionHeaderDto';
 import { QuestionService } from '../services/question.service';
 
@@ -21,7 +23,9 @@ export class QuestionAddComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private questionService: QuestionService) { }
+    private questionService: QuestionService,
+    private errorHandlerSerivce: ErrorHandlerService,
+    private alertService: AlertService) { }
 
   ngOnInit() {
     this.questionForm = this.formBuilder.group({
@@ -55,8 +59,8 @@ export class QuestionAddComponent implements OnInit {
           this.router.navigate(['/questionnaire', this.questionnaireId]);
         },
         error => {
-          this.error = error;
-          console.error(error);
+          this.errorHandlerSerivce.handleError(error);
+          this.alertService.error(this.errorHandlerSerivce.errorMessage, { id: 'alert-1' });
           this.loading = false;
           this.submitted = false;
         });

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertService } from '../../shared/services/alert.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { AnswerType } from '../models/answers/answerDto';
 import { AnswerService } from '../services/answer.service';
 import { QuestionService } from '../services/question.service';
@@ -24,7 +26,9 @@ export class AnswerAddComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private questionService: QuestionService,
-    private answerService: AnswerService) {
+    private answerService: AnswerService,
+    private errorHandlerService: ErrorHandlerService,
+    private alertService: AlertService) {
      }
 
   ngOnInit() {
@@ -58,8 +62,8 @@ export class AnswerAddComponent implements OnInit {
           this.router.navigate(['/questionnaire/question', this.questionId]);
         },
         error => {
-          this.error = error;
-          console.error(error);
+          this.errorHandlerService.handleError(error);
+          this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
           this.loading = false;
           this.submitted = false;
         });

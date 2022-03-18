@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QuestionType } from '../../questionnaire/models/questionnaires/questionHeaderDto';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { AnswerDetailsDto } from '../models/answers/answerDetailsDto';
 import { AnswerType } from '../models/answers/answerDto';
 import { AnswerService } from '../services/answer.service';
@@ -26,7 +27,8 @@ export class AnswerDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private answerService: AnswerService) { }
+    private answerService: AnswerService,
+    private errorHandlerSerive: ErrorHandlerService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -38,6 +40,8 @@ export class AnswerDetailsComponent implements OnInit {
   loadAnswer(id: number) {
     this.answerService.getById(id).subscribe(result => {
       this.answer = result;
+    }, error => {
+      this.errorHandlerSerive.handleError(error);
     });
   }
 

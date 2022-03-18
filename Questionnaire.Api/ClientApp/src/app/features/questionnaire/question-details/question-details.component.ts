@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QuestionType } from '../../questionnaire/models/questionnaires/questionHeaderDto';
+import { AlertService } from '../../shared/services/alert.service';
 import { ConfirmationDialogService } from '../../shared/services/confirmationDialog.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { AnswerHeaderDto } from '../models/questions/answerHeaderDto';
 import { QuestionDetailsDto } from '../models/questions/questionDetailsDto';
 import { AnswerService } from '../services/answer.service';
@@ -34,7 +36,9 @@ export class QuestionDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private questionService: QuestionService,
     private answerService: AnswerService,
-    private confirmationDialogService: ConfirmationDialogService) { }
+    private confirmationDialogService: ConfirmationDialogService,
+    private errorHandlerSerivce: ErrorHandlerService,
+    private alertService: AlertService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -46,6 +50,8 @@ export class QuestionDetailsComponent implements OnInit {
   loadQuestion(id: number) {
     this.questionService.getById(id).subscribe(result => {
       this.question = result;
+    }, error => {
+      this.errorHandlerSerivce.handleError(error);
     });
   }
 
@@ -57,7 +63,8 @@ export class QuestionDetailsComponent implements OnInit {
           const index = this.question.answers.indexOf(answer);
           this.question.answers.splice(index, 1);
         }, error => {
-
+          this.errorHandlerSerivce.handleError(error);
+          this.alertService.error(this.errorHandlerSerivce.errorMessage, { id: 'alert-1' });
         });
       }
     }).catch(() => {});

@@ -47,12 +47,7 @@ namespace Questionnaire.Api.Controllers
 
             var userGroup = await _questionnaireService.GetUserGroupByQuestionnaireAndUser(userId, id);
 
-            if(userGroup == null)
-            {
-
-            }
-
-            if(userGroup.Role != "Admin")
+            if(userGroup == null || userGroup.Role != "Admin")
             {
                 throw new UserNotAdminException("User is not admin in group!");
             }

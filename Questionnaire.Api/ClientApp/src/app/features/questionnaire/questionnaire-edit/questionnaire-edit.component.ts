@@ -2,6 +2,8 @@ import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertService } from '../../shared/services/alert.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { QuestionnaireService } from '../services/questionnaire.service';
 
 @Component({
@@ -20,7 +22,9 @@ export class QuestionnaireEditComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private questionnaireService: QuestionnaireService) { }
+    private questionnaireService: QuestionnaireService,
+    private errorHandlerService: ErrorHandlerService,
+    private alertService: AlertService) { }
 
     ngOnInit() {
       this.questionnaireForm = this.formBuilder.group({
@@ -44,6 +48,9 @@ export class QuestionnaireEditComponent implements OnInit {
           begining: formatDate(result.begining, 'yyyy-MM-ddThh:mm', 'en_US'),
           finish: formatDate(result.finish, 'yyyy-MM-ddThh:mm', 'en_US')
         });
+      }, error => {
+        this.errorHandlerService.handleError(error);
+        this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
       });
     }
 
@@ -65,8 +72,8 @@ export class QuestionnaireEditComponent implements OnInit {
             this.router.navigate(['/questionnaire', this.questionnaireId]);
           },
           error => {
-            this.error = error;
-            console.error(error);
+            this.errorHandlerService.handleError(error);
+            this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
             this.loading = false;
         });
     }

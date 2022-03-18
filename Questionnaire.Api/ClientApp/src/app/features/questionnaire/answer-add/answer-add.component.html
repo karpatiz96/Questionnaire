@@ -43,5 +43,7 @@
         </button>
         <a [routerLink]="['/questionnaire/question', questionId]" class="btn btn-link">Cancle</a>
     </div>
-    <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+    <div class="row mt-3">
+        <app-alert id="alert-1" class="col-sm-6"></app-alert>
+    </div>
 </form>

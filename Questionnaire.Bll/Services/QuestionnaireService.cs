@@ -125,9 +125,9 @@ namespace Questionnaire.Bll.Services
                 .Where(g => g.UserId == userId && g.GroupId == queryDto.GroupId)
                 .FirstOrDefaultAsync();
 
-            if (userGroup == null || userGroup.Role != "Admin")
+            if (userGroup == null)
             {
-                throw new UserNotAdminException("User is not admin in group!");
+                throw new UserGroupNotFoundExcetpion("User is not member of Group!");
             }
 
             var questionnaires = _dbContext.QuestionnaireSheets
@@ -138,7 +138,7 @@ namespace Questionnaire.Bll.Services
                 questionnaires = questionnaires.Where(q => q.Begining >= queryDto.From);
             if(queryDto.To != null)
                 questionnaires = questionnaires.Where(q => q.Finish <= queryDto.To);
-            if (!queryDto.Visible)
+            if (!queryDto.Visible && userGroup.Role == "Admin")
                 questionnaires = questionnaires.Where(q => q.VisibleToGroup);
 
             var result = await questionnaires.OrderByDescending(q => q.Begining)
