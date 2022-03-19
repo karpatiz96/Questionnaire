@@ -63,18 +63,18 @@
                 <dt class="col-sm-3">Finish:</dt>
                 <dd class="col-sm-3">{{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</dd>
             </dl>
-            <div class="row mt-4">
-                <div class="col-sm-1 offset-7" *ngIf="group.groupRole === 'Admin'">
-                    <a class="btn btn-primary" [routerLink]="['/questionnaire', questionnaire.id]">Details</a>
-                </div>
-                <div class="col-sm-1" *ngIf="questionnaire.visibleToGroup && questionnaire.userQuestionnaireId <= 0">
-                    <a class="btn btn-primary" [routerLink]="['/questionnaire', questionnaire.id, 'start']">Start</a>
+            <div class="row mt-4 d-flex flex-row-reverse">
+                <div class="col-sm-2" *ngIf="group.groupRole === 'Admin'">
+                    <a class="btn btn-success" [routerLink]="['/questionnaire', questionnaire.id, 'list']">Result List</a>
                 </div>
                 <div class="col-sm-1" *ngIf="questionnaire.userQuestionnaireId > 0">
                     <a class="btn btn-success" [routerLink]="['/questionnaire/result', questionnaire.userQuestionnaireId]">Result</a>
                 </div>
-                <div class="col-sm-2" *ngIf="group.groupRole === 'Admin'">
-                    <a class="btn btn-success" [routerLink]="['/questionnaire', questionnaire.id, 'list']">Result List</a>
+                <div class="col-sm-1" *ngIf="questionnaire.visibleToGroup && questionnaire.userQuestionnaireId <= 0">
+                    <a class="btn btn-primary" [routerLink]="['/questionnaire', questionnaire.id, 'start']">Start</a>
+                </div>
+                <div class="col-sm-1" *ngIf="group.groupRole === 'Admin'">
+                    <a class="btn btn-primary" [routerLink]="['/questionnaire', questionnaire.id]">Details</a>
                 </div>
             </div>
         </div>

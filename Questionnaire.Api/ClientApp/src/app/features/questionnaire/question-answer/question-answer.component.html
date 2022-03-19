@@ -48,13 +48,16 @@
                 </div>
             </div>
             <div *ngSwitchCase="questionType.ConcreteText" class="form-row">
-                <div class="form-group col-sm-4">
+                <div class="form-group col-sm-6">
                     <label for="concreteText"><b>Answer: </b></label>
                     <input type="text" class="form-control" value="{{question.userAnswer}}" id="concreteText" />
                 </div>
-                <div class="form-group col-sm-4">
-                    <label for="correctAnswer"><b>Correct Answer: </b></label>
-                    <input type="text" class="form-control" value="" id="correctAnswer" />
+                <div class="w-100"></div>
+                <div class="col-sm-6 mt-3">
+                    <label><b>Concrete Answers: </b></label>
+                    <ul class="list-group" *ngFor="let answer of question.answers">
+                        <li class="list-group-item">{{answer.name}}</li>
+                    </ul>
                 </div>
             </div>
         </div>
