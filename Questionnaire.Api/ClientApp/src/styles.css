@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import "~bootstrap-icons/font/bootstrap-icons.css";
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;
@@ -25,18 +25,29 @@ th[sortable] {
   -webkit-user-select: none;
 }
 
-th[sortable].desc:before, th[sortable].asc:before {
+th[sortable].desc:after {
   content: '';
   display: block;
-  background: url('assets/arrow-up.svg') no-repeat;
-  background-size: 22px;
-  width: 22px;
-  height: 22px;
-  float: left;
-  margin-left: -22px;
+  background: url('assets/sort-down-solid.svg') no-repeat;
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  float: right;
+  margin-left: -20px;
 }
 
-th[sortable].desc:before {
+th[sortable].asc:after {
+  content: '';
+  display: block;
+  background: url('assets/sort-up-solid.svg') no-repeat;
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  float: right;
+  margin-left: -20px;
+}
+
+/*th[sortable].desc:before {
   transform: rotate(180deg);
   -ms-transform: rotate(180deg);
-}
+}*/
