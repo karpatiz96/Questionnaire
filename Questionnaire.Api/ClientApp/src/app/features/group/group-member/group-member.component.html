@@ -14,8 +14,8 @@
       <tr *ngFor="let user of users">
         <td>{{user.name}}</td>
         <td>{{user.role}}</td>
-        <td><button class="btn btn-outline-danger" (click)='removeUser(user.id)'>Remove</button></td>
-        <td><button class="btn btn-outline-danger" (click)='updateUser(user.id)'>Make Admin</button></td>
+        <td><button class="btn btn-outline-danger" *ngIf="!user.main" (click)='removeUser(user.id)'>Remove</button></td>
+        <td><button class="btn btn-outline-danger" *ngIf="user.role === 'User'" (click)='updateUser(user.id)'>Make Admin</button></td>
       </tr>
     </tbody>
   </table>
@@ -45,7 +45,7 @@
         <td>{{invitation.userName}}</td>
         <td>{{invitation.date | date: 'yyyy-MM-dd'}}</td>
         <td>{{Invitations[invitation.status]}}</td>
-        <td><button class="btn btn-outline-danger" (click)='removeInvitaton(invitation.id)'>Remove</button></td>
+        <td *ngIf="invitation.status === 0"><button class="btn btn-outline-danger" (click)='removeInvitaton(invitation.id)'>Remove</button></td>
       </tr>
     </tbody>
   </table>

@@ -22,4 +22,5 @@ export interface UserQuestionAnswerHeaderDto {
     points: number;
     evaluated: boolean;
     finished: Date;
+    completed: boolean;
 }

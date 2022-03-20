@@ -24,5 +24,7 @@ namespace Questionnaire.Bll.Dtos.ResultDtos
         public bool Evaluated { get; set; }
 
         public DateTime Finished { get; set; }
+
+        public bool Completed { get; set; }
     }
 }

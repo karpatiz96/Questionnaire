@@ -92,9 +92,12 @@ export class QuestionnaireResultComponent implements OnInit {
     }
   }
 
-  compare(v1: string | QuestionType, v2: string | QuestionType ) {
+  compare(v1: string | QuestionType | Date | number, v2: string | QuestionType | Date | number ) {
     return v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
   }
 
+  rowClass(answer: UserQuestionAnswerHeaderDto) {
+    return answer.evaluated ? 'text-success' : 'text-danger';
+  }
 }
 

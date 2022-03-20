@@ -11,6 +11,10 @@ export interface UserQuestionnaireAnswerDetailsDto {
     answerId: number;
     maximumPoints: number;
     points: number;
+    evaluated: boolean;
+    finished: Date;
+    completed: boolean;
+    userName: String;
     answers: QuestionAnswerResultDto[];
     role: string;
 }

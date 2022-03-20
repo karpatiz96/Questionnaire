@@ -23,23 +23,31 @@
 <div class="col-sm-12">
     <h4 class="row mt-4">Questions</h4>
     <div class="row mt-3">
-        <table class="table">
+        <table class="table table-striped">
+          <caption>Questions total: {{total}}</caption>
             <thead>
               <tr>
                 <th scope="col" sortable="name" (sort)="onSort($event)">Name</th>
                 <th scope="col" sortable="type" (sort)="onSort($event)">Type</th>
+                <th scope="col" sortable="maximumPoints" (sort)="onSort($event)">Maximum Points</th>
                 <th scope="col" sortable="points" (sort)="onSort($event)">Points</th>
-                <th scope="col" (sort)="onSort($event)">Finished</th>
-                <th scope="col" (sort)="onSort($event)">Evaluated</th>
+                <th scope="col" sortable="finished" (sort)="onSort($event)">Finished</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let answer of answers">
+              <tr *ngFor="let answer of answers" class="{{rowClass(answer)}}">
                 <td>{{answer.name}}</td>
                 <td>{{QuestionTypes[answer.type]}}</td>
-                <td>{{answer.maximumPoints}}/{{answer.points}}</td>
-                <td>{{answer.finished | date: 'yyyy-MM-dd hh:mm'}}</td>
-                <td>{{answer.evaluated}}</td>
+                <td>{{answer.maximumPoints}}</td>
+                <td>{{answer.points}}</td>
+                <td>
+                  <div *ngIf="answer.completed">
+                    {{answer.finished | date: 'yyyy-MM-dd hh:mm'}}
+                  </div>
+                  <div *ngIf="!answer.completed">
+                    Not Completed
+                  </div>
+                </td>
                 <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/result/question', answer.id]">Details</a></td>
               </tr>
             </tbody>

@@ -3,4 +3,5 @@ export interface UserGroupDto {
     userId: String;
     name: String;
     role: String;
+    main: boolean;
 }

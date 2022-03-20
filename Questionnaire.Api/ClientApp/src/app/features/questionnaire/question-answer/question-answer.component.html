@@ -1,13 +1,31 @@
 <h2>{{question.questionnaireTitle}}</h2>
 <div class="col-sm-12">
-    <div class="row mt-4">
-        <div class="col-sm-4"><h6>{{question.questionTitle}}</h6></div>
-        <div class="col-sm-4">Points: {{question.points}}/{{question.maximumPoints}}</div>
+    <div class="row mt-3">
+        <div class="col-sm-4"><h4>{{question.questionTitle}}</h4></div>
+        <div class="col-sm-2">Points: {{question.points}}/{{question.maximumPoints}}</div>
     </div>
-    <div class="row mt-4">
-        <div class="col-sm-8">{{question.description}}</div>
+    <dl class="row mt-3">
+        <dt class="col-sm-2">Solver:</dt>
+        <dd class="col-sm-2">{{question.userName}}</dd>
+        <dt class="col-sm-8"></dt>
+        <dt class="col-sm-2">Finished:</dt>
+        <dd class="col-sm-2">
+            <div *ngIf="question.completed">
+                {{question.finished | date: 'yyyy-MM-dd hh:mm'}}
+            </div>
+            <div *ngIf="!question.completed">
+                Not Completed
+            </div>
+        </dd>
+        <dt class="col-sm-8"></dt>
+        <dt class="col-sm-2">Evaluated:</dt>
+        <dd class="col-sm-2">{{question.evaluated ? 'Yes' : 'No'}}</dd>
+    </dl>
+    <h5>Description:</h5>
+    <div class="row mt-3">
+        <div class="col-sm-6 ml-5">{{question.description}}</div>
     </div>
-    <div class="mt-4">
+    <div class="mt-3">
         <div [ngSwitch]="question.type">
             <div *ngSwitchCase="questionType.TrueOrFalse" class="row">
                 <div class="col-sm-4">
@@ -62,9 +80,9 @@
             </div>
         </div>
     </div>
-    <div class="row mt-4" *ngIf="question.role === 'Admin'">
+    <div class="row mt-3" *ngIf="question.role === 'Admin'">
         <div class="col-sm-6">
-            <a class="btn btn-primary float-right" [routerLink]="['/questionnaire/result/question', userQuestionnaireAnswerId, 'edit']">Re-evaluate</a>
+            <a class="btn btn-outline-warning float-right" [routerLink]="['/questionnaire/result/question', userQuestionnaireAnswerId, 'edit']">Evaluate</a>
         </div>
     </div>
 </div>

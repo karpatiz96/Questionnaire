@@ -53,7 +53,8 @@ namespace Questionnaire.Bll.Services
             Id = g.Id,
             UserId = g.UserId,
             Name = g.User.UserName,
-            Role = g.Role
+            Role = g.Role,
+            Main = g.MainAdmin
         };
 
         public static Expression<Func<Invitation, InvitationGroupDto>> InvitationGroupSelector { get; } = g => new InvitationGroupDto

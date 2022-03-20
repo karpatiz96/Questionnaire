@@ -29,6 +29,14 @@ namespace Questionnaire.Bll.Dtos.ResultDtos
 
         public int Points { get; set; }
 
+        public string UserName { get; set; }
+
+        public bool Evaluated { get; set; }
+
+        public DateTime Finished { get; set; }
+
+        public bool Completed { get; set; }
+
         public ICollection<QuestionAnswerResultDto> Answers { get; set; }
     }
 }

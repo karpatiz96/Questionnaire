@@ -8,6 +8,7 @@ using Questionnaire.Dll.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,77 @@ namespace Questionnaire.Bll.Services
         {
             _dbContext = dbContext;
         }
+
+        public static Expression<Func<UserQuestionnaire, QuestionnaireResultDto>> SelectQuestionnaireResult { get; } = u =>
+        new QuestionnaireResultDto
+        {
+            Id = u.Id,
+            UserName = u.User.UserName,
+            Title = u.QuestionnaireSheet.Name,
+            Description = u.QuestionnaireSheet.Description,
+            Begining = u.QuestionnaireSheet.Begining,
+            Finish = u.QuestionnaireSheet.Finish,
+            Questions = u.UserQuestionnaireAnswers.Count,
+            Answers = u.UserQuestionnaireAnswers.Select(a => new UserQuestionAnswerHeaderDto
+            {
+                Id = a.Id,
+                Index = a.Question.Number,
+                Name = a.Question.Name,
+                Type = a.Question.Type,
+                Points = a.UserPoints,
+                MaximumPoints = a.Question.MaximumPoints,
+                Evaluated = a.AnswerEvaluated,
+                Finished = a.Completed,
+                Completed = a.QuestionCompleted
+            }).ToList(),
+            MaximumPoints = u.UserQuestionnaireAnswers.Sum(q => q.Question.MaximumPoints),
+            Points = u.UserQuestionnaireAnswers.Sum(q => q.UserPoints)
+        };
+
+        public static Expression<Func<QuestionnaireSheet, QuestionnaireResultListDto>> SelectQuestionnaireResultList { get; } = u => 
+        new QuestionnaireResultListDto
+        {
+            Id = u.Id,
+            Title = u.Name,
+            Description = u.Description,
+            Begining = u.Begining,
+            Finish = u.Finish,
+            Questions = u.Questions.Count,
+            Solved = u.UserQuestionnaires.Count,
+            Members = u.Group.UserGroups.Count,
+            Results = u.UserQuestionnaires.Select(q => new QuestionnaireResultHeaderDto
+            {
+                Id = q.Id,
+                UserName = q.User.UserName,
+                Points = q.UserQuestionnaireAnswers.Sum(a => a.UserPoints),
+                MaximumPoints = u.Questions.Sum(u => u.MaximumPoints)
+            }).ToList()
+        };
+
+        public static Expression<Func<UserQuestionnaireAnswer, UserQuestionnaireAnswerDetailsDto>> SelectUserQuestionnaireAnswerDetails { get; } = u =>
+        new UserQuestionnaireAnswerDetailsDto
+        {
+            Id = u.Id,
+            Role = "User",
+            QuestionnaireTitle = u.Question.QuestionnaireSheet.Name,
+            QuestionTitle = u.Question.Name,
+            Type = u.Question.Type,
+            Description = u.Question.Description,
+            MaximumPoints = u.Question.MaximumPoints,
+            Points = u.UserPoints,
+            UserName = u.UserQuestionnaire.User.UserName,
+            Evaluated = u.AnswerEvaluated,
+            Finished = u.Completed,
+            Completed = u.QuestionCompleted,
+            AnswerId = u.AnswerId ?? -1,
+            UserAnswer = u.UserAnswer,
+            Answers = u.Question.Answers.Select(a => new QuestionAnswerResultDto
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Correct = a.Type
+            }).ToList()
+        };
 
         public async Task CreateUserQuestionnaire(string userId, int questionnaireId)
         {
@@ -178,29 +250,7 @@ namespace Questionnaire.Bll.Services
                 .Include(u => u.UserQuestionnaireAnswers)
                     .ThenInclude(q => q.Question)
                 .Where(u => u.Id == userQuestionnaireId)
-                .Select(u => new QuestionnaireResultDto 
-                {
-                    Id = u.Id,
-                    UserName = u.User.UserName,
-                    Title = u.QuestionnaireSheet.Name,
-                    Description = u.QuestionnaireSheet.Description,
-                    Begining = u.QuestionnaireSheet.Begining,
-                    Finish = u.QuestionnaireSheet.Finish,
-                    Questions = u.UserQuestionnaireAnswers.Count,
-                    Answers = u.UserQuestionnaireAnswers.Select(a => new UserQuestionAnswerHeaderDto 
-                        {
-                            Id = a.Id,
-                            Index = a.Question.Number,
-                            Name = a.Question.Name,
-                            Type = a.Question.Type,
-                            Points = a.UserPoints,
-                            MaximumPoints = a.Question.MaximumPoints,
-                            Evaluated = a.AnswerEvaluated,
-                            Finished = a.Completed
-                        }).ToList(),
-                    MaximumPoints = u.UserQuestionnaireAnswers.Sum(q => q.Question.MaximumPoints),
-                    Points = u.UserQuestionnaireAnswers.Sum(q => q.UserPoints)
-                })
+                .Select(SelectQuestionnaireResult)
                 .FirstOrDefaultAsync();
 
             return userQuestionnaireResult;
@@ -217,24 +267,7 @@ namespace Questionnaire.Bll.Services
                 .Include(q => q.Group)
                     .ThenInclude(g => g.UserGroups)
                 .Where(q => q.Id == questionnaireId)
-                .Select(u => new QuestionnaireResultListDto
-                {
-                    Id = u.Id,
-                    Title = u.Name,
-                    Description = u.Description,
-                    Begining = u.Begining,
-                    Finish = u.Finish,
-                    Questions = u.Questions.Count,
-                    Solved = u.UserQuestionnaires.Count,
-                    Members = u.Group.UserGroups.Count,
-                    Results = u.UserQuestionnaires.Select(q => new QuestionnaireResultHeaderDto
-                    {
-                        Id = q.Id,
-                        UserName = q.User.UserName,
-                        Points = q.UserQuestionnaireAnswers.Sum(a => a.UserPoints),
-                        MaximumPoints = u.Questions.Sum(u => u.MaximumPoints)
-                    }).ToList()
-                })
+                .Select(SelectQuestionnaireResultList)
                 .FirstOrDefaultAsync();
 
             return questionnaireResultList;
@@ -263,26 +296,10 @@ namespace Questionnaire.Bll.Services
                     .ThenInclude(q => q.QuestionnaireSheet)
                 .Include(u => u.Question)
                     .ThenInclude(q => q.Answers)
+                .Include(u => u.UserQuestionnaire)
+                    .ThenInclude(q => q.User)
                 .Where(u => u.Id == userQuestionnaireAnswerId)
-                .Select(u => new UserQuestionnaireAnswerDetailsDto
-                {
-                    Id = u.Id,
-                    Role = "User",
-                    QuestionnaireTitle = u.Question.QuestionnaireSheet.Name,
-                    QuestionTitle = u.Question.Name,
-                    Type = u.Question.Type,
-                    Description = u.Question.Description,
-                    MaximumPoints = u.Question.MaximumPoints,
-                    Points = u.UserPoints,
-                    AnswerId = u.AnswerId ?? -1,
-                    UserAnswer = u.UserAnswer,
-                    Answers = u.Question.Answers.Select(a => new QuestionAnswerResultDto
-                    {
-                        Id = a.Id,
-                        Name = a.Name,
-                        Correct = a.Type
-                    }).ToList()
-                })
+                .Select(SelectUserQuestionnaireAnswerDetails)
                 .FirstOrDefaultAsync();
 
             if(userGroup.Role == "Admin")

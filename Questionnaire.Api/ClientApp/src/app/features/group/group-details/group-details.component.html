@@ -1,7 +1,14 @@
 <h2>Groups you joined</h2>
-<div class="row mt-4">
+<div class="row">
     <div class="col-sm-12">
-        <h4>{{group.name}}</h4>
+        <dl class="row mt-3">
+            <dd class="col-sm-6"><h4>{{group.name}}</h4></dd>
+            <dd class="col-sm-3" style="margin-left: 30px;">
+              <a class="btn btn-outline-primary" [routerLink]="['/group/edit', group.id]" *ngIf="group.groupRole === 'Admin'">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+            </dd>
+        </dl>
         <dl class="row ml-5 mt-3">
             <dt class="col-sm-3">Created:</dt>
             <dd class="col-sm-3">{{group.created | date: 'yyyy-MM-dd hh:mm'}}</dd>
@@ -16,14 +23,14 @@
         <h5>Group Description:</h5>
         <div class="row mt-3">
             <p class="ml-5">{{group.description}}</p>
-            <a class="btn btn-primary offset-8" [routerLink]="['/group/edit', group.id]" *ngIf="group.groupRole === 'Admin'">Edit</a>    
+            <!--<a class="btn btn-primary offset-8" [routerLink]="['/group/edit', group.id]" *ngIf="group.groupRole === 'Admin'">Edit</a>-->
         </div>
     </div>
 </div>
 <div class="row mt-3 d-flex justify-content-between">
     <h4 class="ml-3">Questionnaires</h4>
     <div *ngIf="group.groupRole === 'Admin'">
-        <a class="btn btn-success" [routerLink]="['/questionnaire/add', group.id]">New Questionnaire</a>    
+        <!--<a class="btn btn-success" [routerLink]="['/questionnaire/add', group.id]">New Questionnaire</a>    -->
     </div>
 </div>
 <form [formGroup]="questionnaireForm" (ngSubmit)="searchQuestionnaires()" class="mt-2 ml-2">
@@ -49,6 +56,9 @@
                 <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                 Search
             </button>
+        </div>
+        <div *ngIf="group.groupRole === 'Admin'" class="col-sm-2 my-1">
+            <a class="btn btn-success" [routerLink]="['/questionnaire/add', group.id]">New Questionnaire</a>    
         </div>
     </div>
 </form>
@@ -81,7 +91,7 @@
         </div>
     </div>
 </div>
-<div class="d-flex justify-content-left mt-4">
+<div class="d-flex justify-content-right mt-3">
     <ngb-pagination
       [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="refressQuestionnaires()">
     </ngb-pagination>
