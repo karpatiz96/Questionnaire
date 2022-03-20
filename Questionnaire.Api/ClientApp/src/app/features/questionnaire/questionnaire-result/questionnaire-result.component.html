@@ -11,7 +11,18 @@
         </div>
     </div>
     <div class="row mt-4">
-        <div class="col-sm-8"><b>From:</b> {{questionnaire.begining | date: 'yyyy-MM-dd hh:mm'}} - <b>To:</b> {{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</div>
+        <div class="col-sm-10"><b>From:</b> {{questionnaire.begining | date: 'yyyy-MM-dd hh:mm'}} - <b>To:</b> {{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-sm-8"><b>Started:</b> {{questionnaire.start | date: 'yyyy-MM-dd hh:mm'}} - 
+        <b>Finished:</b> 
+        <div *ngIf="questionnaire.completed" style="display: inline;">
+          {{ questionnaire.completedTime | date: 'yyyy-MM-dd hh:mm'}}
+        </div>
+        <div *ngIf="!questionnaire.completed" style="display: inline;">
+          Not Completed
+        </div>
+      </div>
     </div>
     <div class="row mt-4">
         <div class="col-sm-8"><b>Questions:</b> {{questionnaire.questions}} <b>Result:</b> {{questionnaire.maximumPoints}}/{{questionnaire.points}}</div>

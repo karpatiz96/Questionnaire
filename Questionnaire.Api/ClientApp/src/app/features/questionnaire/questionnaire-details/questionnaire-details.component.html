@@ -36,6 +36,8 @@
           <dt class="col-sm-2">Visible:</dt>
           <dd class="col-sm-2" *ngIf="questionnaire.visibleToGroup">Visible</dd>
           <dd class="col-sm-2" *ngIf="!questionnaire.visibleToGroup">Hidden</dd>
+          <dt class="col-sm-2">Question order:</dt>
+          <dd class="col-sm-2" >{{questionnaire.randomQuestionOrder ? 'Random' : 'Ordered'}}</dd>
         </dl>
         <h5>Description:</h5>
         <div class="row col-sm-8 mt-3">

@@ -23,6 +23,7 @@ export class QuestionnaireDetailsComponent implements OnInit {
     begining: new Date(2020, 1, 1),
     finish: new Date(2020, 1, 1),
     visibleToGroup: false,
+    randomQuestionOrder: false,
     created: new Date(2020, 1, 1),
     lastEdited: new Date(2020, 1, 1),
     questions: []

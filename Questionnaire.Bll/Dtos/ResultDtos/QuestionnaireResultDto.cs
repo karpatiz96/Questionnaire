@@ -21,6 +21,12 @@ namespace Questionnaire.Bll.Dtos.ResultDtos
 
         public DateTime Finish { get; set; }
 
+        public DateTime Start { get; set; }
+
+        public DateTime CompletedTime { get; set; }
+
+        public bool Completed { get; set; }
+
         public int Questions { get; set; }
 
         public int MaximumPoints { get; set; }

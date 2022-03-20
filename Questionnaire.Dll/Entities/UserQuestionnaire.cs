@@ -10,7 +10,9 @@ namespace Questionnaire.Dll.Entities
 
         public DateTime Started { get; set; }
 
-        public DateTime? Finished { get; set; }
+        public DateTime Finished { get; set; }
+
+        public bool Completed { get; set; }
 
         public string UserId { get; set; }
 

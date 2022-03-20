@@ -31,6 +31,7 @@ namespace Questionnaire.Bll.Services
             Begining = q.Begining,
             Finish = q.Finish,
             VisibleToGroup = q.VisibleToGroup,
+            RandomQuestionOrder = q.RandomQuestionOrder,
             Created = q.Created,
             LastEdited = q.LastEdited,
             Questions = q.Questions.Select(q => new QuestionHeaderDto
@@ -82,6 +83,7 @@ namespace Questionnaire.Bll.Services
                 Begining = questionnaireDto.Begining,
                 Finish = questionnaireDto.Finish,
                 VisibleToGroup = questionnaireDto.VisibleToGroup,
+                RandomQuestionOrder = questionnaireDto.RandomQuestionOrder,
                 Created = DateTime.UtcNow,
                 LastEdited = DateTime.UtcNow
             };
@@ -179,7 +181,7 @@ namespace Questionnaire.Bll.Services
             questionnaire.Description = questionnaireDto.Description;
             questionnaire.Begining = questionnaireDto.Begining;
             questionnaire.Finish = questionnaireDto.Finish;
-            //questionnaire.VisibleToGroup = questionnaireDto.VisibleToGroup;
+            questionnaire.RandomQuestionOrder = questionnaireDto.RandomQuestionOrder;
             questionnaire.LastEdited = DateTime.UtcNow;
 
             _dbContext.Attach(questionnaire).State = EntityState.Modified;

@@ -6,4 +6,5 @@ export interface QuestionnaireDto {
     begining: Date;
     finish: Date;
     visibleToGroup: boolean;
+    randomQuestionOrder: boolean;
 }

@@ -32,6 +32,9 @@ namespace Questionnaire.Bll.Services
             Description = u.QuestionnaireSheet.Description,
             Begining = u.QuestionnaireSheet.Begining,
             Finish = u.QuestionnaireSheet.Finish,
+            Start = u.Started,
+            CompletedTime = u.Finished,
+            Completed = u.Completed,
             Questions = u.UserQuestionnaireAnswers.Count,
             Answers = u.UserQuestionnaireAnswers.Select(a => new UserQuestionAnswerHeaderDto
             {
@@ -65,7 +68,10 @@ namespace Questionnaire.Bll.Services
                 Id = q.Id,
                 UserName = q.User.UserName,
                 Points = q.UserQuestionnaireAnswers.Sum(a => a.UserPoints),
-                MaximumPoints = u.Questions.Sum(u => u.MaximumPoints)
+                MaximumPoints = u.Questions.Sum(u => u.MaximumPoints),
+                Start = q.Started,
+                CompletedTime = q.Finished,
+                Completed = q.Completed
             }).ToList()
         };
 
@@ -118,6 +124,7 @@ namespace Questionnaire.Bll.Services
                 QuestionnaireSheetId = questionnaire.Id,
                 UserId = user.Id,
                 Started = DateTime.UtcNow,
+                Completed = false,
                 UserQuestionnaireAnswers = new List<UserQuestionnaireAnswer>()
             };
 
@@ -220,6 +227,7 @@ namespace Questionnaire.Bll.Services
             if (finalAnswer)
             {
                 userQuestionnaire.Finished = DateTime.UtcNow;
+                userQuestionnaire.Completed = true;
             }
 
             await _dbContext.SaveChangesAsync();

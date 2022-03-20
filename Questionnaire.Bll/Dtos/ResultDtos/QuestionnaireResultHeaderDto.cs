@@ -16,5 +16,11 @@ namespace Questionnaire.Bll.Dtos.ResultDtos
         public int MaximumPoints { get; set; }
 
         public int Points { get; set; }
+
+        public DateTime Start { get; set; }
+
+        public DateTime CompletedTime { get; set; }
+
+        public bool Completed { get; set; }
     }
 }

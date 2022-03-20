@@ -9,5 +9,6 @@ export interface QuestionnaireDetailsDto {
     created: Date;
     lastEdited: Date;
     visibleToGroup: boolean;
+    randomQuestionOrder: boolean;
     questions: QuestionHeaderDto[];
 }

@@ -89,7 +89,7 @@ export class QuestionnaireResultAdminComponent implements OnInit {
     }
   }
 
-  compare(v1: string | number, v2: string | number ) {
+  compare(v1: string | number | Date, v2: string | number | Date) {
     return v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
   }
 }

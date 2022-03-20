@@ -12,6 +12,8 @@ namespace Questionnaire.Dll.Entities
 
         public string Description { get; set; }
 
+        public bool RandomQuestionOrder { get; set; }
+
         public DateTime Created { get; set; }
 
         public DateTime LastEdited { get; set; }

@@ -28,15 +28,24 @@
             <thead>
               <tr>
                 <th scope="col" sortable="userName" (sort)="onSort($event)">User Name</th>
-                <th scope="col">Maximum</th>
                 <th scope="col" sortable="points" (sort)="onSort($event)">Points</th>
+                <th scope="col" sortable="start" (sort)="onSort($event)">Started</th>
+                <th scope="col" sortable="completedTime" (sort)="onSort($event)">Finished</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let result of results">
                 <td>{{result.userName}}</td>
-                <td>{{result.maximumPoints}}</td>
                 <td>{{result.points}}</td>
+                <td>{{result.start | date: 'yyyy-MM-dd hh:mm'}}</td>
+                <td>
+                  <div *ngIf="result.completed">
+                    {{result.completedTime | date: 'yyyy-MM-dd hh:mm'}}
+                  </div>
+                  <div *ngIf="!result.completed">
+                    Not Completed
+                  </div>
+                </td>
                 <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/result', result.id]">Details</a></td>
               </tr>
             </tbody>

@@ -15,4 +15,7 @@ export interface QuestionnaireResultHeaderDto {
     userName: string;
     maximumPoints: number;
     points: number;
+    start: Date;
+    completedTime: Date;
+    completed: boolean;
 }

@@ -21,5 +21,7 @@ namespace Questionnaire.Bll.Dtos
         public DateTime Finish { get; set; }
 
         public bool VisibleToGroup { get; set; }
+
+        public bool RandomQuestionOrder { get; set; }
     }
 }

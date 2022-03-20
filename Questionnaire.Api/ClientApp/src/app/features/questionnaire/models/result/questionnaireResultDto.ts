@@ -7,6 +7,9 @@ export interface QuestionnaireResultDto {
     description: string;
     begining: Date;
     finish: Date;
+    start: Date;
+    completedTime: Date;
+    completed: boolean;
     questions: number;
     maximumPoints: number;
     points: number;
