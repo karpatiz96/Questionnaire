@@ -9,6 +9,7 @@ import { GroupMemberDto } from '../models/groupMemberDto';
 import { InvitationGroupDto } from '../models/invitationGroupDto';
 import { UserGroupDto } from '../models/userGroupDto';
 import { GroupService } from '../services/group.service';
+import { UserGroupService } from '../services/user-group.service';
 
 @Component({
   selector: 'app-group-member',
@@ -44,6 +45,7 @@ export class GroupMemberComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private groupService: GroupService,
+    private userGroupService: UserGroupService,
     private confirmationDialogService: ConfirmationDialogService,
     private errorHandlerService: ErrorHandlerService,
     private alertService: AlertService) { }
@@ -70,6 +72,12 @@ export class GroupMemberComponent implements OnInit {
     this.confirmationDialogService
       .confirm('Delete User', 'Do you really want to delete the user?')
         .then(result => {
+          this.userGroupService.delete(id).subscribe(result => {
+
+          }, error => {
+              this.errorHandlerService.handleError(error);
+              this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+          });
     }).catch(() => {});
   }
 
@@ -77,14 +85,21 @@ export class GroupMemberComponent implements OnInit {
     this.confirmationDialogService
       .confirm('Update User', 'Do you really want to make the user admin in the group?')
         .then(result => {
-    }).catch(() => {});
+          this.userGroupService.makeAdmin(id).subscribe(result => {
+
+          }, error => {
+              this.errorHandlerService.handleError(error);
+              this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+          });
+        }).catch(() => {});
   }
 
   removeInvitation(id: number) {
     this.confirmationDialogService
       .confirm('Delete User', 'Do you really want to delete the user?')
         .then(result => {
-    }).catch(() => {});
+
+        }).catch(() => {});
   }
 
   onSortUser({column, direction}: SortEvent) {

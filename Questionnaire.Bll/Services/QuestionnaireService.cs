@@ -142,6 +142,8 @@ namespace Questionnaire.Bll.Services
                 questionnaires = questionnaires.Where(q => q.Finish <= queryDto.To);
             if (!queryDto.Visible && userGroup.Role == "Admin")
                 questionnaires = questionnaires.Where(q => q.VisibleToGroup);
+            if (userGroup.Role == "User")
+                questionnaires = questionnaires.Where(q => q.VisibleToGroup);
 
             var result = await questionnaires.OrderByDescending(q => q.Begining)
                 .Select(QuestionnaireHeaderSelector)

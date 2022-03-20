@@ -26,17 +26,7 @@ namespace Questionnaire.Bll.Services
             GroupRole = "User",
             LastPost = DateTime.UtcNow, //To be updated
             Members = g.UserGroups.Count,
-            Questionnaires = g.QuestionnaireSheets.Where(q => q.VisibleToGroup).OrderByDescending(q => q.Begining)
-            .Select<QuestionnaireSheet, QuestionnaireHeaderDto>(q => 
-                new QuestionnaireHeaderDto {
-                    Id = q.Id,
-                    UserQuestionnaireId = -1,
-                    Title = q.Name,
-                    Begining = q.Begining,
-                    Finish = q.Finish,
-                    Created = q.Created,
-                    VisibleToGroup = q.VisibleToGroup
-                }).ToList()
+            Questionnaires = new List<QuestionnaireHeaderDto>()
         };
 
         public static Expression<Func<Group, GroupHeaderDto>> GroupHeaderSelector { get; } = g => new GroupHeaderDto
@@ -66,15 +56,16 @@ namespace Questionnaire.Bll.Services
             Status = g.Status
         };
 
-        public static Expression<Func<QuestionnaireSheet, QuestionnaireHeaderDto>> QuestionnaireHeaderSelector { get; } = g => 
+        public static Expression<Func<QuestionnaireSheet, QuestionnaireHeaderDto>> QuestionnaireHeaderSelector { get; } = q => 
         new QuestionnaireHeaderDto
         {
-            Id = g.Id,
-            Title = g.Name,
-            Begining = g.Begining,
-            Finish = g.Finish,
-            Created = g.Created,
-            VisibleToGroup = g.VisibleToGroup
+            Id = q.Id,
+            UserQuestionnaireId = -1,
+            Title = q.Name,
+            Begining = q.Begining,
+            Finish = q.Finish,
+            Created = q.Created,
+            VisibleToGroup = q.VisibleToGroup
         };
 
         public GroupService(QuestionnaireDbContext dbContext)
@@ -133,7 +124,16 @@ namespace Questionnaire.Bll.Services
             {
                 groupDetailsDto.GroupRole = userGroup.Role;
 
-                foreach(var questionnaire in groupDetailsDto.Questionnaires)
+                var questionnaires = _dbContext.QuestionnaireSheets.Where(q => q.GroupId == groupId);
+                if(userGroup.Role != "Admin")
+                    questionnaires = questionnaires.Where(q => q.VisibleToGroup);
+
+                groupDetailsDto.Questionnaires = await questionnaires
+                    .OrderByDescending(q => q.Begining)
+                    .Select(QuestionnaireHeaderSelector)
+                    .ToListAsync();
+
+                foreach (var questionnaire in groupDetailsDto.Questionnaires)
                 {
                     var userQuestionnaire = await _dbContext.UserQuestionnaires
                         .Where(u => u.UserId == userId && u.QuestionnaireSheetId == questionnaire.Id)
