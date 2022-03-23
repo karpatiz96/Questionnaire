@@ -1,5 +1,5 @@
 <h2>Groups you joined</h2>
-<div class="row">
+<div class="row" *ngIf="group">
     <div class="col-sm-12">
         <dl class="row mt-3">
             <dd class="col-sm-6"><h4>{{group.name}}</h4></dd>
@@ -62,7 +62,7 @@
         </div>
     </div>
 </form>
-<div class="row">
+<div class="row" *ngIf="group">
     <div class="col-sm-12" *ngFor="let questionnaire of questionnaires">
         <div class="card mt-4" *ngIf="group.groupRole === 'Admin' || questionnaire.visibleToGroup">
         <div class="card-body">
@@ -72,6 +72,10 @@
                 <dd class="col-sm-3">{{questionnaire.begining | date: 'yyyy-MM-dd hh:mm'}}</dd>
                 <dt class="col-sm-3">Finish:</dt>
                 <dd class="col-sm-3">{{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</dd>
+                <dt class="col-sm-3" *ngIf="questionnaire.start">Start:</dt>
+                <dd class="col-sm-3" *ngIf="questionnaire.start">{{questionnaire.start | date: 'yyyy-MM-dd hh:mm'}}</dd>
+                <dt class="col-sm-3" *ngIf="questionnaire.completedTime">Finished:</dt>
+                <dd class="col-sm-3" *ngIf="questionnaire.completedTime">{{questionnaire.completedTime | date: 'yyyy-MM-dd hh:mm'}}</dd>
             </dl>
             <div class="row mt-4 d-flex flex-row-reverse">
                 <div class="col-sm-2" *ngIf="group.groupRole === 'Admin'">

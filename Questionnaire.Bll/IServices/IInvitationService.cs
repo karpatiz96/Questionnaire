@@ -18,6 +18,6 @@ namespace Questionnaire.Bll.IServices
 
         Task<InvitationDto> DeclineInvitation(int invitationId, InvitationStatus status);
 
-        Task<Invitation> DeleteInvitation(int Id);
+        Task<Invitation> DeleteInvitation(string userId, int Id);
     }
 }

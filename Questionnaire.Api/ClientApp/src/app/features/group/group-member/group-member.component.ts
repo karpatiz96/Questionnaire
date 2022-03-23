@@ -1,6 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { first } from 'rxjs/operators';
 import { SortableDirective, SortDirection, SortEvent } from '../../shared/directives/sortable.directive';
 import { AlertService } from '../../shared/services/alert.service';
 import { ConfirmationDialogService } from '../../shared/services/confirmationDialog.service';
@@ -9,6 +8,7 @@ import { GroupMemberDto } from '../models/groupMemberDto';
 import { InvitationGroupDto } from '../models/invitationGroupDto';
 import { UserGroupDto } from '../models/userGroupDto';
 import { GroupService } from '../services/group.service';
+import { InvitationService } from '../services/invitation.service';
 import { UserGroupService } from '../services/user-group.service';
 
 @Component({
@@ -17,6 +17,7 @@ import { UserGroupService } from '../services/user-group.service';
   styleUrls: ['./group-member.component.css']
 })
 export class GroupMemberComponent implements OnInit {
+  groupId: number;
   group: GroupMemberDto = {
     id: 0,
     name: 'Test Group',
@@ -46,12 +47,14 @@ export class GroupMemberComponent implements OnInit {
     private route: ActivatedRoute,
     private groupService: GroupService,
     private userGroupService: UserGroupService,
+    private invitationService: InvitationService,
     private confirmationDialogService: ConfirmationDialogService,
     private errorHandlerService: ErrorHandlerService,
     private alertService: AlertService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
+      this.groupId = params['id'];
       this.loadGroupMembers(params['id']);
     });
   }
@@ -72,8 +75,11 @@ export class GroupMemberComponent implements OnInit {
     this.confirmationDialogService
       .confirm('Delete User', 'Do you really want to delete the user?')
         .then(result => {
-          this.userGroupService.delete(id).subscribe(result => {
-
+          this.userGroupService.delete(id).subscribe(() => {
+            const user = this.group.users.find(u => u.id === id);
+            const index = this.group.users.indexOf(user);
+            this.group.users.splice(index, 1);
+            this.refressUsers();
           }, error => {
               this.errorHandlerService.handleError(error);
               this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
@@ -98,7 +104,15 @@ export class GroupMemberComponent implements OnInit {
     this.confirmationDialogService
       .confirm('Delete User', 'Do you really want to delete the user?')
         .then(result => {
-
+          this.invitationService.delete(id).subscribe(() => {
+            const invitation = this.group.invitations.find(i => i.id === id);
+            const index = this.group.invitations.indexOf(invitation);
+            this.group.invitations.splice(index, 1);
+            this.refressInvitations();
+          }, error => {
+            this.errorHandlerService.handleError(error);
+            this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+          });
         }).catch(() => {});
   }
 

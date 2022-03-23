@@ -5,5 +5,9 @@ export interface QuestionnaireHeaderDto {
     created: Date;
     begining: Date;
     finish: Date;
+    start: Date | null;
+    completedTime: Date | null;
+    completed: boolean;
+    evaluated: boolean;
     visibleToGroup: boolean;
 }

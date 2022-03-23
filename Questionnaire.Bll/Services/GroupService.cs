@@ -64,6 +64,10 @@ namespace Questionnaire.Bll.Services
             Title = q.Name,
             Begining = q.Begining,
             Finish = q.Finish,
+            Start = null,
+            CompletedTime = null,
+            Completed = false,
+            Evaluated = false,
             Created = q.Created,
             VisibleToGroup = q.VisibleToGroup
         };
@@ -136,10 +140,15 @@ namespace Questionnaire.Bll.Services
                 foreach (var questionnaire in groupDetailsDto.Questionnaires)
                 {
                     var userQuestionnaire = await _dbContext.UserQuestionnaires
+                        .Include(u => u.UserQuestionnaireAnswers)
                         .Where(u => u.UserId == userId && u.QuestionnaireSheetId == questionnaire.Id)
                         .FirstOrDefaultAsync();
 
                     questionnaire.UserQuestionnaireId = userQuestionnaire?.Id ?? -1;
+                    questionnaire.Start = userQuestionnaire?.Started;
+                    questionnaire.CompletedTime = userQuestionnaire?.Finished;
+                    questionnaire.Completed = userQuestionnaire != null ? userQuestionnaire.Completed : false;
+                    questionnaire.Evaluated = userQuestionnaire != null ? userQuestionnaire.UserQuestionnaireAnswers.Any(u => !u.AnswerEvaluated) : false;
                 }
             }
 

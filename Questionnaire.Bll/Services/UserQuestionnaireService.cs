@@ -187,6 +187,7 @@ namespace Questionnaire.Bll.Services
                     }
                     userQuestionnaireAnswer.Completed = DateTime.UtcNow;
                     userQuestionnaireAnswer.QuestionCompleted = true;
+                    userQuestionnaireAnswer.AnswerEvaluated = true;
                     break;
                 case Question.QuestionType.TrueOrFalse:
                     if(answer != null)
@@ -195,10 +196,12 @@ namespace Questionnaire.Bll.Services
                         userQuestionnaireAnswer.UserPoints = answer.Points;
                         userQuestionnaireAnswer.Completed = DateTime.UtcNow;
                         userQuestionnaireAnswer.QuestionCompleted = true;
+                        userQuestionnaireAnswer.AnswerEvaluated = true;
                     } else {
                         userQuestionnaireAnswer.UserPoints = 0;
                         userQuestionnaireAnswer.Completed = DateTime.UtcNow;
                         userQuestionnaireAnswer.QuestionCompleted = true;
+                        userQuestionnaireAnswer.AnswerEvaluated = true;
                     }
                     break;
                 case Question.QuestionType.MultipleChoice:
@@ -208,12 +211,14 @@ namespace Questionnaire.Bll.Services
                         userQuestionnaireAnswer.UserPoints = answer.Points;
                         userQuestionnaireAnswer.Completed = DateTime.UtcNow;
                         userQuestionnaireAnswer.QuestionCompleted = true;
+                        userQuestionnaireAnswer.AnswerEvaluated = true;
                     }
                     else
                     {
                         userQuestionnaireAnswer.UserPoints = 0;
                         userQuestionnaireAnswer.Completed = DateTime.UtcNow;
                         userQuestionnaireAnswer.QuestionCompleted = true;
+                        userQuestionnaireAnswer.AnswerEvaluated = true;
                     }
                     break;
                 default:

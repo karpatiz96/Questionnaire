@@ -30,14 +30,8 @@ namespace Questionnaire.Api.Controllers
         public async Task<ActionResult<IEnumerable<InvitationDto>>> GetInvitations()
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await UserManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var invitations = await _invitationService.GetInvitations(user.Id);
+            var invitations = await _invitationService.GetInvitations(userId);
 
             return Ok(invitations);
         }
@@ -61,12 +55,6 @@ namespace Questionnaire.Api.Controllers
         public async Task<ActionResult<InvitationDto>> Accept(int id)
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await UserManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
 
             var invitationDto = await _invitationService.AcceptInvitation(id, Invitation.InvitationStatus.Accepted);
 
@@ -77,12 +65,6 @@ namespace Questionnaire.Api.Controllers
         public async Task<ActionResult<InvitationDto>> Decline(int id)
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await UserManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
 
             //invitation belongs to user
 
@@ -92,22 +74,11 @@ namespace Questionnaire.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await UserManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var invitation = await _invitationService.DeleteInvitation(id);
-
-            if(invitation == null)
-            {
-                return BadRequest();
-            }
+            var invitation = await _invitationService.DeleteInvitation(userId, id);
 
             return Ok();
         }

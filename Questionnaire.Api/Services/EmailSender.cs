@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Options;
+using Questionnaire.Api.Configurations;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +12,27 @@ namespace Questionnaire.Api.Services
 {
     public class EmailSender : IEmailSender
     {
-        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        public AuthMessageSenderOptions Options { get; set; }
+
+        public EmailSender(IOptions<AuthMessageSenderOptions> options)
         {
-            //return Execute();
+            Options = options.Value;
         }
 
-        /*public Task Execute(string apiKey, string subject, string message, string email)
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        {
+            if(Options.SendGridKey != null)
+            {
+                await Execute(Options.SendGridKey, subject, htmlMessage, email);
+            }
+        }
+
+        public async Task Execute(string apiKey, string subject, string message, string email)
         {
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("", Options.SendGridUser),
+                From = new EmailAddress("", ""),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
@@ -27,7 +41,7 @@ namespace Questionnaire.Api.Services
 
             msg.SetClickTracking(false, false);
 
-            return client.SendEmailAsync(msg);
-        }*/
+            var response = await client.SendEmailAsync(msg);
+        }
     }
 }

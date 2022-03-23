@@ -45,7 +45,7 @@
         <td>{{invitation.userName}}</td>
         <td>{{invitation.date | date: 'yyyy-MM-dd'}}</td>
         <td>{{Invitations[invitation.status]}}</td>
-        <td *ngIf="invitation.status === 0"><button class="btn btn-outline-danger" (click)='removeInvitaton(invitation.id)'>Remove</button></td>
+        <td *ngIf="invitation.status === 0"><button class="btn btn-outline-danger" (click)='removeInvitation(invitation.id)'>Remove</button></td>
       </tr>
     </tbody>
   </table>

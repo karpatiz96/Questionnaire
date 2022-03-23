@@ -78,6 +78,8 @@
               </a>
             </td>
           </tr>
+        </tbody>
+        <tfoot>
           <tr *ngIf="!questionnaire.visibleToGroup">
             <td></td>
             <td></td>
@@ -86,7 +88,7 @@
             <td></td>
             <td scope="col"><a class="btn btn-outline-success" *ngIf="!questionnaire.visibleToGroup" [routerLink]="['/questionnaire/question/add', questionnaire.id]">Create</a></td>
           </tr>
-        </tbody>
+        </tfoot>
       </table>
       <div class="d-flex justify-content-between">
         <ngb-pagination

@@ -5,11 +5,12 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { ConfirmationDialogService } from './services/confirmationDialog.service';
 import { AlertComponent } from './alert/alert.component';
 import { SortableDirective } from './directives/sortable.directive';
+import { CountDownTimerComponent } from './count-down-timer/count-down-timer.component';
 
 
 
 @NgModule({
-  declarations: [ConfirmationDialogComponent, AlertComponent, SortableDirective],
+  declarations: [ConfirmationDialogComponent, AlertComponent, SortableDirective, CountDownTimerComponent],
   imports: [
     CommonModule,
     NgbModule
@@ -17,7 +18,8 @@ import { SortableDirective } from './directives/sortable.directive';
   exports: [
     ConfirmationDialogComponent,
     AlertComponent,
-    SortableDirective
+    SortableDirective,
+    CountDownTimerComponent
   ],
   providers: [ConfirmationDialogService],
   entryComponents: [ConfirmationDialogComponent]

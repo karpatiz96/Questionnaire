@@ -108,4 +108,8 @@ export class QuestionnaireAnswerComponent implements OnInit {
           this.loading = false;
       });
   }
+
+  timeFinished(notification: string) {
+    this.router.navigate(['/group']);
+  }
 }

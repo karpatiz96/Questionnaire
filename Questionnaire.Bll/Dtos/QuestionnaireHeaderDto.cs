@@ -18,6 +18,14 @@ namespace Questionnaire.Bll.Dtos
 
         public DateTime Finish { get; set; }
 
+        public DateTime? Start { get; set; }
+
+        public DateTime? CompletedTime { get; set; }
+
+        public bool Completed { get; set; }
+
+        public bool Evaluated { get; set; }
+
         public bool VisibleToGroup { get; set; }
     }
 }

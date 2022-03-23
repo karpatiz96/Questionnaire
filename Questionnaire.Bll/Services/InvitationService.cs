@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Questionnaire.Bll.Dtos;
+using Questionnaire.Bll.Exceptions;
 using Questionnaire.Bll.IServices;
 using Questionnaire.Dll;
 using Questionnaire.Dll.Entities;
@@ -52,24 +53,22 @@ namespace Questionnaire.Bll.Services
             return invitationNewDto;
         }
 
-        public async Task<Invitation> DeleteInvitation(int id)
+        public async Task<Invitation> DeleteInvitation(string userId, int id)
         {
             var invitation = await _dbContext.Invitations
                 .FirstOrDefaultAsync(i => i.Id == id);
 
-            var user = await _dbContext.Users
-                .Include(u => u.Invitations)
-                .Where(u => u.Id == invitation.UserId)
-                .FirstOrDefaultAsync();
+            if(invitation == null)
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
 
-            user.Invitations.Remove(invitation);
+            var userGroup = await GetUserGroupByUserAndGroup(userId, invitation.GroupId);
 
-            var group = await _dbContext.Groups
-                .Include(g => g.Invitations)
-                .Where(g => g.Id == invitation.GroupId)
-                .FirstOrDefaultAsync();
-
-            group.Invitations.Remove(invitation);
+            if(userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
 
             _dbContext.Invitations.Remove(invitation);
 
@@ -147,6 +146,14 @@ namespace Questionnaire.Bll.Services
                 .FirstOrDefaultAsync();
 
             return invitationDto;
+        }
+
+        private async Task<UserGroup> GetUserGroupByUserAndGroup(string userId, int groupId)
+        {
+            var userGroup = await _dbContext.UserGroups
+                .Where(u => u.UserId == userId && u.GroupId == groupId).FirstOrDefaultAsync();
+
+            return userGroup;
         }
     }
 }

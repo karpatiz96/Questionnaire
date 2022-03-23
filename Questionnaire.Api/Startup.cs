@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Questionnaire.Api.Configurations;
 using Questionnaire.Api.Data;
 using Questionnaire.Api.Middleware;
 using Questionnaire.Api.Models;
@@ -45,6 +46,8 @@ namespace Questionnaire.Api
             services.AddTransient<IUserQuestionnaireService, UserQuestionnaireService>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
+
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddDbContext<QuestionnaireDbContext>(options =>
                 options.UseSqlServer(
