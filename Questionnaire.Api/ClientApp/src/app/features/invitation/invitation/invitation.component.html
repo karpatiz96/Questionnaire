@@ -1,5 +1,6 @@
 <h2>Invitations</h2>
-<table class="table mt-5">
+<table class="table table-striped mt-3">
+  <caption>Total invitations: {{total}}</caption>
     <thead>
       <tr>
         <th scope="col" sortable="groupName" (sort)="onSort($event)">Group Name</th>
@@ -7,6 +8,7 @@
         <th scope="col" sortable="date" (sort)="onSort($event)">Date</th>
         <th scope="col" sortable="adminName" (sort)="onSort($event)">Administrator</th>
         <th scope="col">Status</th>
+        <th scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
@@ -16,11 +18,14 @@
         <td>{{invitation.date | date: 'yyyy-MM-dd'}}</td>
         <td>{{invitation.adminName}}</td>
         <td>{{Invitations[invitation.status]}}</td>
-        <td *ngIf="invitation.status === 0"><button class="btn btn-success" (click)='accept(invitation.id)'>Accept</button></td>
-        <td *ngIf="invitation.status === 0"><button class="btn btn-danger" (click)='decline(invitation.id)'>Decline</button></td>
+        <td>
+          <button class="btn btn-success" *ngIf="invitation.status === 0" (click)='accept(invitation.id)'>Accept</button>
+          <button class="btn btn-danger" *ngIf="invitation.status === 0" (click)='decline(invitation.id)'>Decline</button>
+        </td>
       </tr>
+    </tbody>
+    <tfoot>
       <tr>
-        <td></td>
         <td></td>
         <td></td>
         <td></td>
@@ -28,9 +33,9 @@
         <td></td>
         <td scope="col"><a class="btn btn-success" [routerLink]="['/invitation/add']">Create</a></td>
       </tr>
-    </tbody>
+    </tfoot>
   </table>
-  <div class="d-flex justify-content-between">
+  <div class="d-flex justify-content-left">
     <ngb-pagination
       [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="refressInvitations()">
     </ngb-pagination>

@@ -87,12 +87,25 @@ export class GroupMemberComponent implements OnInit {
     }).catch(() => {});
   }
 
-  updateUser(id: number) {
+  makeAdmin(id: number) {
     this.confirmationDialogService
       .confirm('Update User', 'Do you really want to make the user admin in the group?')
         .then(result => {
-          this.userGroupService.makeAdmin(id).subscribe(result => {
+          this.userGroupService.makeAdmin(id).subscribe(() => {
+            this.loadGroupMembers(this.groupId);
+          }, error => {
+              this.errorHandlerService.handleError(error);
+              this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+          });
+        }).catch(() => {});
+  }
 
+  makeUser(id: number) {
+    this.confirmationDialogService
+      .confirm('Update User', 'Do you really want to revoke admin?')
+        .then(result => {
+          this.userGroupService.makeUser(id).subscribe(() => {
+            this.loadGroupMembers(this.groupId);
           }, error => {
               this.errorHandlerService.handleError(error);
               this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });

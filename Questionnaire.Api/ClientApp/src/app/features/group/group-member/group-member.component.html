@@ -15,7 +15,10 @@
         <td>{{user.name}}</td>
         <td>{{user.role}}</td>
         <td><button class="btn btn-outline-danger" *ngIf="!user.main" (click)='removeUser(user.id)'>Remove</button></td>
-        <td><button class="btn btn-outline-danger" *ngIf="user.role === 'User'" (click)='updateUser(user.id)'>Make Admin</button></td>
+        <td>
+          <button class="btn btn-outline-danger" *ngIf="user.role === 'User'" (click)='makeAdmin(user.id)'>Make Admin</button>
+          <button class="btn btn-outline-danger" *ngIf="!user.main && user.role === 'Admin'" (click)='makeUser(user.id)'>Make User</button>
+        </td>
       </tr>
     </tbody>
   </table>
