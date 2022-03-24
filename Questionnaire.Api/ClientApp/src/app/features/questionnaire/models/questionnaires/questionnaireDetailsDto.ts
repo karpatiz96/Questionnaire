@@ -10,5 +10,7 @@ export interface QuestionnaireDetailsDto {
     lastEdited: Date;
     visibleToGroup: boolean;
     randomQuestionOrder: boolean;
+    limited: boolean;
+    timeLimit: number;
     questions: QuestionHeaderDto[];
 }

@@ -26,6 +26,8 @@ export class QuestionnaireDetailsComponent implements OnInit {
     randomQuestionOrder: false,
     created: new Date(2020, 1, 1),
     lastEdited: new Date(2020, 1, 1),
+    limited: false,
+    timeLimit: 0,
     questions: []
   };
 

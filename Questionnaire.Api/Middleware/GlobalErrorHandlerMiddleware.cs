@@ -30,9 +30,12 @@ namespace Questionnaire.Api.Middleware
                 switch (error)
                 {
                     case UserGroupNotFoundExcetpion:
-                        response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
                     case UserNotAdminException:
+                        response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        break;
+                    case UserNotMemberException:
                         response.StatusCode = (int)HttpStatusCode.Forbidden;
                         break;
                     case QuestionnaireNotEditableException:

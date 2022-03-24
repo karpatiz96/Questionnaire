@@ -32,7 +32,9 @@ export class QuestionnaireEditComponent implements OnInit {
         description: ['', Validators.required],
         begining: ['', Validators.required],
         finish: ['', Validators.required],
-        randomQuestionOrder: [false]
+        randomQuestionOrder: [false],
+        limited: [false],
+        timeLimit: [1, Validators.min]
       });
       this.route.params.subscribe(params => {
         this.loadQuestionnaire(params['id']);
@@ -48,7 +50,9 @@ export class QuestionnaireEditComponent implements OnInit {
           description: result.description,
           begining: formatDate(result.begining, 'yyyy-MM-ddThh:mm', 'en_US'),
           finish: formatDate(result.finish, 'yyyy-MM-ddThh:mm', 'en_US'),
-          randomQuestionOrder: result.randomQuestionOrder
+          randomQuestionOrder: result.randomQuestionOrder,
+          limited: false,
+          timeLimit: result.timeLimit
         });
       }, error => {
         this.errorHandlerService.handleError(error);

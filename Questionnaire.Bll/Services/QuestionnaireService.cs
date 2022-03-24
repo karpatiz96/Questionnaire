@@ -32,6 +32,8 @@ namespace Questionnaire.Bll.Services
             Finish = q.Finish,
             VisibleToGroup = q.VisibleToGroup,
             RandomQuestionOrder = q.RandomQuestionOrder,
+            Limited = q.LimitedTime,
+            TimeLimit = q.TimeLimit,
             Created = q.Created,
             LastEdited = q.LastEdited,
             Questions = q.Questions.Select(q => new QuestionHeaderDto
@@ -72,9 +74,11 @@ namespace Questionnaire.Bll.Services
 
         public async Task<QuestionnaireDto> CreateQuestionnaire(string userId, QuestionnaireDto questionnaireDto)
         {
-            var userGroup = await GetUserGroupByGroupAndUser(userId, questionnaireDto.GroupId);
+            var userGroup = await _dbContext.UserGroups
+                .Where(u => u.UserId == userId && u.GroupId == questionnaireDto.GroupId)
+                .FirstOrDefaultAsync();
 
-            if(userGroup == null || userGroup.Role != "Admin")
+            if (userGroup == null || userGroup.Role != "Admin")
             {
                 throw new UserNotAdminException("User is not admin in group!");
             }
@@ -88,6 +92,8 @@ namespace Questionnaire.Bll.Services
                 Finish = questionnaireDto.Finish,
                 VisibleToGroup = questionnaireDto.VisibleToGroup,
                 RandomQuestionOrder = questionnaireDto.RandomQuestionOrder,
+                LimitedTime = questionnaireDto.Limited,
+                TimeLimit = questionnaireDto.Limited ? questionnaireDto.TimeLimit : 1,
                 Created = DateTime.UtcNow,
                 LastEdited = DateTime.UtcNow
             };
@@ -194,6 +200,8 @@ namespace Questionnaire.Bll.Services
             questionnaire.Finish = questionnaireDto.Finish;
             questionnaire.RandomQuestionOrder = questionnaireDto.RandomQuestionOrder;
             questionnaire.LastEdited = DateTime.UtcNow;
+            questionnaire.LimitedTime = questionnaireDto.Limited;
+            questionnaire.TimeLimit = questionnaireDto.Limited ? questionnaireDto.TimeLimit : 1;
 
             _dbContext.Attach(questionnaire).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
@@ -258,15 +266,6 @@ namespace Questionnaire.Bll.Services
 
             var userGroup = await _dbContext.UserGroups
                 .Where(u => u.UserId == userId && u.GroupId == questionnaire.GroupId)
-                .FirstOrDefaultAsync();
-
-            return userGroup;
-        }
-
-        private async Task<UserGroup> GetUserGroupByGroupAndUser(string userId, int groupId)
-        {
-            var userGroup = await _dbContext.UserGroups
-                .Where(u => u.UserId == userId && u.GroupId == groupId)
                 .FirstOrDefaultAsync();
 
             return userGroup;

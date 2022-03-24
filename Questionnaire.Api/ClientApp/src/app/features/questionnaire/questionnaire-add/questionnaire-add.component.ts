@@ -30,7 +30,9 @@ export class QuestionnaireAddComponent implements OnInit {
       begining: [null , Validators.required],
       finish: [null, Validators.required],
       visibleToGroup: false,
-      randomQuestionOrder: false
+      randomQuestionOrder: false,
+      limited: false,
+      timeLimit: [1, Validators.min(1)]
     });
     this.route.params.subscribe(params => {
       this.groupId = params['id'];

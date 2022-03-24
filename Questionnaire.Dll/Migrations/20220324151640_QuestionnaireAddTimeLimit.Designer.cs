@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Questionnaire.Dll;
 
 namespace Questionnaire.Dll.Migrations
 {
     [DbContext(typeof(QuestionnaireDbContext))]
-    partial class QuestionnaireDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220324151640_QuestionnaireAddTimeLimit")]
+    partial class QuestionnaireAddTimeLimit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

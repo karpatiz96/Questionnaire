@@ -180,15 +180,36 @@ namespace Questionnaire.Bll.Services
 
         public async Task<IEnumerable<QuestionnaireQuestionDto>> GetQuestionnaireQuestions(int questionnaireId)
         {
-            var questions = await _dbContext.Questions
+            var questionnaire = await _dbContext.QuestionnaireSheets
+                .Where(q => q.Id == questionnaireId)
+                .FirstOrDefaultAsync();
+
+            if(questionnaire == null)
+            {
+                //error
+            }
+
+            var questions = _dbContext.Questions
                 .Include(q => q.QuestionnaireSheet)
                 .Include(q => q.Answers)
-                .Where(q => q.QuestionnaireSheetId == questionnaireId)
-                .OrderBy(q => q.Id)
+                .Where(q => q.QuestionnaireSheetId == questionnaireId);
+
+            if(questionnaire.RandomQuestionOrder)
+            {
+                var random = await questions
+                    .OrderBy(q => new Random())
+                    .Select(SelectQuestionnaireQuestion)
+                    .ToListAsync();
+
+                return random;
+            }
+
+            var result = await questions
+                .OrderBy(q => q.Number)
                 .Select(SelectQuestionnaireQuestion)
                 .ToListAsync();
 
-            return questions;
+            return result;
         }
 
         public async Task<QuestionDto> UpdateQuestion(string userId, QuestionDto questionDto)

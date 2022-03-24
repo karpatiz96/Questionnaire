@@ -24,6 +24,10 @@ namespace Questionnaire.Dll.Entities
 
         public bool VisibleToGroup { get; set; }
 
+        public bool LimitedTime { get; set; }
+
+        public int TimeLimit { get; set; }
+
         public int GroupId { get; set; }
 
         public Group Group { get; set; }

@@ -7,4 +7,6 @@ export interface QuestionnaireDto {
     finish: Date;
     visibleToGroup: boolean;
     randomQuestionOrder: boolean;
+    limited: boolean;
+    timeLimit: number;
 }
