@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Questionnaire.Api", "Questionnaire.Api\Questionnaire.Api.csproj", "{35C468C4-E752-4255-AF98-6ACA552F4659}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Questionnaire.Api", "Questionnaire.Api\Questionnaire.Api.csproj", "{35C468C4-E752-4255-AF98-6ACA552F4659}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Questionnaire.Bll", "Questionnaire.Bll\Questionnaire.Bll.csproj", "{738CD8AF-93EB-4D58-8ED9-13042F14ADD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Questionnaire.Bll", "Questionnaire.Bll\Questionnaire.Bll.csproj", "{738CD8AF-93EB-4D58-8ED9-13042F14ADD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Questionnaire.Dll", "Questionnaire.Dll\Questionnaire.Dll.csproj", "{8094F852-8526-48E7-9850-E79FCE5F1B6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Questionnaire.Dll", "Questionnaire.Dll\Questionnaire.Dll.csproj", "{8094F852-8526-48E7-9850-E79FCE5F1B6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Questionnaire.IntegrationTest", "Questionnaire.IntegrationTest\Questionnaire.IntegrationTest.csproj", "{A0BE0302-2E46-4B83-969B-88449ECEB653}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{8094F852-8526-48E7-9850-E79FCE5F1B6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8094F852-8526-48E7-9850-E79FCE5F1B6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8094F852-8526-48E7-9850-E79FCE5F1B6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0BE0302-2E46-4B83-969B-88449ECEB653}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0BE0302-2E46-4B83-969B-88449ECEB653}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0BE0302-2E46-4B83-969B-88449ECEB653}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0BE0302-2E46-4B83-969B-88449ECEB653}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

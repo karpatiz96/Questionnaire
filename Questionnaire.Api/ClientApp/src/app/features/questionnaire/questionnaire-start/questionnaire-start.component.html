@@ -14,8 +14,8 @@
         <div class="col-sm-8"><b>From:</b> {{questionnaire.begining | date: 'yyyy-MM-dd hh:mm'}} - <b>To:</b> {{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</div>
     </div>
     <div class="row mt-4">
-        <div class="col-sm-6"><b>Questions:</b> {{questionnaire.questions}}</div>
-        <div class="col-sm-6" *ngIf="questionnaire.limited"><b>Time Limit:</b> {{questionnaire.timeLimit}}</div>
+        <div class="col-auto"><b>Questions:</b> {{questionnaire.questions}}</div>
+        <div class="col-auto" *ngIf="questionnaire.limited"><b>Time Limit:</b> {{questionnaire.timeLimit}} minutes</div>
     </div>
     <div class="row mt-4">
         <a class="btn btn-success col-sm-8" (click)="begin()">Begin</a>
