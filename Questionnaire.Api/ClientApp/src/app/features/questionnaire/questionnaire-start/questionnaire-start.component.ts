@@ -18,7 +18,9 @@ export class QuestionnaireStartComponent implements OnInit {
     description: '',
     begining: new Date(2020, 1, 1),
     finish: new Date(2020, 1, 1),
-    questions: 0
+    questions: 0,
+    limited: false,
+    timeLimit: 0
   };
 
   constructor(

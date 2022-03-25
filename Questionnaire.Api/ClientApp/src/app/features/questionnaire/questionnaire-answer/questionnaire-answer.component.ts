@@ -3,7 +3,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '../../shared/services/alert.service';
 import { ErrorHandlerService } from '../../shared/services/error-handler.service';
-import { QuestionnaireQuestionDto, QuestionType } from '../models/questionnaireQuestionDto';
+import { QuestionListDto } from '../models/questionListDto';
+import { QuestionnaireQuestionListDto } from '../models/questionnaireQuestionListDto';
+import { QuestionType } from '../models/questionType';
 import { UserQuestionnaireAnswerDto } from '../models/userQuestionnaireAnswerDto';
 import { UserQuestionnaireService } from '../services/userQuestionnaireService';
 
@@ -18,14 +20,18 @@ export class QuestionnaireAnswerComponent implements OnInit {
   questionnaireId: number;
   questionIndex = 0;
 
-  questions: QuestionnaireQuestionDto [];
-  question: QuestionnaireQuestionDto = {
+  questionnaire: QuestionnaireQuestionListDto = {
     id: 0,
-    questionId: 0,
+    title: '',
+    limited: false,
+    timeLimit: 5,
+    questions: []
+  };
+  question: QuestionListDto = {
+    id: 0,
     description: '',
-    questionTitle: '',
+    title: '',
     points: 0,
-    questionnaireTitle: '',
     type: QuestionType.FreeText,
     answers: []
   };
@@ -54,12 +60,12 @@ export class QuestionnaireAnswerComponent implements OnInit {
   }
 
   loadQuestion(questionId: number) {
-    this.userQuestionnaireService.getQuestionnaireQuestions(this.questionnaireId).subscribe(result => {
-      this.questions = result;
-      if (this.questions.length > 0) {
-        this.question = this.questions[0];
+    this.userQuestionnaireService.getQuestionnaireQuestionList(this.questionnaireId).subscribe(result => {
+      this.questionnaire = result;
+      if (this.questionnaire.questions.length > 0) {
+        this.question = this.questionnaire.questions[0];
 
-        if (this.questionIndex === this.questions.length - 1) {
+        if (this.questionIndex === this.questionnaire.questions.length - 1) {
           this.final = true;
         }
       }
@@ -75,11 +81,11 @@ export class QuestionnaireAnswerComponent implements OnInit {
 
   next() {
     this.questionIndex++;
-    if (this.questionIndex < this.questions.length) {
-      this.question = this.questions[this.questionIndex];
+    if (this.questionIndex < this.questionnaire.questions.length) {
+      this.question = this.questionnaire.questions[this.questionIndex];
       this.loading = false;
 
-      if (this.questionIndex === this.questions.length - 1) {
+      if (this.questionIndex === this.questionnaire.questions.length - 1) {
         this.final = true;
       }
     } else {
@@ -91,8 +97,8 @@ export class QuestionnaireAnswerComponent implements OnInit {
     this.loading = true;
 
     const answerDto = new UserQuestionnaireAnswerDto(
+      this.questionnaire.id,
       this.question.id,
-      this.question.questionId,
       this.questionnaireAnswerForm.controls['answerId'].value,
       this.questionnaireAnswerForm.controls['userAnswer'].value);
 

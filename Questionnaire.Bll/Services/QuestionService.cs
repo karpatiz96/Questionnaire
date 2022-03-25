@@ -60,6 +60,21 @@ namespace Questionnaire.Bll.Services
             }).ToList()
         };
 
+        public static Expression<Func<Question, QuestionListDto>> SelectQuestionListDto { get; } = g => new QuestionListDto
+        {
+            Id = g.Id,
+            Title = g.Name,
+            Description = g.Description,
+            Points = g.MaximumPoints,
+            Type = g.Type,
+            Answers = g.Answers.Select(a => new QuestionAnswerDto
+            {
+                Id = a.Id,
+                Name = a.Name,
+                QuestionId = a.QuestionId
+            }).ToList()
+        };
+
         public async Task<QuestionDto> CreateQuestion(string userId, QuestionDto questionDto)
         {
             var userGroup = await GetUserGroupByQuestionnaireAndUser(userId, questionDto.QuestionnaireId);
@@ -165,20 +180,7 @@ namespace Questionnaire.Bll.Services
             return question;
         }
 
-        //Not needed
-        public async Task<QuestionnaireQuestionDto> GetQuestionnaireQuestion(int questionId)
-        {
-            var question = await _dbContext.Questions
-                .Include(q => q.QuestionnaireSheet)
-                .Include(q => q.Answers)
-                .Where(q => q.Id == questionId)
-                .Select(SelectQuestionnaireQuestion)
-                .FirstOrDefaultAsync();
-
-            return question;
-        }
-
-        public async Task<IEnumerable<QuestionnaireQuestionDto>> GetQuestionnaireQuestions(int questionnaireId)
+        public async Task<QuestionnaireQuestionListDto> GetQuestionnaireQuestions(int questionnaireId)
         {
             var questionnaire = await _dbContext.QuestionnaireSheets
                 .Where(q => q.Id == questionnaireId)
@@ -186,7 +188,7 @@ namespace Questionnaire.Bll.Services
 
             if(questionnaire == null)
             {
-                //error
+                throw new QuestionnaireNotFoundException("Questionnaire not found!");
             }
 
             var questions = _dbContext.Questions
@@ -194,20 +196,30 @@ namespace Questionnaire.Bll.Services
                 .Include(q => q.Answers)
                 .Where(q => q.QuestionnaireSheetId == questionnaireId);
 
+            var result = new QuestionnaireQuestionListDto
+            {
+                Id = questionnaire.Id,
+                Title = questionnaire.Name,
+                Limited = questionnaire.LimitedTime,
+                TimeLimit = questionnaire.TimeLimit
+            };
+
             if(questionnaire.RandomQuestionOrder)
             {
                 var random = await questions
                     .OrderBy(q => new Random())
-                    .Select(SelectQuestionnaireQuestion)
+                    .Select(SelectQuestionListDto)
                     .ToListAsync();
 
-                return random;
-            }
-
-            var result = await questions
+                result.Questions = random;
+            } else {
+                var ordered = await questions
                 .OrderBy(q => q.Number)
-                .Select(SelectQuestionnaireQuestion)
+                .Select(SelectQuestionListDto)
                 .ToListAsync();
+
+                result.Questions = ordered;
+            }
 
             return result;
         }

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { QuestionnaireQuestionDto } from '../models/questionnaireQuestionDto';
+import { QuestionnaireQuestionListDto } from '../models/questionnaireQuestionListDto';
 import { QuestionnaireStartDto } from '../models/questionnaireStartDto';
 import { QuestionnaireResultDto } from '../models/result/questionnaireResultDto';
 import { QuestionnaireResultListDto } from '../models/result/questionnaireResultListDto';
@@ -44,8 +44,8 @@ export class UserQuestionnaireService {
     return this.http.post(`${this.baseUrl}/userquestionnaire/answer/evaluate`, evaluationDto);
   }
 
-   getQuestionnaireQuestions(questionnaireId: number) {
-     return this.http.get<QuestionnaireQuestionDto[]>(`${this.baseUrl}/question/list/${questionnaireId}`);
+   getQuestionnaireQuestionList(questionnaireId: number) {
+     return this.http.get<QuestionnaireQuestionListDto>(`${this.baseUrl}/question/list/${questionnaireId}`);
    }
 
    getQuestionnaireResultAdmin(questionnaireId: number) {

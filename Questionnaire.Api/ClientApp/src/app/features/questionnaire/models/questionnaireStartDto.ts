@@ -5,4 +5,6 @@ export interface QuestionnaireStartDto {
     begining: Date;
     finish: Date;
     questions: number;
+    limited: boolean;
+    timeLimit: number;
 }

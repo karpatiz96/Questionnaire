@@ -53,7 +53,9 @@ namespace Questionnaire.Bll.Services
             Description = q.Description,
             Begining = q.Begining,
             Finish = q.Finish,
-            Questions = q.Questions.Count
+            Questions = q.Questions.Count,
+            Limited = q.LimitedTime,
+            TimtLimit = q.TimeLimit
         };
 
         public static Expression<Func<QuestionnaireSheet, QuestionnaireHeaderDto>> QuestionnaireHeaderSelector { get; } = q =>

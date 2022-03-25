@@ -32,6 +32,9 @@ namespace Questionnaire.Api.Middleware
                     case UserGroupNotFoundExcetpion:
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
+                    case QuestionnaireNotFoundException:
+                        response.StatusCode = (int)HttpStatusCode.NotFound;
+                        break;
                     case UserNotAdminException:
                         response.StatusCode = (int)HttpStatusCode.Forbidden;
                         break;

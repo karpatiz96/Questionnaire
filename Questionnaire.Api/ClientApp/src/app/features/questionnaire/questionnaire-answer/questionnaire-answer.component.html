@@ -1,9 +1,9 @@
-<h2>{{question.questionnaireTitle}}</h2>
+<h2>{{questionnaire.title}}</h2>
 <div class="col-sm-12">
     <div class="row mt-4">
-        <div class="col-sm-4"><h6>{{question.questionTitle}}</h6></div>
+        <div class="col-sm-4"><h4>{{question.title}}</h4></div>
         <div class="col-sm-4">Maximum Points: {{question.points}}</div>
-        <app-count-down-timer [time]="5" (notification)="timeFinished($event)"></app-count-down-timer>
+        <app-count-down-timer [time]="questionnaire.timeLimit" (notification)="timeFinished($event)" *ngIf="questionnaire.limited"></app-count-down-timer>
     </div>
     <div class="row mt-4">
         <div class="col-sm-8">{{question.description}}</div>

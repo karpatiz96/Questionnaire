@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Questionnaire.Dll.Entities.Question;
 
 namespace Questionnaire.Bll.Dtos
 {
-    public class QuestionnaireStartDto
+    public class QuestionListDto
     {
         public int Id { get; set; }
 
@@ -14,14 +15,10 @@ namespace Questionnaire.Bll.Dtos
 
         public string Description { get; set; }
 
-        public DateTime Begining { get; set; }
+        public int Points { get; set; }
 
-        public DateTime Finish { get; set; }
+        public QuestionType Type { get; set; }
 
-        public int Questions { get; set; }
-
-        public bool Limited { get; set; }
-
-        public int TimtLimit { get; set; }
+        public ICollection<QuestionAnswerDto> Answers { get; set; }
     }
 }

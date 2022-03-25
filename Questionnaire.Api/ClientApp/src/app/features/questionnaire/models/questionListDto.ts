@@ -1,11 +1,9 @@
 import { QuestionAnswerDto } from './questionAnswerDto';
 import { QuestionType } from './questionType';
 
-export interface QuestionnaireQuestionDto {
+export interface QuestionListDto {
     id: number;
-    questionId: number;
-    questionnaireTitle: string;
-    questionTitle: string;
+    title: string;
     description: string;
     type: QuestionType;
     points: number;

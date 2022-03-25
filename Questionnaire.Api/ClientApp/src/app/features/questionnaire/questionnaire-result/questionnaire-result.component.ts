@@ -1,9 +1,8 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { SortableDirective, SortDirection, SortEvent } from '../../shared/directives/sortable.directive';
 import { ErrorHandlerService } from '../../shared/services/error-handler.service';
-import { QuestionType } from '../models/questionnaireQuestionDto';
+import { QuestionType } from '../models/questionType';
 import { QuestionnaireResultDto, UserQuestionAnswerHeaderDto } from '../models/result/questionnaireResultDto';
 import { UserQuestionnaireService } from '../services/userQuestionnaireService';
 

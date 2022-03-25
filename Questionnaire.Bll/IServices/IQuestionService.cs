@@ -12,9 +12,7 @@ namespace Questionnaire.Bll.IServices
     {
         Task<QuestionDetailsDto> GetQuestion(int questionId);
 
-        Task<QuestionnaireQuestionDto> GetQuestionnaireQuestion(int questionId);
-
-        Task<IEnumerable<QuestionnaireQuestionDto>> GetQuestionnaireQuestions(int questionnaireId);
+        Task<QuestionnaireQuestionListDto> GetQuestionnaireQuestions(int questionnaireId);
 
         Task<QuestionDto> CreateQuestion(string userId, QuestionDto questionDto);
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuestionType } from '../models/questionnaireQuestionDto';
+import { QuestionType } from '../models/questionType';
 import { UserQuestionnaireAnswerDetailsDto } from '../models/result/userQuestionnaireAnswerDetailsDto';
 import { UserQuestionnaireService } from '../services/userQuestionnaireService';
 
