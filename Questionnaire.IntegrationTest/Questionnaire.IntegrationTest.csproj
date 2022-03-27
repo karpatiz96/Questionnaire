@@ -24,8 +24,4 @@
     <ProjectReference Include="..\Questionnaire.Api\Questionnaire.Api.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
 </Project>

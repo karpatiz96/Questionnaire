@@ -21,7 +21,7 @@ namespace Questionnaire.IntegrationTest
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var claims = new[] { new Claim(ClaimTypes.NameIdentifier, "065257af-6063-4e87-bf5a-839a10429c2f") };
+            var claims = new[] { new Claim(ClaimTypes.NameIdentifier, "123") };
             var identity = new ClaimsIdentity(claims, "Test");
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, "Test");
