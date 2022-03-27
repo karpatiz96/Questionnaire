@@ -12,11 +12,11 @@ namespace Questionnaire.Bll.IServices
     {
         Task<IEnumerable<InvitationDto>> GetInvitations(string userId);
 
-        Task<InvitationNewDto> CreateInvitation(InvitationNewDto invitationNewDto, User user);
+        Task<InvitationNewDto> CreateInvitation(string userId, InvitationNewDto invitationNewDto, User user);
 
-        Task<InvitationDto> AcceptInvitation(int invitationId, InvitationStatus status);
+        Task<InvitationDto> AcceptInvitation(string userId, int invitationId, InvitationStatus status);
 
-        Task<InvitationDto> DeclineInvitation(int invitationId, InvitationStatus status);
+        Task<InvitationDto> DeclineInvitation(string userId, int invitationId, InvitationStatus status);
 
         Task<Invitation> DeleteInvitation(string userId, int Id);
     }

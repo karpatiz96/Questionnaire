@@ -1,6 +1,8 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { error } from 'selenium-webdriver';
 import { SortableDirective, SortDirection, SortEvent } from '../../shared/directives/sortable.directive';
+import { AlertService } from '../../shared/services/alert.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { InvitationDto } from '../models/invitationDto';
 import { InvitationService } from '../services/invitation.service';
 
@@ -22,7 +24,9 @@ export class InvitationComponent implements OnInit {
   sortDirection: SortDirection = '';
   total = 0;
 
-  constructor(private invitationService: InvitationService) { }
+  constructor(
+    private invitationService: InvitationService,
+    private errorHandlerService: ErrorHandlerService) { }
 
   ngOnInit() {
     this.loadInvitations();
@@ -36,7 +40,7 @@ export class InvitationComponent implements OnInit {
         this.total = invitations.length;
         this.refressInvitations();
       }, error => {
-        console.error(error);
+        this.errorHandlerService.handleError(error);
       });
   }
 
@@ -48,7 +52,7 @@ export class InvitationComponent implements OnInit {
       this.invitationAll[index] = result;
       this.refressInvitations();
     }, error => {
-      console.log(error);
+      this.errorHandlerService.handleError(error);
     });
   }
 
@@ -60,7 +64,7 @@ export class InvitationComponent implements OnInit {
       this.invitationAll[index] = result;
       this.refressInvitations();
     }, error => {
-      console.log(error);
+      this.errorHandlerService.handleError(error);
     });
   }
 

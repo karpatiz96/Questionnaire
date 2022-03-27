@@ -32,6 +32,9 @@ namespace Questionnaire.Api.Middleware
                     case UserGroupNotFoundExcetpion:
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
+                    case InvitationNotFoundException:
+                        response.StatusCode = (int)HttpStatusCode.NotFound;
+                        break;
                     case QuestionnaireNotFoundException:
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
@@ -45,6 +48,9 @@ namespace Questionnaire.Api.Middleware
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     case QuestionnaireStartValidationException:
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        break;
+                    case InvitationValidationException:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     case QuestionnaireResultValidationException:

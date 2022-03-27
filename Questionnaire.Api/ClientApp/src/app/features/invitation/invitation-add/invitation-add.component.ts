@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { GroupHeaderDto } from '../../group/models/groupHeaderDto';
-import { GroupService } from '../../group/services/group.service';
+import { AlertService } from '../../shared/services/alert.service';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
+import { GroupListDto } from '../models/groupListDto';
+import { GroupService } from '../services/group.service';
 import { InvitationService } from '../services/invitation.service';
 
 @Component({
@@ -12,7 +14,7 @@ import { InvitationService } from '../services/invitation.service';
 })
 export class InvitationAddComponent implements OnInit {
   invitationForm: FormGroup;
-  groups: GroupHeaderDto[];
+  groups: GroupListDto[];
   loading = false;
   submitted = false;
   error = '';
@@ -21,7 +23,9 @@ export class InvitationAddComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private groupService: GroupService,
-    private invitationService: InvitationService) { }
+    private invitationService: InvitationService,
+    private errorHandlerService: ErrorHandlerService,
+    private alertService: AlertService) { }
 
   ngOnInit() {
     this.invitationForm = this.formBuilder.group({
@@ -29,7 +33,7 @@ export class InvitationAddComponent implements OnInit {
       groupId: [0, Validators.required]
     });
 
-    this.groupService.getGroups().subscribe(result => {
+    this.groupService.getInvitationGroups().subscribe(result => {
       this.groups = result;
     });
   }
@@ -52,9 +56,10 @@ export class InvitationAddComponent implements OnInit {
           this.router.navigate(['/invitation']);
         },
         error => {
-          this.error = error;
-          console.error(error);
+          this.errorHandlerService.handleError(error);
+          this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
           this.loading = false;
+          console.log(error);
       });
   }
 

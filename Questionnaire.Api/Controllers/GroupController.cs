@@ -58,6 +58,16 @@ namespace Questionnaire.Api.Controllers
             return Ok(groups);
         }
 
+        [HttpGet("list")]
+        public async Task<ActionResult<IEnumerable<GroupListDto>>> GetGroupsList()
+        {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var groups = await _groupService.GetMyGroups(userId);
+
+            return Ok(groups);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<GroupDetailsDto>> GetGroup(int id)
         {

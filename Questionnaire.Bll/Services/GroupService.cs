@@ -38,6 +38,12 @@ namespace Questionnaire.Bll.Services
             LastPost = DateTime.UtcNow
         };
 
+        public static Expression<Func<Group, GroupListDto>> GroupListSelector { get; } = g => new GroupListDto
+        {
+            Id = g.Id,
+            Name = g.Name
+        };
+
         public static Expression<Func<UserGroup, UserGroupDto>> UserGroupSelector { get; } = g => new UserGroupDto
         {
             Id = g.Id,
@@ -209,6 +215,17 @@ namespace Questionnaire.Bll.Services
                .Include(g => g.UserGroups)
                .Where(g => g.UserGroups.Any(ug => ug.UserId == userId && ug.MainAdmin))
                .Select(GroupHeaderSelector)
+               .ToListAsync();
+
+            return groups;
+        }
+
+        public async Task<IEnumerable<GroupListDto>> GetGroupsList(string userId)
+        {
+            var groups = await _dbContext.Groups
+               .Include(g => g.UserGroups)
+               .Where(g => g.UserGroups.Any(ug => ug.UserId == userId && ug.Role == "Admin"))
+               .Select(GroupListSelector)
                .ToListAsync();
 
             return groups;
