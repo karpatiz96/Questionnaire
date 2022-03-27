@@ -28,8 +28,12 @@ export class GroupService {
     return this.http.get<GroupMemberDto>(`${this.baseUrl}/group/member/${id}`);
    }
 
-   getById(id: number) {
+   getDetailsById(id: number) {
     return this.http.get<GroupDetailsDto>(`${this.baseUrl}/group/${id}`);
+   }
+
+   getById(id: number) {
+    return this.http.get<GroupDetailsDto>(`${this.baseUrl}/group/update/${id}`);
    }
 
    create(groupDto: GroupDto) {

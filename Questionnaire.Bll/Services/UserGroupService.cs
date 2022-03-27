@@ -29,6 +29,7 @@ namespace Questionnaire.Bll.Services
         {
             var userGroup = await _dbContext.UserGroups
                 .Where(u => u.Id == userGroupId)
+                .Where(u => u.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
             if(userGroup == null)
@@ -38,6 +39,7 @@ namespace Questionnaire.Bll.Services
 
             var userGroupAdmin = await _dbContext.UserGroups
                 .Where(u => u.UserId == userId && u.GroupId == userGroup.GroupId)
+                .Where(u => u.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
             if(userGroupAdmin == null || !userGroupAdmin.MainAdmin)
@@ -46,6 +48,34 @@ namespace Questionnaire.Bll.Services
             }
 
             userGroup.Role = role;
+
+            await _dbContext.SaveChangesAsync();
+
+            return userGroup;
+        }
+
+        public async Task<UserGroup> DeleteUserGroup(string userId, int userGroupId)
+        {
+            var userGroup = await _dbContext.UserGroups
+                .Where(u => u.Id == userGroupId)
+                .FirstOrDefaultAsync();
+
+            if(userGroup == null)
+            {
+                throw new UserGroupNotFoundExcetpion("User is not member of group!");
+            }
+
+            var userGroupAdmin = await _dbContext.UserGroups
+                .Where(u => u.UserId == userId && u.GroupId == userGroup.GroupId)
+                .Where(u => u.IsDeleted == false)
+                .FirstOrDefaultAsync();
+
+            if(userGroupAdmin == null || userGroupAdmin.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
+            userGroup.IsDeleted = true;
 
             await _dbContext.SaveChangesAsync();
 

@@ -45,6 +45,16 @@ namespace Questionnaire.Bll.Services
                 throw new UserNotAdminException("User is not admin in group!");
             }
 
+            var invitationExists = await _dbContext.Invitations
+                .Where(i => i.UserId == user.Id && i.GroupId == invitationNewDto.GroupId)
+                .Where(i => i.Status == InvitationStatus.Undecided)
+                .ToListAsync();
+
+            if (invitationExists.Any())
+            {
+                throw new InvitationValidationException("User is already invited!");
+            }
+
             var invitation = new Invitation
             {
                 UserId = user.Id,
@@ -123,15 +133,21 @@ namespace Questionnaire.Bll.Services
 
             _dbContext.Attach(invitation).State = EntityState.Modified;
 
-            var userGroup = new UserGroup
-            {
-                UserId = invitation.UserId,
-                GroupId = invitation.GroupId,
-                Role = "User",
-                MainAdmin = false
-            };
+            var userGroupExists = await GetUserGroupByUserAndGroup(userId, invitation.GroupId);
 
-            _dbContext.UserGroups.Add(userGroup);
+            if (userGroupExists == null)
+            {
+                var userGroup = new UserGroup
+                {
+                    UserId = invitation.UserId,
+                    GroupId = invitation.GroupId,
+                    Role = "User",
+                    MainAdmin = false,
+                    IsDeleted = false
+                };
+
+                _dbContext.UserGroups.Add(userGroup);
+            }
 
             await _dbContext.SaveChangesAsync();
 
@@ -184,6 +200,7 @@ namespace Questionnaire.Bll.Services
         {
             var userGroup = await _dbContext.UserGroups
                 .Where(u => u.UserId == userId && u.GroupId == groupId)
+                .Where(u => u.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
             return userGroup;

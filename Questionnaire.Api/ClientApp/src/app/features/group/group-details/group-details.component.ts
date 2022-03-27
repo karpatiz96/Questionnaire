@@ -54,7 +54,7 @@ export class GroupDetailsComponent implements OnInit {
   }
 
   loadGroup(id: number) {
-    this.groupService.getById(id).subscribe(result => {
+    this.groupService.getDetailsById(id).subscribe(result => {
       this.group = result;
       this.total = result.questionnaires.length;
       this.refressQuestionnaires();

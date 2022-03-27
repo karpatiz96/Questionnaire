@@ -63,7 +63,7 @@ namespace Questionnaire.Api.Controllers
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var groups = await _groupService.GetMyGroups(userId);
+            var groups = await _groupService.GetGroupsList(userId);
 
             return Ok(groups);
         }
@@ -77,8 +77,18 @@ namespace Questionnaire.Api.Controllers
 
             if(group == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Group doesn't exist!" });
             }
+
+            return Ok(group);
+        }
+
+        [HttpGet("update/{id}")]
+        public async Task<ActionResult<GroupDto>> GetGroupById(int id)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var group = await _groupService.GetGroupById(userId, id);
 
             return Ok(group);
         }
@@ -92,7 +102,7 @@ namespace Questionnaire.Api.Controllers
 
             if (groupMemberDto == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Group doesn't exist!" });
             }
 
             return Ok(groupMemberDto);

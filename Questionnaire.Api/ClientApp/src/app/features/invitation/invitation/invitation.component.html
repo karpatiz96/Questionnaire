@@ -7,7 +7,7 @@
         <th scope="col" sortable="groupCreated" (sort)="onSort($event)">Group Created</th>
         <th scope="col" sortable="date" (sort)="onSort($event)">Date</th>
         <th scope="col" sortable="adminName" (sort)="onSort($event)">Administrator</th>
-        <th scope="col">Status</th>
+        <th scope="col" sortable="status" (sort)="onSort($event)">Status</th>
         <th scope="col">Action</th>
       </tr>
     </thead>
@@ -19,7 +19,7 @@
         <td>{{invitation.adminName}}</td>
         <td>{{Invitations[invitation.status]}}</td>
         <td>
-          <button class="btn btn-success" *ngIf="invitation.status === 0" (click)='accept(invitation.id)'>Accept</button>
+          <button class="btn btn-success mr-2" *ngIf="invitation.status === 0" (click)='accept(invitation.id)'>Accept</button>
           <button class="btn btn-danger" *ngIf="invitation.status === 0" (click)='decline(invitation.id)'>Decline</button>
         </td>
       </tr>

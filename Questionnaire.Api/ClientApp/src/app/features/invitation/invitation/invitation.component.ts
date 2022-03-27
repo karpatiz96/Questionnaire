@@ -1,5 +1,6 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { error } from 'selenium-webdriver';
+import { InvitationStatus } from '../../models/invitationStatus';
 import { SortableDirective, SortDirection, SortEvent } from '../../shared/directives/sortable.directive';
 import { AlertService } from '../../shared/services/alert.service';
 import { ErrorHandlerService } from '../../shared/services/error-handler.service';
@@ -98,7 +99,7 @@ export class InvitationComponent implements OnInit {
     }
   }
 
-  compare(v1: string | Date, v2: string | Date ) {
+  compare(v1: string | Date | InvitationStatus, v2: string | Date | InvitationStatus ) {
     return v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
   }
 

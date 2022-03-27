@@ -12,5 +12,7 @@ namespace Questionnaire.Bll.IServices
         Task<UserGroup> GetUserGroup(string userId, int groupId);
 
         Task<UserGroup> UpdateUserGroupRole(string userId, int userGroupId, string role);
+
+        Task<UserGroup> DeleteUserGroup(string userId, int userGroupId);
     }
 }

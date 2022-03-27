@@ -101,7 +101,8 @@ namespace Questionnaire.Bll.Services
                 GroupId = group.Id,
                 UserId = userId,
                 MainAdmin = true,
-                Role = "Admin"
+                Role = "Admin",
+                IsDeleted = false
             };
 
             _dbContext.UserGroups.Add(userGroup);
@@ -111,15 +112,41 @@ namespace Questionnaire.Bll.Services
             return groupDto;
         }
 
+        public async Task<GroupDto> GetGroupById(string userId, int groupId)
+        {
+            var userGroup = await _dbContext.UserGroups
+                .Where(g => g.UserId == userId && g.GroupId == groupId)
+                .Where(u => u.IsDeleted == false)
+                .FirstOrDefaultAsync();
+
+            if (userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
+            var groupDto = await _dbContext.Groups
+                .Where(g => g.Id == groupId)
+                .Select(g => new GroupDto
+                {
+                    Id = g.Id,
+                    Name = g.Name,
+                    Description = g.Description
+                })
+                .FirstOrDefaultAsync();
+
+            return groupDto;
+        }
+
         public async Task<GroupDetailsDto> GetGroup(string userId, int groupId)
         {
             var userGroup = await _dbContext.UserGroups
                 .Where(g => g.UserId == userId && g.GroupId == groupId)
+                .Where(u => u.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
             if(userGroup == null)
             {
-                throw new UserGroupNotFoundExcetpion("User is not member of the group.");
+                throw new UserNotMemberException("User is not member of the group.");
             }
 
             var groupDetailsDto = await _dbContext.Groups
@@ -130,32 +157,29 @@ namespace Questionnaire.Bll.Services
                 .Select(GroupDetailsSelector)
                 .FirstOrDefaultAsync();
 
-            if(groupDetailsDto != null)
+            groupDetailsDto.GroupRole = userGroup.Role;
+
+            var questionnaires = _dbContext.QuestionnaireSheets.Where(q => q.GroupId == groupId);
+            if (userGroup.Role != "Admin")
+                questionnaires = questionnaires.Where(q => q.VisibleToGroup);
+
+            groupDetailsDto.Questionnaires = await questionnaires
+                .OrderByDescending(q => q.Begining)
+                .Select(QuestionnaireHeaderSelector)
+                .ToListAsync();
+
+            foreach (var questionnaire in groupDetailsDto.Questionnaires)
             {
-                groupDetailsDto.GroupRole = userGroup.Role;
+                var userQuestionnaire = await _dbContext.UserQuestionnaires
+                    .Include(u => u.UserQuestionnaireAnswers)
+                    .Where(u => u.UserId == userId && u.QuestionnaireSheetId == questionnaire.Id)
+                    .FirstOrDefaultAsync();
 
-                var questionnaires = _dbContext.QuestionnaireSheets.Where(q => q.GroupId == groupId);
-                if(userGroup.Role != "Admin")
-                    questionnaires = questionnaires.Where(q => q.VisibleToGroup);
-
-                groupDetailsDto.Questionnaires = await questionnaires
-                    .OrderByDescending(q => q.Begining)
-                    .Select(QuestionnaireHeaderSelector)
-                    .ToListAsync();
-
-                foreach (var questionnaire in groupDetailsDto.Questionnaires)
-                {
-                    var userQuestionnaire = await _dbContext.UserQuestionnaires
-                        .Include(u => u.UserQuestionnaireAnswers)
-                        .Where(u => u.UserId == userId && u.QuestionnaireSheetId == questionnaire.Id)
-                        .FirstOrDefaultAsync();
-
-                    questionnaire.UserQuestionnaireId = userQuestionnaire?.Id ?? -1;
-                    questionnaire.Start = userQuestionnaire?.Started;
-                    questionnaire.CompletedTime = userQuestionnaire?.Finished;
-                    questionnaire.Completed = userQuestionnaire != null ? userQuestionnaire.Completed : false;
-                    questionnaire.Evaluated = userQuestionnaire != null ? userQuestionnaire.UserQuestionnaireAnswers.Any(u => !u.AnswerEvaluated) : false;
-                }
+                questionnaire.UserQuestionnaireId = userQuestionnaire?.Id ?? -1;
+                questionnaire.Start = userQuestionnaire?.Started;
+                questionnaire.CompletedTime = userQuestionnaire?.Finished;
+                questionnaire.Completed = userQuestionnaire != null ? userQuestionnaire.Completed : false;
+                questionnaire.Evaluated = userQuestionnaire != null ? userQuestionnaire.UserQuestionnaireAnswers.Any(u => !u.AnswerEvaluated) : false;
             }
 
             return groupDetailsDto;
@@ -165,12 +189,16 @@ namespace Questionnaire.Bll.Services
         {
             var userGroup = await _dbContext.UserGroups
                 .Where(g => g.UserId == userId && g.GroupId == groupId)
+                .Where(u => u.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
             if (userGroup == null || userGroup.Role != "Admin")
             {
                 throw new UserNotAdminException("User is not admin in group!");
             }
+
+            var group = await _dbContext.Groups
+                .FirstOrDefaultAsync(g => g.Id == groupId);
 
             var members = await _dbContext.UserGroups
                 .Include(ug => ug.User)
@@ -183,9 +211,6 @@ namespace Questionnaire.Bll.Services
                 .Where(i => i.GroupId == groupId)
                 .Select(InvitationGroupSelector)
                 .ToListAsync();
-
-            var group = await _dbContext.Groups
-                .FirstOrDefaultAsync(g => g.Id == groupId);
 
             var groupMemberDto = new GroupMemberDto
             {
@@ -202,7 +227,7 @@ namespace Questionnaire.Bll.Services
         {
             var groups = await _dbContext.Groups
                 .Include(g => g.UserGroups)
-                .Where(g => g.UserGroups.Any(ug => ug.UserId == userId))
+                .Where(g => g.UserGroups.Any(ug => ug.UserId == userId && ug.IsDeleted == false))
                 .Select(GroupHeaderSelector)
                 .ToListAsync();
 
@@ -213,7 +238,7 @@ namespace Questionnaire.Bll.Services
         {
             var groups = await _dbContext.Groups
                .Include(g => g.UserGroups)
-               .Where(g => g.UserGroups.Any(ug => ug.UserId == userId && ug.MainAdmin))
+               .Where(g => g.UserGroups.Any(ug => ug.UserId == userId && ug.MainAdmin && ug.IsDeleted == false))
                .Select(GroupHeaderSelector)
                .ToListAsync();
 
@@ -224,7 +249,7 @@ namespace Questionnaire.Bll.Services
         {
             var groups = await _dbContext.Groups
                .Include(g => g.UserGroups)
-               .Where(g => g.UserGroups.Any(ug => ug.UserId == userId && ug.Role == "Admin"))
+               .Where(g => g.UserGroups.Any(ug => ug.UserId == userId && ug.Role == "Admin" && ug.IsDeleted == false))
                .Select(GroupListSelector)
                .ToListAsync();
 
@@ -233,17 +258,18 @@ namespace Questionnaire.Bll.Services
 
         public async Task UpdateGroup(string userId, GroupDto groupDto)
         {
+            var group = await _dbContext.Groups
+                .FirstOrDefaultAsync(g => g.Id == groupDto.Id);
+
             var userGroup = await _dbContext.UserGroups
                 .Where(g => g.UserId == userId && g.GroupId == groupDto.Id)
+                .Where(u => u.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
             if (userGroup == null || userGroup.Role != "Admin")
             {
                 throw new UserNotAdminException("User is not admin in group!");
             }
-
-            var group = await _dbContext.Groups
-                .FirstOrDefaultAsync(g => g.Id == groupDto.Id);
 
             group.Name = groupDto.Name;
             group.Description = groupDto.Description;

@@ -41,10 +41,12 @@ namespace Questionnaire.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
+            var userGroup = await _userGroupService.DeleteUserGroup(userId, id);
 
             return Ok();
         }

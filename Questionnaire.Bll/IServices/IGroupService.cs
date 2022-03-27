@@ -19,6 +19,8 @@ namespace Questionnaire.Bll.IServices
 
         Task<GroupDetailsDto> GetGroup(string userId, int groupId);
 
+        Task<GroupDto> GetGroupById(string userId, int groupId); 
+
         Task<GroupDto> CreateGroup(GroupDto groupDto, string userId);
 
         Task UpdateGroup(string userId, GroupDto groupDto);
