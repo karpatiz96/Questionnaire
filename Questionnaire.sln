@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Questionnaire.Dll", "Questi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Questionnaire.IntegrationTest", "Questionnaire.IntegrationTest\Questionnaire.IntegrationTest.csproj", "{A0BE0302-2E46-4B83-969B-88449ECEB653}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Questionnaire.UnitTest", "Questionnaire.UnitTest\Questionnaire.UnitTest.csproj", "{8B5F6A58-C310-4D96-BF4C-8144E4717E66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{A0BE0302-2E46-4B83-969B-88449ECEB653}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0BE0302-2E46-4B83-969B-88449ECEB653}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0BE0302-2E46-4B83-969B-88449ECEB653}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B5F6A58-C310-4D96-BF4C-8144E4717E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B5F6A58-C310-4D96-BF4C-8144E4717E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B5F6A58-C310-4D96-BF4C-8144E4717E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B5F6A58-C310-4D96-BF4C-8144E4717E66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
