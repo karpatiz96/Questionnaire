@@ -85,6 +85,16 @@ namespace Questionnaire.Bll.Services
                 throw new UserNotAdminException("User is not admin in group!");
             }
 
+            if(questionnaireDto.Begining >= questionnaireDto.Finish)
+            {
+                throw new QuestionnaireValidationException("Begining can't be after Finish!");
+            }
+
+            if (questionnaireDto.Limited && questionnaireDto.TimeLimit < 1)
+            {
+                throw new QuestionnaireValidationException("Time limit can't be less than 1!");
+            }
+
             var questionnaire = new QuestionnaireSheet
             {
                 GroupId = questionnaireDto.GroupId,
@@ -141,7 +151,7 @@ namespace Questionnaire.Bll.Services
 
             if (userGroup == null)
             {
-                throw new UserGroupNotFoundExcetpion("User is not member of Group!");
+                throw new UserNotMemberException("User is not member of Group!");
             }
 
             var questionnaires = _dbContext.QuestionnaireSheets
@@ -196,6 +206,16 @@ namespace Questionnaire.Bll.Services
                 throw new QuestionnaireNotEditableException("Questionnaire is visible, it can't be edited!");
             }
 
+            if (questionnaireDto.Begining >= questionnaireDto.Finish)
+            {
+                throw new QuestionnaireValidationException("Begining can't be after Finish!");
+            }
+
+            if (questionnaireDto.Limited && questionnaireDto.TimeLimit < 1)
+            {
+                throw new QuestionnaireValidationException("Time limit can't be less than 1!");
+            }
+
             questionnaire.Name = questionnaireDto.Title;
             questionnaire.Description = questionnaireDto.Description;
             questionnaire.Begining = questionnaireDto.Begining;
@@ -231,6 +251,7 @@ namespace Questionnaire.Bll.Services
             }
 
             questionnaire.VisibleToGroup = false;
+            questionnaire.LastEdited = DateTime.UtcNow;
 
             _dbContext.Attach(questionnaire).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
@@ -250,6 +271,7 @@ namespace Questionnaire.Bll.Services
                 .FirstOrDefaultAsync();
 
             questionnaire.VisibleToGroup = true;
+            questionnaire.LastEdited = DateTime.UtcNow;
 
             _dbContext.Attach(questionnaire).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
@@ -263,7 +285,7 @@ namespace Questionnaire.Bll.Services
 
             if(questionnaire == null)
             {
-                return null;
+                throw new QuestionnaireNotFoundException("Questionnaire doesn't exist!");
             }
 
             var userGroup = await _dbContext.UserGroups

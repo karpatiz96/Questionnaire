@@ -48,17 +48,11 @@ namespace Questionnaire.Api.Controllers
         }
 
         [HttpGet("list/{id}")]
-        public async Task <ActionResult<QuestionnaireQuestionListDto>> GetQuestionnaireQuestions(int id)
+        public async Task <ActionResult<QuestionnaireQuestionListDto>> GetQuestionnaireQuestionList(int id)
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var questions = await _questionService.GetQuestionnaireQuestions(id);
+            var questions = await _questionService.GetQuestionnaireQuestionList(userId, id);
 
             return Ok(questions);
         }

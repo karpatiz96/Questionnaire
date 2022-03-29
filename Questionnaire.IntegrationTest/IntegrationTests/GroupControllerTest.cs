@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Questionnaire.Dll.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,7 +44,7 @@ namespace Questionnaire.IntegrationTest.IntegrationTests
             //Act
             var response = await client.GetAsync("/api/group");
 
-            
+            //var message = new StringContent(JsonConvert.SerializeObject(new Group { }), Encoding.UTF8, "application/json");
 
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);

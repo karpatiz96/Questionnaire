@@ -44,6 +44,9 @@ namespace Questionnaire.Api.Middleware
                     case QuestionNotFoundException:
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
+                    case AnswerNotFoundException:
+                        response.StatusCode = (int)HttpStatusCode.NotFound;
+                        break;
                     case UserNotAdminException:
                         response.StatusCode = (int)HttpStatusCode.Forbidden;
                         break;
@@ -51,6 +54,9 @@ namespace Questionnaire.Api.Middleware
                         response.StatusCode = (int)HttpStatusCode.Forbidden;
                         break;
                     case QuestionnaireNotEditableException:
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        break;
+                    case QuestionnaireValidationException:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     case QuestionnaireStartValidationException:

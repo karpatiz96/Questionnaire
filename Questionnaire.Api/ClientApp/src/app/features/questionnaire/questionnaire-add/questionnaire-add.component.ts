@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertService } from '../../shared/services/alert.service';
 import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { QuestionnaireService } from '../services/questionnaire.service';
 
@@ -21,7 +22,8 @@ export class QuestionnaireAddComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private questionnaireService: QuestionnaireService,
-    private errorHandlerService: ErrorHandlerService) { }
+    private errorHandlerService: ErrorHandlerService,
+    private alertService: AlertService) { }
 
   ngOnInit() {
     this.questionnaireForm = this.formBuilder.group({
@@ -58,6 +60,7 @@ export class QuestionnaireAddComponent implements OnInit {
         },
         error => {
           this.errorHandlerService.handleError(error);
+          this.alertService.error(this.errorHandlerService.errorMessage);
           this.loading = false;
       });
   }

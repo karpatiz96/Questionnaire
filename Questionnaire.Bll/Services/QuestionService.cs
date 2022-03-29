@@ -79,12 +79,7 @@ namespace Questionnaire.Bll.Services
         {
             var userGroup = await GetUserGroupByQuestionnaireAndUser(userId, questionDto.QuestionnaireId);
 
-            if(userGroup == null)
-            {
-                throw new UserGroupNotFoundExcetpion("User is not member of group!");
-            }
-
-            if(userGroup.Role != "Admin")
+            if(userGroup == null || userGroup.Role != "Admin")
             {
                 throw new UserNotAdminException("User is not admin in group!");
             }
@@ -180,16 +175,18 @@ namespace Questionnaire.Bll.Services
             return question;
         }
 
-        public async Task<QuestionnaireQuestionListDto> GetQuestionnaireQuestions(int questionnaireId)
+        public async Task<QuestionnaireQuestionListDto> GetQuestionnaireQuestionList(string userId, int questionnaireId)
         {
+            var userGroup = await GetUserGroupByQuestionnaireAndUser(userId, questionnaireId);
+
+            if(userGroup == null)
+            {
+                throw new UserNotMemberException("User is not member of group");
+            }
+
             var questionnaire = await _dbContext.QuestionnaireSheets
                 .Where(q => q.Id == questionnaireId)
                 .FirstOrDefaultAsync();
-
-            if(questionnaire == null)
-            {
-                throw new QuestionnaireNotFoundException("Questionnaire not found!");
-            }
 
             var questions = _dbContext.Questions
                 .Include(q => q.QuestionnaireSheet)
@@ -228,12 +225,7 @@ namespace Questionnaire.Bll.Services
         {
             var userGroup = await GetUserGroupByQuestionAndUser(userId, questionDto.Id);
 
-            if (userGroup == null)
-            {
-                throw new UserGroupNotFoundExcetpion("User is not member of group!");
-            }
-
-            if (userGroup.Role != "Admin")
+            if (userGroup == null || userGroup.Role != "Admin")
             {
                 throw new UserNotAdminException("User is not admin in group!");
             }
@@ -342,7 +334,7 @@ namespace Questionnaire.Bll.Services
 
             if(question == null)
             {
-                return null;
+                throw new QuestionNotFoundException("Question doesn't exist!");
             }
 
             var userGroup = await _dbContext.UserGroups
@@ -360,7 +352,7 @@ namespace Questionnaire.Bll.Services
 
             if(questionnaire == null)
             {
-                return null;
+                throw new QuestionnaireNotFoundException("Questionnaire doesn't exist!");
             }
 
             var userGroup = await _dbContext.UserGroups

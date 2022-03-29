@@ -72,18 +72,18 @@ namespace Questionnaire.Api.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            //check user is part of userGroup
+            //check user is member of group
             var userGroup = await _userQuestionnaireService.GetUserGroupByUserAndQuestionnaire(userId, questionnaireId);
             if(userGroup == null)
             {
-                throw new UserGroupNotFoundExcetpion("User is not memeber of group!");
+                throw new UserNotMemberException("User is not memeber of group!");
             }
 
             //check userQuestionnaire exists
             var userQuestionnaireExists = await _userQuestionnaireService.UserQuestionnaireExists(userId, questionnaireId);
             if (userQuestionnaireExists)
             {
-                return BadRequest("Questionnaire is already Solved!");
+                return BadRequest(new { message = "Questionnaire is already Started!" });
             }
 
             await _userQuestionnaireService.CreateUserQuestionnaire(userId, questionnaireId);
@@ -96,11 +96,11 @@ namespace Questionnaire.Api.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            //check usergroup
+            //check user is member of group
             var userGroup = await _userQuestionnaireService.GetUserGroupByUserAndQuestionnaire(userId, answerDto.Id);
             if(userGroup == null)
             {
-                throw new UserGroupNotFoundExcetpion("User is not memeber of group!");
+                throw new UserNotMemberException("User is not memeber of group!");
             }
 
             await _userQuestionnaireService.AnswerQuestion(answerDto, userId);

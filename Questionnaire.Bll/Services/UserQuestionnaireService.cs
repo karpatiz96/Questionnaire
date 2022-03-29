@@ -151,6 +151,7 @@ namespace Questionnaire.Bll.Services
         public async Task AnswerQuestion(UserQuestionnaireAnswerDto answerDto, string userId)
         {
             var userQuestionnaire = await _dbContext.UserQuestionnaires
+                .Include(u => u.QuestionnaireSheet)
                 .Where(u => u.QuestionnaireSheetId == answerDto.Id && u.UserId == userId)
                 .FirstOrDefaultAsync();
 
@@ -160,17 +161,35 @@ namespace Questionnaire.Bll.Services
                 .Where(u => u.UserQuestionnaireId == userQuestionnaire.Id && u.QuestionId == answerDto.QuestionId)
                 .FirstOrDefaultAsync();
 
-            var answer = userQuestionnaireAnswer.Question.Answers.Where(a => a.Id == answerDto.AnswerId).FirstOrDefault();
+            var dateNow = DateTime.UtcNow;
 
             if (userQuestionnaire == null || userQuestionnaireAnswer == null)
             {
                 throw new QuestionAnswerValidationException("Questionnaire is not started yet!");
             }
 
+            if (userQuestionnaire.Completed || userQuestionnaire.QuestionnaireSheet.Finish < dateNow)
+            {
+                throw new QuestionAnswerValidationException("Questionnaire is already finished!");
+            }
+
+            if(userQuestionnaire.QuestionnaireSheet.LimitedTime)
+            {
+                var finishDate = userQuestionnaire.Started.AddMinutes(userQuestionnaire.QuestionnaireSheet.TimeLimit);
+                if(dateNow > finishDate)
+                {
+                    throw new QuestionAnswerValidationException("Questionnaire time limit is over!");
+                }
+            }
+
             if (userQuestionnaireAnswer.QuestionCompleted)
             {
                 throw new QuestionAnswerValidationException("Question is already answered");
             }
+
+            var answer = userQuestionnaireAnswer.Question.Answers
+                .Where(a => a.Id == answerDto.AnswerId)
+                .FirstOrDefault();
 
             switch (userQuestionnaireAnswer.Question.Type)
             {
@@ -190,36 +209,18 @@ namespace Questionnaire.Bll.Services
                     userQuestionnaireAnswer.AnswerEvaluated = true;
                     break;
                 case Question.QuestionType.TrueOrFalse:
-                    if(answer != null)
-                    {
-                        userQuestionnaireAnswer.AnswerId = answerDto.AnswerId;
-                        userQuestionnaireAnswer.UserPoints = answer.Points;
-                        userQuestionnaireAnswer.Completed = DateTime.UtcNow;
-                        userQuestionnaireAnswer.QuestionCompleted = true;
-                        userQuestionnaireAnswer.AnswerEvaluated = true;
-                    } else {
-                        userQuestionnaireAnswer.UserPoints = 0;
-                        userQuestionnaireAnswer.Completed = DateTime.UtcNow;
-                        userQuestionnaireAnswer.QuestionCompleted = true;
-                        userQuestionnaireAnswer.AnswerEvaluated = true;
-                    }
+                    userQuestionnaireAnswer.AnswerId = answer != null ? answerDto.AnswerId : null;
+                    userQuestionnaireAnswer.UserPoints = answer != null ? answer.Points : 0;
+                    userQuestionnaireAnswer.Completed = DateTime.UtcNow;
+                    userQuestionnaireAnswer.QuestionCompleted = true;
+                    userQuestionnaireAnswer.AnswerEvaluated = true;
                     break;
                 case Question.QuestionType.MultipleChoice:
-                    if (answer != null)
-                    {
-                        userQuestionnaireAnswer.AnswerId = answerDto.AnswerId;
-                        userQuestionnaireAnswer.UserPoints = answer.Points;
-                        userQuestionnaireAnswer.Completed = DateTime.UtcNow;
-                        userQuestionnaireAnswer.QuestionCompleted = true;
-                        userQuestionnaireAnswer.AnswerEvaluated = true;
-                    }
-                    else
-                    {
-                        userQuestionnaireAnswer.UserPoints = 0;
-                        userQuestionnaireAnswer.Completed = DateTime.UtcNow;
-                        userQuestionnaireAnswer.QuestionCompleted = true;
-                        userQuestionnaireAnswer.AnswerEvaluated = true;
-                    }
+                    userQuestionnaireAnswer.AnswerId = answer != null ? answerDto.AnswerId : null;
+                    userQuestionnaireAnswer.UserPoints = answer != null ? answer.Points : 0;
+                    userQuestionnaireAnswer.Completed = DateTime.UtcNow;
+                    userQuestionnaireAnswer.QuestionCompleted = true;
+                    userQuestionnaireAnswer.AnswerEvaluated = true;
                     break;
                 default:
                     break;
@@ -244,7 +245,7 @@ namespace Questionnaire.Bll.Services
             var userGroup = await GetUserGroupByUserAndUserQuestionnaire(userId, userQuestionnaireId);
             if(userGroup == null)
             {
-                throw new UserGroupNotFoundExcetpion("User is not member of group!");
+                throw new UserNotMemberException("User is not member of group!");
             }
 
             var userQuestionnaire = await _dbContext.UserQuestionnaires
@@ -291,7 +292,7 @@ namespace Questionnaire.Bll.Services
             var userGroup = await GetUserGroupByUserAndUserQuestionnaireAnswer(userId, userQuestionnaireAnswerId);
             if (userGroup == null)
             {
-                throw new UserGroupNotFoundExcetpion("User is not memeber of group!");
+                throw new UserNotMemberException("User is not memeber of group!");
             }
 
             var questionnaireAnswer = await _dbContext.UserQuestionnaireAnswers
@@ -370,7 +371,7 @@ namespace Questionnaire.Bll.Services
 
             if(questionnaire == null)
             {
-                return null;
+                throw new QuestionnaireNotFoundException("Questionnaire doesn't exist!");
             }
 
             var userGroup = await _dbContext.UserGroups

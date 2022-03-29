@@ -54,11 +54,6 @@ namespace Questionnaire.Api.Controllers
 
             var questionnaireDto = await _questionnaireService.GetQuestionnaire(id);
 
-            if (questionnaireDto == null)
-            {
-                return NotFound("Questionnaire doesn't exists!");
-            }
-
             return Ok(questionnaireDto);
         }
 
@@ -71,17 +66,10 @@ namespace Questionnaire.Api.Controllers
 
             if (userGroup == null)
             {
-                throw new UserGroupNotFoundExcetpion("User is not member of group!");
+                throw new UserNotMemberException("User is not member of group!");
             }
 
             var questionnaireStartDto = await _questionnaireService.GetQuestionnaireStart(id);
-
-            if(questionnaireStartDto == null)
-            {
-                return NotFound();
-            }
-
-            //Todo error if questionnaire is visible
 
             return Ok(questionnaireStartDto);
         }
