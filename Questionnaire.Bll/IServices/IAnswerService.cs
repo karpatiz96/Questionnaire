@@ -12,6 +12,8 @@ namespace Questionnaire.Bll.IServices
     {
         Task<AnswerDetailsDto> GetAnswer(int answerId);
 
+        Task<AnswerDto> GetAnswerById(string userId, int answerId);
+
         Task<IEnumerable<AnswerHeaderDto>> GetAnswers(int questionId);
 
         Task<AnswerDto> CreateAnswer(string userId, AnswerDto answerDto);

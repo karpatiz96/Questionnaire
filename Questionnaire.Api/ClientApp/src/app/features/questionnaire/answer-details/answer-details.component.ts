@@ -38,7 +38,7 @@ export class AnswerDetailsComponent implements OnInit {
   }
 
   loadAnswer(id: number) {
-    this.answerService.getById(id).subscribe(result => {
+    this.answerService.getDetailsById(id).subscribe(result => {
       this.answer = result;
     }, error => {
       this.errorHandlerSerive.handleError(error);

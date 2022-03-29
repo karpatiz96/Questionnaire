@@ -43,6 +43,18 @@ namespace Questionnaire.Bll.Services
             }).ToList()
         };
 
+        public static Expression<Func<Question, QuestionDto>> SelectQuestionDto { get; } = q => new QuestionDto
+        {
+            Id = q.Id,
+            QuestionnaireId = q.QuestionnaireSheetId,
+            Name = q.Name,
+            Description = q.Description,
+            Number = q.Number,
+            Type = q.Type,
+            SuggestedTime = q.SuggestedTime,
+            Value = q.MaximumPoints
+        };
+
         public static Expression<Func<Question, QuestionnaireQuestionDto>> SelectQuestionnaireQuestion { get; } = g => new QuestionnaireQuestionDto
         {
             Id = g.QuestionnaireSheetId,
@@ -170,6 +182,23 @@ namespace Questionnaire.Bll.Services
                 .Include(q => q.QuestionnaireSheet)
                 .Where(q => q.Id == questionId)
                 .Select(SelectQuestionDetails)
+                .FirstOrDefaultAsync();
+
+            return question;
+        }
+
+        public async Task<QuestionDto> GetQuestionById(string userId, int questionId)
+        {
+            var userGroup = await GetUserGroupByQuestionAndUser(userId, questionId);
+
+            if (userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
+            var question = await _dbContext.Questions
+                .Where(q => q.Id == questionId)
+                .Select(SelectQuestionDto)
                 .FirstOrDefaultAsync();
 
             return question;

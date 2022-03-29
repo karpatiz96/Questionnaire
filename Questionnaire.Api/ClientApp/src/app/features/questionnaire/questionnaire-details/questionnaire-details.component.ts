@@ -59,7 +59,7 @@ export class QuestionnaireDetailsComponent implements OnInit {
   }
 
   loadQuestionnaire(id: number) {
-    this.questionnaireService.getById(id).subscribe(result => {
+    this.questionnaireService.getDetailsById(id).subscribe(result => {
       this.questionnaire = result;
       this.questions = this.questionnaire.questions;
       this.total = this.questionnaire.questions.length;

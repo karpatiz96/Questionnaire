@@ -48,7 +48,7 @@ export class QuestionDetailsComponent implements OnInit {
   }
 
   loadQuestion(id: number) {
-    this.questionService.getById(id).subscribe(result => {
+    this.questionService.getDetailsById(id).subscribe(result => {
       this.question = result;
     }, error => {
       this.errorHandlerSerivce.handleError(error);

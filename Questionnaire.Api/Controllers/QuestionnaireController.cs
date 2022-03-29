@@ -52,7 +52,17 @@ namespace Questionnaire.Api.Controllers
                 throw new UserNotAdminException("User is not admin in group!");
             }
 
-            var questionnaireDto = await _questionnaireService.GetQuestionnaire(id);
+            var questionnaireDetailsDto = await _questionnaireService.GetQuestionnaire(id);
+
+            return Ok(questionnaireDetailsDto);
+        }
+
+        [HttpGet("update/{id}")]
+        public async Task<ActionResult<QuestionnaireDto>> GetQuestionnaireById(int id)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var questionnaireDto = await _questionnaireService.GetQuestionnaireById(userId, id);
 
             return Ok(questionnaireDto);
         }

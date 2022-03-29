@@ -19,8 +19,12 @@ export class AnswerService {
     return this.http.post<AnswerDto>(`${this.baseUrl}/answer`, answerDto);
   }
 
-  getById(id: number) {
+  getDetailsById(id: number) {
     return this.http.get<AnswerDetailsDto>(`${this.baseUrl}/answer/${id}`);
+  }
+
+  getById(id: number) {
+    return this.http.get<AnswerDto>(`${this.baseUrl}/answer/update/${id}`);
   }
 
   update(answerDto: AnswerDto, answerId: number) {

@@ -23,8 +23,7 @@ namespace Questionnaire.Bll.Services
             _dbContext = dbContext;
         }
 
-        public static Expression<Func<Answer, AnswerDetailsDto>> SelectAnswerDetails { get; } = a => 
-        new AnswerDetailsDto
+        public static Expression<Func<Answer, AnswerDetailsDto>> SelectAnswerDetails { get; } = a => new AnswerDetailsDto
         {
             Id = a.Id,
             Name = a.Name,
@@ -35,8 +34,17 @@ namespace Questionnaire.Bll.Services
             VisibleToGroup = a.Question.QuestionnaireSheet.VisibleToGroup
         };
 
-        public static Expression<Func<Answer, AnswerHeaderDto>> SelectAnswerHeader { get; } = a =>
-        new AnswerHeaderDto
+        public static Expression<Func<Answer, AnswerDto>> SelectAnswerDto { get; } = a => new AnswerDto
+        {
+            Id = a.Id,
+            Name = a.Name,
+            QuestionId = a.QuestionId,
+            Type = a.Type ? AnswerType.Correct : AnswerType.False,
+            UserAnswer = a.UserAnswer,
+            Value = a.Points
+        };
+
+        public static Expression<Func<Answer, AnswerHeaderDto>> SelectAnswerHeader { get; } = a => new AnswerHeaderDto
         {
             Id = a.Id,
             Name = a.Name,
@@ -126,6 +134,23 @@ namespace Questionnaire.Bll.Services
                     .ThenInclude(q => q.QuestionnaireSheet)
                 .Where(a => a.Id == answerId)
                 .Select(SelectAnswerDetails)
+                .FirstOrDefaultAsync();
+
+            return result;
+        }
+
+        public async Task<AnswerDto> GetAnswerById(string userId, int answerId)
+        {
+            var userGroup = await GetUserGroupByAnswerAndUser(userId, answerId);
+
+            if(userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
+            var result = await _dbContext.Answers
+                .Where(a => a.Id == answerId)
+                .Select(SelectAnswerDto)
                 .FirstOrDefaultAsync();
 
             return result;

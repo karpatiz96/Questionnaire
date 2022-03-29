@@ -20,8 +20,12 @@ export class QuestionService {
     return this.http.post<QuestionDto>(`${this.baseUrl}/question`, questionDto);
   }
 
-  getById(id: number) {
+  getDetailsById(id: number) {
     return this.http.get<QuestionDetailsDto>(`${this.baseUrl}/question/${id}`);
+  }
+
+  getById(id: number) {
+    return this.http.get<QuestionDto>(`${this.baseUrl}/question/update/${id}`);
   }
 
   update(questionDto: QuestionDto, id: number) {

@@ -47,6 +47,16 @@ namespace Questionnaire.Api.Controllers
             return Ok(questionDetailsDto);
         }
 
+        [HttpGet("update/{id}")]
+        public async Task<ActionResult<QuestionDto>> GetQuestionById(int id)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var questionDto = await _questionService.GetQuestionById(userId, id);
+
+            return Ok(questionDto);
+        }
+
         [HttpGet("list/{id}")]
         public async Task <ActionResult<QuestionnaireQuestionListDto>> GetQuestionnaireQuestionList(int id)
         {

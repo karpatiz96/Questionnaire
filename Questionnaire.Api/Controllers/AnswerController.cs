@@ -43,6 +43,16 @@ namespace Questionnaire.Api.Controllers
             return Ok(answerDetialsDto);
         }
 
+        [HttpGet("update/{id}")]
+        public async Task<ActionResult<AnswerDto>> GetAnswerDto(int id)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var answerDto = await _answerService.GetAnswerById(userId, id);
+
+            return Ok(answerDto);
+        }
+
         [HttpPost]
         public async Task<ActionResult<AnswerDto>> Post([FromBody] AnswerDto answerDto)
         {

@@ -18,8 +18,12 @@ export class QuestionnaireService {
     return this.http.post<QuestionnaireDto>(`${this.baseUrl}/questionnaire`, questionnaireDto);
   }
 
-  getById(id: number) {
+  getDetailsById(id: number) {
     return this.http.get<QuestionnaireDetailsDto>(`${this.baseUrl}/questionnaire/${id}`);
+  }
+
+  getById(id: number) {
+    return this.http.get<QuestionnaireDto>(`${this.baseUrl}/questionnaire/update/${id}`);
   }
 
   update(id: number, questionnaireDto: QuestionnaireDto) {

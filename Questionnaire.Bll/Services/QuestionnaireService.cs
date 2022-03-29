@@ -46,6 +46,20 @@ namespace Questionnaire.Bll.Services
             }).ToList()
         };
 
+        public static Expression<Func<QuestionnaireSheet, QuestionnaireDto>> QuestionnaireDtoSelector { get; } = q => new QuestionnaireDto
+        {
+            Id = q.Id,
+            Title = q.Name,
+            Description = q.Description,
+            Begining = q.Begining,
+            Finish = q.Finish,
+            VisibleToGroup = q.VisibleToGroup,
+            RandomQuestionOrder = q.RandomQuestionOrder,
+            Limited = q.LimitedTime,
+            TimeLimit = q.TimeLimit,
+            GroupId = q.GroupId
+        };
+
         public static Expression<Func<QuestionnaireSheet, QuestionnaireStartDto>> QuestionnaireStartSelector { get; } = q => new QuestionnaireStartDto
         {
             Id = q.Id,
@@ -127,6 +141,23 @@ namespace Questionnaire.Bll.Services
                 .Include(q => q.Questions)
                 .Where(q => q.Id == questionnaireId)
                 .Select(QuestionnaireDetailsSelector)
+                .FirstOrDefaultAsync();
+
+            return questionnaire;
+        }
+
+        public async Task<QuestionnaireDto> GetQuestionnaireById(string userId, int questionnaireId)
+        {
+            var userGroup = await GetUserGroupByQuestionnaireAndUser(userId, questionnaireId);
+
+            if (userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
+            var questionnaire = await _dbContext.QuestionnaireSheets
+                .Where(q => q.Id == questionnaireId)
+                .Select(QuestionnaireDtoSelector)
                 .FirstOrDefaultAsync();
 
             return questionnaire;
