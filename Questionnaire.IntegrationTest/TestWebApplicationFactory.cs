@@ -42,7 +42,7 @@ namespace Questionnaire.IntegrationTest
                     } 
                     catch (Exception e)
                     {
-
+                        Console.Write(e.StackTrace);
                     }
                 }
 

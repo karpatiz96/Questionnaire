@@ -13,16 +13,18 @@ namespace Questionnaire.IntegrationTest
 {
     public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
+        private readonly IList<Claim> _claims;
+        
         public TestAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
-            ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
+            ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, TestClaimProvider provider)
             : base(options, logger, encoder, clock)
         {
+            _claims = provider.Claims;
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var claims = new[] { new Claim(ClaimTypes.NameIdentifier, "123") };
-            var identity = new ClaimsIdentity(claims, "Test");
+            var identity = new ClaimsIdentity(_claims, "Test");
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, "Test");
 

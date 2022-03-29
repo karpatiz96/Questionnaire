@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Questionnaire.Dll;
 using Questionnaire.Dll.Entities;
 using System;
@@ -14,46 +15,80 @@ namespace Questionnaire.IntegrationTest.Helpers
     {
         public static async Task InitializeDbForTesting(QuestionnaireDbContext dbContext)
         {
-            var userStore = new UserStore<User>(dbContext);
-            var passwordHasher = new PasswordHasher<User>();
-            var users = GetTestUsers();
-            foreach(var user in users)
+            if (!dbContext.Users.Any())
             {
-                user.PasswordHash = passwordHasher.HashPassword(user, "Test123+");
-                await userStore.CreateAsync(user);
+                var userStore = new UserStore<User>(dbContext);
+                var passwordHasher = new PasswordHasher<User>();
+                var users = GetTestUsers();
+                foreach (var user in users)
+                {
+                    user.PasswordHash = passwordHasher.HashPassword(user, "Test123+");
+                    await userStore.CreateAsync(user);
+                }
+
+                await dbContext.SaveChangesAsync();
             }
 
-            await dbContext.SaveChangesAsync();
+            if(!dbContext.Groups.Any())
+            {
+                var groups = GetGroups();
 
-            var groups = GetGroups();
+                dbContext.Groups.AddRange(groups);
 
-            dbContext.SaveChanges();
+                dbContext.SaveChanges();
+            }
 
-            dbContext.Groups.AddRange(groups);
+            if(!dbContext.UserGroups.Any())
+            {
+                var groups = dbContext.Groups.OrderBy(g => g.Id).ToList();
 
-            var userGroups = GetUserGroups();
+                var userGroups = GetUserGroups(groups);
 
-            dbContext.UserGroups.AddRange(userGroups);
+                dbContext.UserGroups.AddRange(userGroups);
 
-            dbContext.SaveChanges();
+                dbContext.SaveChanges();
+            }
 
-            var questionnaires = GetQuestionnaires();
+            if(!dbContext.QuestionnaireSheets.Any())
+            {
+                var groups = dbContext.Groups.OrderBy(g => g.Id).ToList();
 
-            dbContext.QuestionnaireSheets.AddRange(questionnaires);
+                var questionnaires = GetQuestionnaires(groups);
 
-            dbContext.SaveChanges();
+                dbContext.QuestionnaireSheets.AddRange(questionnaires);
 
-            var questions = GetQuestions();
+                dbContext.SaveChanges();
+            }
 
-            dbContext.Questions.AddRange(questions);
+            if(!dbContext.Questions.Any())
+            {
+                var questionnaires = dbContext.QuestionnaireSheets.OrderBy(q => q.Id).ToList();
 
-            dbContext.SaveChanges();
+                var questions = GetQuestions(questionnaires);
 
-            var answers = GetAnswers();
+                dbContext.Questions.AddRange(questions);
 
-            dbContext.Answers.AddRange(answers);
+                dbContext.SaveChanges();
+            }
 
-            dbContext.SaveChanges();
+            if(!dbContext.Answers.Any())
+            {
+                var questions = dbContext.Questions.OrderBy(q => q.Id).ToList();
+
+                var answers = GetAnswers(questions);
+
+                dbContext.Answers.AddRange(answers);
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public static async Task ReInitializeForTesting(QuestionnaireDbContext dbContext)
+        {
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
+
+            await InitializeDbForTesting(dbContext);
         }
 
         public static List<User> GetTestUsers()
@@ -89,55 +124,54 @@ namespace Questionnaire.IntegrationTest.Helpers
         {
             return new List<Group> 
             { 
-                new Group { Id = 1, Created = DateTime.UtcNow, Name = "Group1", Description = "Group1 Description" },
-                new Group { Id = 2, Created = DateTime.UtcNow, Name = "Group2", Description = "Group2 Description" },
+                new Group { Created = DateTime.UtcNow, Name = "Group1", Description = "Group1 Description" },
+                new Group { Created = DateTime.UtcNow, Name = "Group2", Description = "Group2 Description" },
             };
         }
 
-        public static List<UserGroup> GetUserGroups()
+        public static List<UserGroup> GetUserGroups(List<Group> groups)
         {
             return new List<UserGroup> 
             {
-                new UserGroup { Id = 1, UserId = "123", GroupId = 1, MainAdmin = true, Role = "Admin", IsDeleted = false },
-                new UserGroup { Id = 2, UserId = "124", GroupId = 1, MainAdmin = false, Role = "User", IsDeleted = false },
-                new UserGroup { Id = 3, UserId = "123", GroupId = 2, MainAdmin = false, Role = "User", IsDeleted = false },
-                new UserGroup { Id = 4, UserId = "124", GroupId = 2, MainAdmin = true, Role = "Admin", IsDeleted = false }
+                new UserGroup { UserId = "123", GroupId = groups[0].Id, MainAdmin = true, Role = "Admin", IsDeleted = false },
+                new UserGroup { UserId = "123", GroupId = groups[1].Id, MainAdmin = false, Role = "User", IsDeleted = false },
+                new UserGroup { UserId = "124", GroupId = groups[1].Id, MainAdmin = true, Role = "Admin", IsDeleted = false }
             };
         }
 
-        public static List<QuestionnaireSheet> GetQuestionnaires()
+        public static List<QuestionnaireSheet> GetQuestionnaires(List<Group> groups)
         {
             var yesterday = DateTime.UtcNow.Subtract(TimeSpan.FromDays(1));
             var tommorrow = DateTime.UtcNow.AddDays(1);
 
             return new List<QuestionnaireSheet>
             {
-                new QuestionnaireSheet { Id = 1, GroupId = 1, Created = DateTime.UtcNow, Name = "Questionnaire1", Description = "Questionnaire1 Description", 
+                new QuestionnaireSheet { GroupId = groups[0].Id, Created = DateTime.UtcNow, Name = "Questionnaire1", Description = "Questionnaire1 Description", 
                     Begining = yesterday, Finish = tommorrow, LastEdited = DateTime.UtcNow, LimitedTime = false, TimeLimit = 1, RandomQuestionOrder = false, VisibleToGroup = true
                 },
-                new QuestionnaireSheet { Id = 2, GroupId = 2, Created = DateTime.UtcNow, Name = "Questionnaire2", Description = "Questionnaire2 Description",
+                new QuestionnaireSheet { GroupId = groups[1].Id, Created = DateTime.UtcNow, Name = "Questionnaire2", Description = "Questionnaire2 Description",
                     Begining = yesterday, Finish = tommorrow, LastEdited = DateTime.UtcNow, LimitedTime = false, TimeLimit = 1, RandomQuestionOrder = false, VisibleToGroup = true
                 },
             };
         }
 
-        public static List<Question> GetQuestions()
+        public static List<Question> GetQuestions(List<QuestionnaireSheet> questionnaireSheets)
         {
             return new List<Question> 
             {
-                new Question { Id = 1, Name = "Question1", Description = "Question1 Description", MaximumPoints = 5, Number = 1, QuestionnaireSheetId = 1, SuggestedTime = 5, Type = Question.QuestionType.TrueOrFalse },
-                new Question { Id = 2, Name = "Question2", Description = "Question2 Description", MaximumPoints = 5, Number = 1, QuestionnaireSheetId = 2, SuggestedTime = 5, Type = Question.QuestionType.TrueOrFalse },
+                new Question { Name = "Question1", Description = "Question1 Description", MaximumPoints = 5, Number = 1, QuestionnaireSheetId = questionnaireSheets[0].Id, SuggestedTime = 5, Type = Question.QuestionType.TrueOrFalse },
+                new Question { Name = "Question2", Description = "Question2 Description", MaximumPoints = 5, Number = 1, QuestionnaireSheetId = questionnaireSheets[1].Id, SuggestedTime = 5, Type = Question.QuestionType.TrueOrFalse },
             };
         }
 
-        public static List<Answer> GetAnswers()
+        public static List<Answer> GetAnswers(List<Question> questions)
         {
             return new List<Answer> 
             {
-                new Answer { Id = 1, Name = "True", Type = true, TrueOrFalse = true, Points = 5, QuestionId = 1, UserAnswer = "" },
-                new Answer { Id = 2, Name = "False", Type = false, TrueOrFalse = false, Points = 0, QuestionId = 1, UserAnswer = "" },
-                new Answer { Id = 3, Name = "True", Type = true, TrueOrFalse = true, Points = 5, QuestionId = 2, UserAnswer = "" },
-                new Answer { Id = 4, Name = "False", Type = false, TrueOrFalse = false, Points = 0, QuestionId = 2, UserAnswer = "" },
+                new Answer { Name = "True", Type = true, TrueOrFalse = true, Points = 5, QuestionId = questions[0].Id, UserAnswer = "" },
+                new Answer { Name = "False", Type = false, TrueOrFalse = false, Points = 0, QuestionId = questions[0].Id, UserAnswer = "" },
+                new Answer { Name = "True", Type = true, TrueOrFalse = true, Points = 5, QuestionId = questions[1].Id, UserAnswer = "" },
+                new Answer { Name = "False", Type = false, TrueOrFalse = false, Points = 0, QuestionId = questions[1].Id, UserAnswer = "" },
             };
         }
     }
