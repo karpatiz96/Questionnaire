@@ -1,4 +1,6 @@
-﻿using Questionnaire.Bll.Services;
+﻿using Questionnaire.Bll.Dtos;
+using Questionnaire.Bll.Exceptions;
+using Questionnaire.Bll.Services;
 using Questionnaire.UnitTest.Helpers;
 using System;
 using System.Collections.Generic;
@@ -21,7 +23,14 @@ namespace Questionnaire.UnitTest.UnitTests
         [Fact]
         public async Task Get_GroupDetails()
         {
+            using(var context = Fixture.CreateContext())
+            {
+                var groupService = new GroupService(context);
 
+                var groupDetails = await groupService.GetGroup("123", 1);
+
+                Assert.NotNull(groupDetails);
+            }
         }
 
         [Fact]
@@ -33,7 +42,7 @@ namespace Questionnaire.UnitTest.UnitTests
 
                 var groupList = await groupService.GetGroups("123");
 
-                Assert.Equal(2, groupList.Count());
+                Assert.Equal(3, groupList.Count());
             }
         }
 
@@ -45,31 +54,61 @@ namespace Questionnaire.UnitTest.UnitTests
                 context.Database.BeginTransaction();
                 var groupService = new GroupService(context);
 
-                var group = await groupService.CreateGroup(new Bll.Dtos.GroupDto { Name = "Group3", Description = "Description3" }, "123");
+                var group = await groupService.CreateGroup(new Bll.Dtos.GroupDto { Name = "Group4", Description = "Description4" }, "123");
 
                 context.ChangeTracker.Clear();
-                var result = context.Groups.Single(g => g.Name == "Group3");
+                var result = context.Groups.Single(g => g.Name == "Group4");
 
-                Assert.Equal("Description3", result.Description);
+                Assert.Equal("Description4", result.Description);
             }
         }
 
         [Fact]
         public async Task Update_Group()
         {
+            using (var context = Fixture.CreateContext())
+            {
 
+                context.Database.BeginTransaction();
+                var groupService = new GroupService(context);
+
+                var old = context.Groups.Single(g => g.Name == "Group3");
+
+                await groupService.UpdateGroup("123", new GroupDto { Id = old.Id, Name = "Group3", Description = "Description5" });
+
+                context.ChangeTracker.Clear();
+                var result = context.Groups.Single(g => g.Name == "Group3");
+
+                Assert.Equal("Description5", result.Description);
+            }
         }
 
         [Fact]
         public async Task Get_Members_Ok()
         {
+            using (var context = Fixture.CreateContext())
+            {
+                var groupService = new GroupService(context);
 
+                var old = context.Groups.Single(g => g.Name == "Group1");
+
+                var members = await groupService.GetGroupMembers("123", old.Id);
+
+                Assert.NotNull(members);
+            }
         }
 
         [Fact]
         public async Task Get_Members_NotAdmin()
         {
+            using (var context = Fixture.CreateContext())
+            {
+                var groupService = new GroupService(context);
 
+                var old = context.Groups.Single(g => g.Name == "Group1");
+
+                await Assert.ThrowsAsync<UserNotAdminException>(() => groupService.GetGroupMembers("124", old.Id));
+            }
         }
     }
 }

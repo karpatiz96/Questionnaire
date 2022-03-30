@@ -64,7 +64,7 @@ namespace Questionnaire.UnitTest.Helpers
 
             if (!dbContext.UserGroups.Any())
             {
-                var groups = dbContext.Groups.OrderBy(g => g.Id).ToList();
+                var groups = dbContext.Groups.OrderBy(g => g.Name).ToList();
 
                 var userGroups = UnitTestSeedHelper.GetUserGroups(groups);
 
@@ -75,7 +75,7 @@ namespace Questionnaire.UnitTest.Helpers
 
             if (!dbContext.QuestionnaireSheets.Any())
             {
-                var groups = dbContext.Groups.OrderBy(g => g.Id).ToList();
+                var groups = dbContext.Groups.OrderBy(g => g.Name).ToList();
 
                 var questionnaires = UnitTestSeedHelper.GetQuestionnaires(groups);
 
@@ -86,7 +86,7 @@ namespace Questionnaire.UnitTest.Helpers
 
             if (!dbContext.Questions.Any())
             {
-                var questionnaires = dbContext.QuestionnaireSheets.OrderBy(q => q.Id).ToList();
+                var questionnaires = dbContext.QuestionnaireSheets.OrderBy(q => q.Name).ToList();
 
                 var questions = UnitTestSeedHelper.GetQuestions(questionnaires);
 
@@ -97,7 +97,7 @@ namespace Questionnaire.UnitTest.Helpers
 
             if (!dbContext.Answers.Any())
             {
-                var questions = dbContext.Questions.OrderBy(q => q.Id).ToList();
+                var questions = dbContext.Questions.OrderBy(q => q.Name).ToList();
 
                 var answers = UnitTestSeedHelper.GetAnswers(questions);
 

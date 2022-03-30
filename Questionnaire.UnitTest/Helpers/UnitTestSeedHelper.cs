@@ -42,8 +42,9 @@ namespace Questionnaire.UnitTest.Helpers
         {
             return new List<Group>
             {
-                new Group { Created = DateTime.UtcNow, Name = "Group1", Description = "Group1 Description" },
-                new Group { Created = DateTime.UtcNow, Name = "Group2", Description = "Group2 Description" },
+                new Group { Created = DateTime.UtcNow, Name = "Group1", Description = "Description1" },
+                new Group { Created = DateTime.UtcNow, Name = "Group2", Description = "Description2" },
+                new Group { Created = DateTime.UtcNow, Name = "Group3", Description = "Description3" }
             };
         }
 
@@ -53,7 +54,8 @@ namespace Questionnaire.UnitTest.Helpers
             {
                 new UserGroup { UserId = "123", GroupId = groups[0].Id, MainAdmin = true, Role = "Admin", IsDeleted = false },
                 new UserGroup { UserId = "123", GroupId = groups[1].Id, MainAdmin = false, Role = "User", IsDeleted = false },
-                new UserGroup { UserId = "124", GroupId = groups[1].Id, MainAdmin = true, Role = "Admin", IsDeleted = false }
+                new UserGroup { UserId = "124", GroupId = groups[1].Id, MainAdmin = true, Role = "Admin", IsDeleted = false },
+                new UserGroup { UserId = "123", GroupId = groups[2].Id, MainAdmin = true, Role = "Admin", IsDeleted = false }
             };
         }
 
@@ -64,10 +66,10 @@ namespace Questionnaire.UnitTest.Helpers
 
             return new List<QuestionnaireSheet>
             {
-                new QuestionnaireSheet { GroupId = groups[0].Id, Created = DateTime.UtcNow, Name = "Questionnaire1", Description = "Questionnaire1 Description",
+                new QuestionnaireSheet { GroupId = groups[0].Id, Created = DateTime.UtcNow, Name = "Questionnaire1", Description = "Description1",
                     Begining = yesterday, Finish = tommorrow, LastEdited = DateTime.UtcNow, LimitedTime = false, TimeLimit = 1, RandomQuestionOrder = false, VisibleToGroup = true
                 },
-                new QuestionnaireSheet { GroupId = groups[1].Id, Created = DateTime.UtcNow, Name = "Questionnaire2", Description = "Questionnaire2 Description",
+                new QuestionnaireSheet { GroupId = groups[1].Id, Created = DateTime.UtcNow, Name = "Questionnaire2", Description = "Description2",
                     Begining = yesterday, Finish = tommorrow, LastEdited = DateTime.UtcNow, LimitedTime = false, TimeLimit = 1, RandomQuestionOrder = false, VisibleToGroup = true
                 },
             };
@@ -77,8 +79,8 @@ namespace Questionnaire.UnitTest.Helpers
         {
             return new List<Question>
             {
-                new Question { Name = "Question1", Description = "Question1 Description", MaximumPoints = 5, Number = 1, QuestionnaireSheetId = questionnaireSheets[0].Id, SuggestedTime = 5, Type = Question.QuestionType.TrueOrFalse },
-                new Question { Name = "Question2", Description = "Question2 Description", MaximumPoints = 5, Number = 1, QuestionnaireSheetId = questionnaireSheets[1].Id, SuggestedTime = 5, Type = Question.QuestionType.TrueOrFalse },
+                new Question { Name = "Question1", Description = "Description1", MaximumPoints = 5, Number = 1, QuestionnaireSheetId = questionnaireSheets[0].Id, SuggestedTime = 5, Type = Question.QuestionType.TrueOrFalse },
+                new Question { Name = "Question2", Description = "Description2", MaximumPoints = 5, Number = 1, QuestionnaireSheetId = questionnaireSheets[1].Id, SuggestedTime = 5, Type = Question.QuestionType.TrueOrFalse },
             };
         }
 
