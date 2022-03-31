@@ -15,7 +15,7 @@ namespace Questionnaire.UnitTest.Helpers
 {
     public class TestQuestionnaireDatabaseFixture
     {
-        private const string ConnectionString = "";
+        private const string ConnectionString = @"Server=(localdb)\mssqllocaldb;Database=QuestionnaireUnitTest;Trusted_Connection=True;MultipleActiveResultSets=true";
 
         private static readonly object _lock = new();
         private static bool Initialized;

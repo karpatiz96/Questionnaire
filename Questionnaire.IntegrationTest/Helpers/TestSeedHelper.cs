@@ -31,16 +31,18 @@ namespace Questionnaire.IntegrationTest.Helpers
 
             if(!dbContext.Groups.Any())
             {
-                var groups = GetGroups();
+                var groups = GetGroups().OrderBy(i => i.Name).ToList();
 
-                dbContext.Groups.AddRange(groups);
-
-                dbContext.SaveChanges();
+                foreach(var group in groups)
+                {
+                    dbContext.Groups.Add(group);
+                    dbContext.SaveChanges();
+                }
             }
 
             if(!dbContext.UserGroups.Any())
             {
-                var groups = dbContext.Groups.OrderBy(g => g.Id).ToList();
+                var groups = dbContext.Groups.OrderBy(g => g.Name).ToList();
 
                 var userGroups = GetUserGroups(groups);
 
@@ -49,20 +51,33 @@ namespace Questionnaire.IntegrationTest.Helpers
                 dbContext.SaveChanges();
             }
 
-            if(!dbContext.QuestionnaireSheets.Any())
+            if (!dbContext.Invitations.Any())
             {
-                var groups = dbContext.Groups.OrderBy(g => g.Id).ToList();
+                var groups = dbContext.Groups.OrderBy(g => g.Name).ToList();
 
-                var questionnaires = GetQuestionnaires(groups);
+                var invitations = GetInvitations(groups);
 
-                dbContext.QuestionnaireSheets.AddRange(questionnaires);
+                dbContext.Invitations.AddRange(invitations);
 
                 dbContext.SaveChanges();
             }
 
+            if(!dbContext.QuestionnaireSheets.Any())
+            {
+                var groups = dbContext.Groups.OrderBy(g => g.Name).ToList();
+
+                var questionnaires = GetQuestionnaires(groups).OrderBy(q => q.Name).ToList();
+
+                foreach (var questionnaire in questionnaires)
+                {
+                    dbContext.QuestionnaireSheets.Add(questionnaire);
+                    dbContext.SaveChanges();
+                }
+            }
+
             if(!dbContext.Questions.Any())
             {
-                var questionnaires = dbContext.QuestionnaireSheets.OrderBy(q => q.Id).ToList();
+                var questionnaires = dbContext.QuestionnaireSheets.OrderBy(q => q.Name).ToList();
 
                 var questions = GetQuestions(questionnaires);
 
@@ -73,7 +88,7 @@ namespace Questionnaire.IntegrationTest.Helpers
 
             if(!dbContext.Answers.Any())
             {
-                var questions = dbContext.Questions.OrderBy(q => q.Id).ToList();
+                var questions = dbContext.Questions.OrderBy(q => q.Name).ToList();
 
                 var answers = GetAnswers(questions);
 
@@ -126,6 +141,8 @@ namespace Questionnaire.IntegrationTest.Helpers
             { 
                 new Group { Created = DateTime.UtcNow, Name = "Group1", Description = "Group1 Description" },
                 new Group { Created = DateTime.UtcNow, Name = "Group2", Description = "Group2 Description" },
+                new Group { Created = DateTime.UtcNow, Name = "Group3", Description = "Group3 Description" },
+                new Group { Created = DateTime.UtcNow, Name = "Group4", Description = "Group4 Description" }
             };
         }
 
@@ -135,7 +152,18 @@ namespace Questionnaire.IntegrationTest.Helpers
             {
                 new UserGroup { UserId = "123", GroupId = groups[0].Id, MainAdmin = true, Role = "Admin", IsDeleted = false },
                 new UserGroup { UserId = "123", GroupId = groups[1].Id, MainAdmin = false, Role = "User", IsDeleted = false },
-                new UserGroup { UserId = "124", GroupId = groups[1].Id, MainAdmin = true, Role = "Admin", IsDeleted = false }
+                new UserGroup { UserId = "124", GroupId = groups[1].Id, MainAdmin = true, Role = "Admin", IsDeleted = false },
+                new UserGroup { UserId = "123", GroupId = groups[2].Id, MainAdmin = true, Role = "Admin", IsDeleted = false },
+                new UserGroup { UserId = "123", GroupId = groups[3].Id, MainAdmin = true, Role = "Admin", IsDeleted = false }
+            };
+        }
+
+        public static List<Invitation> GetInvitations(List<Group> groups)
+        {
+            return new List<Invitation>
+            {
+                new Invitation { UserId = "124", GroupId = groups[0].Id, Created = DateTime.UtcNow, Status = Invitation.InvitationStatus.Undecided },
+                new Invitation { UserId = "124", GroupId = groups[2].Id, Created = DateTime.UtcNow, Status = Invitation.InvitationStatus.Undecided }
             };
         }
 

@@ -26,7 +26,7 @@ namespace Questionnaire.IntegrationTest
                 services.Remove(development);
 
                 services.AddDbContext<QuestionnaireDbContext>((options, context) 
-                    => context.UseSqlServer(""));
+                    => context.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=QuestionnaireTest;Trusted_Connection=True;MultipleActiveResultSets=true"));
 
                 var serviceProvider = services.BuildServiceProvider();
                 using(var scope = serviceProvider.CreateScope())

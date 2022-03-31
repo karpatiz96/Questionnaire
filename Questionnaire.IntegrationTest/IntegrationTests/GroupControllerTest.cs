@@ -80,7 +80,7 @@ namespace Questionnaire.IntegrationTest.IntegrationTests
 
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(2, groups.Count);
+            Assert.Equal(4, groups.Count);
         }
 
         [Fact]
@@ -93,7 +93,7 @@ namespace Questionnaire.IntegrationTest.IntegrationTests
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Test");
 
-            var groupDto = new GroupDto { Name = "Group3", Description = "Group3 Description" };
+            var groupDto = new GroupDto { Name = "Group5", Description = "Group5 Description" };
             var message = new StringContent(JsonConvert.SerializeObject(groupDto), Encoding.UTF8, "application/json");
 
             //Act
