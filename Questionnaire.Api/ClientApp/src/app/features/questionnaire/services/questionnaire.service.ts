@@ -38,4 +38,8 @@ export class QuestionnaireService {
   show(id: number) {
     return this.http.post(`${this.baseUrl}/questionnaire/show`, id);
   }
+
+  copy(id: number) {
+    return this.http.post<QuestionnaireDto>(`${this.baseUrl}/questionnaire/copy`, id);
+  }
 }

@@ -7,16 +7,22 @@
         <dl class="row mt-4">
             <dd class="col-sm-6"><h4>{{questionnaire.title}}</h4></dd>
             <dd class="col-sm-2" *ngIf="questionnaire.visibleToGroup">
-              <a class="btn btn-outline-danger" (click)="hide(questionnaire.id)">
+              <a class="btn btn-outline-danger mr-3" title="Hide questionnaire" (click)="hide(questionnaire.id)">
                 <i class="bi bi-eye-slash"></i>
+              </a>
+              <a class="btn btn-outline-danger" title="Copy questionnaire" (click)="copy(questionnaire.id)">
+                <i class="bi bi-clipboard"></i>
               </a>
             </dd>
             <dd class="col-sm-2" *ngIf="!questionnaire.visibleToGroup">
-              <a class="btn btn-outline-success mr-3" (click)="show(questionnaire.id)">
+              <a class="btn btn-outline-success mr-3" title="Show questionnaire" (click)="show(questionnaire.id)">
                 <i class="bi bi-eye"></i>
               </a>
-              <a type="button" class="btn btn-outline-primary" [routerLink]="['/questionnaire/edit', questionnaire.id]">
+              <a type="button" class="btn btn-outline-primary mr-3" title="Edit questionnaire" [routerLink]="['/questionnaire/edit', questionnaire.id]">
                 <i class="bi bi-pencil-square"></i>
+              </a>
+              <a class="btn btn-outline-danger" title="Copy questionnaire" (click)="copy(questionnaire.id)">
+                <i class="bi bi-clipboard"></i>
               </a>
             </dd>
         </dl>

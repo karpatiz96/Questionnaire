@@ -1,4 +1,7 @@
-﻿using Questionnaire.Dll.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Questionnaire.Dll;
+using Questionnaire.Dll.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +12,92 @@ namespace Questionnaire.UnitTest.Helpers
 {
     public class UnitTestSeedHelper
     {
+        public static void InitializeDatabase(QuestionnaireDbContext dbContext)
+        {
+            if (!dbContext.Users.Any())
+            {
+                var passwordHasher = new PasswordHasher<User>();
+                var users = GetTestUsers();
+                foreach (var user in users)
+                {
+                    user.PasswordHash = passwordHasher.HashPassword(user, "Test123+");
+                }
+
+                dbContext.Users.AddRange(users);
+
+                dbContext.SaveChanges();
+            }
+
+            if (!dbContext.Groups.Any())
+            {
+                var groups = GetGroups().OrderBy(g => g.Name).ToList();
+
+                foreach (var group in groups)
+                {
+                    dbContext.Groups.Add(group);
+
+                    dbContext.SaveChanges();
+                }
+            }
+
+            if (!dbContext.UserGroups.Any())
+            {
+                var groups = dbContext.Groups.OrderBy(g => g.Name).ToList();
+
+                var userGroups = GetUserGroups(groups);
+
+                dbContext.UserGroups.AddRange(userGroups);
+
+                dbContext.SaveChanges();
+            }
+
+            if (!dbContext.Invitations.Any())
+            {
+                var groups = dbContext.Groups.OrderBy(g => g.Name).ToList();
+
+                var invitations = GetInvitations(groups);
+
+                dbContext.Invitations.AddRange(invitations);
+
+                dbContext.SaveChanges();
+            }
+
+            if (!dbContext.QuestionnaireSheets.Any())
+            {
+                var groups = dbContext.Groups.OrderBy(g => g.Name).ToList();
+
+                var questionnaires = GetQuestionnaires(groups).OrderBy(q => q.Name).ToList();
+
+                foreach (var questionnaire in questionnaires)
+                {
+                    dbContext.QuestionnaireSheets.Add(questionnaire);
+                    dbContext.SaveChanges();
+                }
+            }
+
+            if (!dbContext.Questions.Any())
+            {
+                var questionnaires = dbContext.QuestionnaireSheets.OrderBy(q => q.Name).ToList();
+
+                var questions = GetQuestions(questionnaires);
+
+                dbContext.Questions.AddRange(questions);
+
+                dbContext.SaveChanges();
+            }
+
+            if (!dbContext.Answers.Any())
+            {
+                var questions = dbContext.Questions.OrderBy(q => q.Name).ToList();
+
+                var answers = GetAnswers(questions);
+
+                dbContext.Answers.AddRange(answers);
+
+                dbContext.SaveChanges();
+            }
+        }
+
         public static List<User> GetTestUsers()
         {
             return new List<User>
@@ -44,7 +133,8 @@ namespace Questionnaire.UnitTest.Helpers
             {
                 new Group { Created = DateTime.UtcNow, Name = "Group1", Description = "Description1" },
                 new Group { Created = DateTime.UtcNow, Name = "Group2", Description = "Description2" },
-                new Group { Created = DateTime.UtcNow, Name = "Group3", Description = "Description3" }
+                new Group { Created = DateTime.UtcNow, Name = "Group3", Description = "Description3" },
+                new Group { Created = DateTime.UtcNow, Name = "Group4", Description = "Description4" },
             };
         }
 
@@ -55,7 +145,17 @@ namespace Questionnaire.UnitTest.Helpers
                 new UserGroup { UserId = "123", GroupId = groups[0].Id, MainAdmin = true, Role = "Admin", IsDeleted = false },
                 new UserGroup { UserId = "123", GroupId = groups[1].Id, MainAdmin = false, Role = "User", IsDeleted = false },
                 new UserGroup { UserId = "124", GroupId = groups[1].Id, MainAdmin = true, Role = "Admin", IsDeleted = false },
-                new UserGroup { UserId = "123", GroupId = groups[2].Id, MainAdmin = true, Role = "Admin", IsDeleted = false }
+                new UserGroup { UserId = "123", GroupId = groups[2].Id, MainAdmin = true, Role = "Admin", IsDeleted = false },
+                new UserGroup { UserId = "123", GroupId = groups[3].Id, MainAdmin = true, Role = "Admin", IsDeleted = false }
+            };
+        }
+
+        public static List<Invitation> GetInvitations(List<Group> groups)
+        {
+            return new List<Invitation>
+            {
+                new Invitation { UserId = "124", GroupId = groups[0].Id, Created = DateTime.UtcNow, Status = Invitation.InvitationStatus.Undecided },
+                new Invitation { UserId = "124", GroupId = groups[2].Id, Created = DateTime.UtcNow, Status = Invitation.InvitationStatus.Undecided }
             };
         }
 
@@ -67,7 +167,7 @@ namespace Questionnaire.UnitTest.Helpers
             return new List<QuestionnaireSheet>
             {
                 new QuestionnaireSheet { GroupId = groups[0].Id, Created = DateTime.UtcNow, Name = "Questionnaire1", Description = "Description1",
-                    Begining = yesterday, Finish = tommorrow, LastEdited = DateTime.UtcNow, LimitedTime = false, TimeLimit = 1, RandomQuestionOrder = false, VisibleToGroup = true
+                    Begining = yesterday, Finish = tommorrow, LastEdited = DateTime.UtcNow, LimitedTime = false, TimeLimit = 1, RandomQuestionOrder = false, VisibleToGroup = false
                 },
                 new QuestionnaireSheet { GroupId = groups[1].Id, Created = DateTime.UtcNow, Name = "Questionnaire2", Description = "Description2",
                     Begining = yesterday, Finish = tommorrow, LastEdited = DateTime.UtcNow, LimitedTime = false, TimeLimit = 1, RandomQuestionOrder = false, VisibleToGroup = true

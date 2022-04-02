@@ -1,5 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationDialogService } from '../../shared/services/confirmationDialog.service';
 import { SortableDirective, SortDirection, SortEvent } from '../../shared/directives/sortable.directive';
 import { QuestionHeaderDto } from '../models/questionnaires/questionHeaderDto';
@@ -45,6 +45,7 @@ export class QuestionnaireDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private questionnaireService: QuestionnaireService,
     private questionService: QuestionService,
     private confirmationDialogService: ConfirmationDialogService,
@@ -95,6 +96,15 @@ export class QuestionnaireDetailsComponent implements OnInit {
   show(id: number) {
     this.questionnaireService.show(id).subscribe(() => {
       this.questionnaire.visibleToGroup = true;
+    }, error => {
+      this.errorHandlerService.handleError(error);
+      this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+    });
+  }
+
+  copy(id: number) {
+    this.questionnaireService.copy(id).subscribe(result => {
+      this.router.navigate(['/questionnaire', result.id]);
     }, error => {
       this.errorHandlerService.handleError(error);
       this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });

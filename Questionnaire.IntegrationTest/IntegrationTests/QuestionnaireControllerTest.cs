@@ -97,5 +97,27 @@ namespace Questionnaire.IntegrationTest.IntegrationTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal("Questionnaire3", questionnaire.Title);
         }
+
+        [Fact]
+        public async Task Copy_Questionnaire_Ok()
+        {
+            var provider = TestClaimProvider.WithAdminClaim();
+            var client = _factory.WithAuthentication<Questionnaire.Api.Startup>(provider)
+                .CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
+
+            //Act
+            var questionnaireId = 1;
+            var message = new StringContent(JsonConvert.SerializeObject(questionnaireId), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("/api/questionnaire/copy", message);
+
+            var content = await response.Content.ReadAsStringAsync();
+            var questionnaire = JsonConvert.DeserializeObject<QuestionnaireDto>(content);
+
+            //Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal("Questionnaire1-copy", questionnaire.Title);
+        }
     }
 }

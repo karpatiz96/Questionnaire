@@ -94,6 +94,16 @@ namespace Questionnaire.Api.Controllers
             return Ok(questionnaire);
         }
 
+        [HttpPost("copy")]
+        public async Task<ActionResult<QuestionnaireDto>> Copy([FromBody] int questionnaireId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var questionnaireDto = await _questionnaireService.CopyQuestionnaire(userId, questionnaireId);
+
+            return Ok(questionnaireDto);
+        }
+
         [HttpPost("hide")]
         public async Task<IActionResult> PostHide([FromBody] int id)
         {

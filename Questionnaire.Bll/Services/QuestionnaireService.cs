@@ -262,6 +262,73 @@ namespace Questionnaire.Bll.Services
             return questionnaireDto;
         }
 
+        public async Task<QuestionnaireDto> CopyQuestionnaire(string userId, int questionnaireId)
+        {
+            var userGroup = await GetUserGroupByQuestionnaireAndUser(userId, questionnaireId);
+
+            if (userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
+            var oldQuestionnaire = await _dbContext.QuestionnaireSheets
+                .Where(q => q.Id == questionnaireId)
+                .FirstOrDefaultAsync();
+
+
+            var values = _dbContext.Entry(oldQuestionnaire).CurrentValues.Clone();
+            var questionnaire = new QuestionnaireSheet();
+            _dbContext.Entry(questionnaire).CurrentValues.SetValues(values);
+            questionnaire.Id = 0;
+            questionnaire.Name = questionnaire.Name + "-copy";
+            questionnaire.Created = DateTime.UtcNow;
+            questionnaire.LastEdited = DateTime.UtcNow;
+            questionnaire.VisibleToGroup = false;
+            _dbContext.QuestionnaireSheets.Add(questionnaire);
+            await _dbContext.SaveChangesAsync();
+
+            var questions = await _dbContext.Questions
+                .OrderBy(q => q.Id)
+                .Where(q => q.QuestionnaireSheetId == questionnaireId)
+                .ToListAsync();
+
+            foreach (var question in questions)
+            {
+                var questionValue = _dbContext.Entry(question).CurrentValues.Clone();
+                var newQuestion = new Question();
+                _dbContext.Entry(newQuestion).CurrentValues.SetValues(questionValue);
+                newQuestion.Id = 0;
+                newQuestion.QuestionnaireSheetId = questionnaire.Id;
+                _dbContext.Questions.Add(newQuestion);
+
+                await _dbContext.SaveChangesAsync();
+
+                var answers = await _dbContext.Answers
+                    .OrderBy(a => a.Id)
+                    .Where(a => a.QuestionId == question.Id)
+                    .ToListAsync();
+
+                foreach (var answer in answers)
+                {
+                    var answerValue = _dbContext.Entry(answer).CurrentValues.Clone();
+                    var newAnswer = new Answer();
+                    _dbContext.Entry(newAnswer).CurrentValues.SetValues(answerValue);
+                    newAnswer.Id = 0;
+                    newAnswer.QuestionId = question.Id;
+                    _dbContext.Answers.Add(newAnswer);
+                }
+
+                await _dbContext.SaveChangesAsync();
+            }
+
+            var result = await _dbContext.QuestionnaireSheets
+                .Where(q => q.Id == questionnaire.Id)
+                .Select(QuestionnaireDtoSelector)
+                .FirstOrDefaultAsync();
+
+            return result;
+        }
+
         public async Task HideQuestionnaire(string userId, int questionnaireId)
         {
             var userGroup = await GetUserGroupByQuestionnaireAndUser(userId, questionnaireId);

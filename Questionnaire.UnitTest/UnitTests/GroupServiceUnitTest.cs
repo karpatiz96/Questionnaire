@@ -42,7 +42,7 @@ namespace Questionnaire.UnitTest.UnitTests
 
                 var groupList = await groupService.GetGroups("123");
 
-                Assert.Equal(3, groupList.Count());
+                Assert.Equal(4, groupList.Count());
             }
         }
 
@@ -54,12 +54,12 @@ namespace Questionnaire.UnitTest.UnitTests
                 context.Database.BeginTransaction();
                 var groupService = new GroupService(context);
 
-                var group = await groupService.CreateGroup(new Bll.Dtos.GroupDto { Name = "Group4", Description = "Description4" }, "123");
+                var group = await groupService.CreateGroup(new Bll.Dtos.GroupDto { Name = "Group5", Description = "Description5" }, "123");
 
                 context.ChangeTracker.Clear();
-                var result = context.Groups.Single(g => g.Name == "Group4");
+                var result = context.Groups.Single(g => g.Name == "Group5");
 
-                Assert.Equal("Description4", result.Description);
+                Assert.Equal("Description5", result.Description);
             }
         }
 

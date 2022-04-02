@@ -22,6 +22,8 @@ namespace Questionnaire.Bll.IServices
 
         Task<QuestionnaireDto> UpdateQuestionnaire(string userId, QuestionnaireDto questionnaireDto);
 
+        Task<QuestionnaireDto> CopyQuestionnaire(string userId, int questionnaireId);
+
         Task HideQuestionnaire(string userId, int questionnaireId);
 
         Task ShowQuestionnaire(string userId, int questionnaireId);
