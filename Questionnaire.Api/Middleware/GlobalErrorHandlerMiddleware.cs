@@ -56,6 +56,9 @@ namespace Questionnaire.Api.Middleware
                     case QuestionAnswerValidationException:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
+                    case EvaluationValidationException:
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        break;
                     default:
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ namespace Questionnaire.Bll.Dtos
 
         public int QuestionnaireId { get; set; }
 
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Points can't be less than 1")]
         public int Number { get; set; }
 
         public String Name { get; set; }
@@ -21,8 +24,12 @@ namespace Questionnaire.Bll.Dtos
 
         public QuestionType Type { get; set; }
 
+        [Required]
+        [Range(0, int.MaxValue, ErrorMessage = "Points can't be less than 0")]
         public int Value { get; set; }
 
+        [Required]
+        [Range(0, int.MaxValue, ErrorMessage = "Points can't be less than 0")]
         public int SuggestedTime { get; set; }
     }
 }

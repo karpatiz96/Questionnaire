@@ -20,6 +20,7 @@ import { AnswerEditComponent } from './answer-edit/answer-edit.component';
 import { AnswerDetailsComponent } from './answer-details/answer-details.component';
 import { SharedModule } from '../shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { QuestionnaireAnswerFinishComponent } from './questionnaire-answer-finish/questionnaire-answer-finish.component';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     QuestionnaireAnswerComponent,
     QuestionnaireResultComponent,
     QuestionnaireResultAdminComponent,
-    QuestionAnswerEditComponent],
+    QuestionAnswerEditComponent,
+    QuestionnaireAnswerFinishComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,

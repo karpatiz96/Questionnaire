@@ -305,6 +305,11 @@ namespace Questionnaire.Bll.Services
                 throw new QuestionnaireResultValidationException("User is not admin or solver!");
             }
 
+            if (userGroup.Role != "Admin" && !questionnaireAnswer.AnswerEvaluated)
+            {
+                throw new UserNotAdminException("Question answer is not evaluated yet!");
+            }
+
             var userQuestionnaireAnswer = await _dbContext.UserQuestionnaireAnswers
                 .Include(u => u.Question)
                     .ThenInclude(q => q.QuestionnaireSheet)
@@ -340,7 +345,7 @@ namespace Questionnaire.Bll.Services
 
             if(evaluationDto.Points > userQuestionnaireAnswer.Question.MaximumPoints || evaluationDto.Points < 0)
             {
-                //Todo Error
+                throw new EvaluationValidationException("Points must be between 0 and {0}", userQuestionnaireAnswer.Question.MaximumPoints);
             }
 
             userQuestionnaireAnswer.UserPoints = evaluationDto.Points;
