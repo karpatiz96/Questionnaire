@@ -33,6 +33,7 @@
             <input type="number" formControlName="value" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.value.errors }" />
             <div *ngIf="submitted && form.value.errors" class="invalid-feedback">
                 <div *ngIf="form.value.errors.required">Maximum Points is required</div>
+                <div *ngIf="form.value.errors.min">Maximum Points can't be negative</div>
             </div>
         </div>
     </div>
@@ -42,6 +43,7 @@
             <input type="number" formControlName="number" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.number.errors }" />
             <div *ngIf="submitted && form.number.errors" class="invalid-feedback">
                 <div *ngIf="form.number.errors.required">Number is required</div>
+                <div *ngIf="form.number.errors.min">Number must be greater than 0</div>
             </div>
         </div>
         <div class="form-group col-sm-3">
@@ -49,6 +51,7 @@
             <input type="number" formControlName="suggestedTime" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.suggestedTime.errors }" />
             <div *ngIf="submitted && form.suggestedTime.errors" class="invalid-feedback">
                 <div *ngIf="form.suggestedTime.errors.required">Suggested Time is required</div>
+                <div *ngIf="form.suggestedTime.errors.min">Suggested Time can't be negative</div>
             </div>
         </div>
     </div>

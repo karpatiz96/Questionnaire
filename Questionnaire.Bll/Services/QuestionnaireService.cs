@@ -383,7 +383,7 @@ namespace Questionnaire.Bll.Services
 
             if(questionnaire == null)
             {
-                throw new QuestionnaireNotFoundException("Questionnaire doesn't exist!");
+                throw new NotFoundException("Questionnaire doesn't exist!");
             }
 
             var userGroup = await _dbContext.UserGroups

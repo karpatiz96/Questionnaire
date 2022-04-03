@@ -54,7 +54,7 @@ namespace Questionnaire.UnitTest.UnitTests
                     Value = 5
                 };
 
-                await Assert.ThrowsAsync<QuestionNotFoundException>(() => questionService.CreateQuestion(userId, questionDto));
+                await Assert.ThrowsAsync<UserNotAdminException>(() => questionService.CreateQuestion(userId, questionDto));
             }
         }
 
@@ -88,39 +88,88 @@ namespace Questionnaire.UnitTest.UnitTests
             }
         }
 
-        [Fact]
-        public async Task Update_Question_NotAdmin()
+        [Theory]
+        [InlineData("124", 1, 1)]
+        public async Task Update_Question_NotAdmin(string userId, int questionId, int questionnaireId)
         {
             using (var context = Fixture.CreateContext())
             {
+                context.Database.BeginTransaction();
                 var questionService = new QuestionService(context);
+
+                var questionDto = new QuestionDto
+                {
+                    Id = questionId,
+                    QuestionnaireId = questionnaireId,
+                    Name = "Question1",
+                    Description = "Description",
+                    Number = 1,
+                    SuggestedTime = 5,
+                    Type = Dll.Entities.Question.QuestionType.FreeText,
+                    Value = 5
+                };
+
+                await Assert.ThrowsAsync<UserNotAdminException>(() => questionService.UpdateQuestion(userId, questionDto));
             }
         }
 
-        [Fact]
-        public async Task Update_Question_OK()
+        [Theory]
+        [InlineData("123", 1, 1)]
+        public async Task Update_Question_OK(string userId, int questionId, int questionnaireId)
         {
             using (var context = Fixture.CreateContext())
             {
+                context.Database.BeginTransaction();
                 var questionService = new QuestionService(context);
+
+                var questionDto = new QuestionDto
+                {
+                    Id = questionId,
+                    QuestionnaireId = questionnaireId,
+                    Name = "Question1",
+                    Description = "Description",
+                    Number = 1,
+                    SuggestedTime = 5,
+                    Type = Dll.Entities.Question.QuestionType.FreeText,
+                    Value = 5
+                };
+
+                var question = await questionService.UpdateQuestion(userId, questionDto);
+
+                context.ChangeTracker.Clear();
+
+                var result = context.Questions.Single(q => q.Id == questionId);
+
+                Assert.Equal("Description", result.Description);
             }
         }
 
-        [Fact]
-        public async Task Delete_Question_NotAdmin()
+        [Theory]
+        [InlineData("124", 1)]
+        public async Task Delete_Question_NotAdmin(string userId, int questionId)
         {
             using (var context = Fixture.CreateContext())
             {
                 var questionService = new QuestionService(context);
+
+                await Assert.ThrowsAsync<UserNotAdminException>(() => questionService.DeleteQuestion(userId, questionId));
             }
         }
 
-        [Fact]
-        public async Task Delete_Question_OK()
+        [Theory]
+        [InlineData("123", 1)]
+        public async Task Delete_Question_OK(string userId, int questionId)
         {
             using (var context = Fixture.CreateContext())
             {
+                context.Database.BeginTransaction();
                 var questionService = new QuestionService(context);
+
+                var question = await questionService.DeleteQuestion(userId, questionId);
+                context.ChangeTracker.Clear();
+
+                var result = context.Questions.SingleOrDefault(q => q.Id == questionId);
+                Assert.Null(result);
             }
         }
     }

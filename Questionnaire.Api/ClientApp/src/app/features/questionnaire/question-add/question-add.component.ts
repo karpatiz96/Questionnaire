@@ -31,9 +31,9 @@ export class QuestionAddComponent implements OnInit {
     this.questionForm = this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
-      number: [0, Validators.required],
-      value: [0 , Validators.required],
-      suggestedTime: [0, Validators.required],
+      number: [1, [Validators.required, Validators.min(1)]],
+      value: [0 , [Validators.required, Validators.min(0)]],
+      suggestedTime: [0, [Validators.required, Validators.min(0)]],
       type: [0, Validators.required]
     });
     this.route.params.subscribe(params => {

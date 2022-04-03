@@ -4,7 +4,7 @@
         <dl class="row mt-3">
             <dd class="col-sm-6"><h4>{{group.name}}</h4></dd>
             <dd class="col-sm-3" style="margin-left: 30px;">
-              <a class="btn btn-outline-primary" [routerLink]="['/group/edit', group.id]" *ngIf="group.groupRole === 'Admin'">
+              <a class="btn btn-outline-primary" title="Edit group" [routerLink]="['/group/edit', group.id]" *ngIf="group.groupRole === 'Admin'">
                 <i class="bi bi-pencil-square"></i>
               </a>
             </dd>

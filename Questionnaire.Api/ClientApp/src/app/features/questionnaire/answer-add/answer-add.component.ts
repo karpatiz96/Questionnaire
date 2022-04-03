@@ -35,7 +35,7 @@ export class AnswerAddComponent implements OnInit {
     this.answerForm = this.formBuilder.group({
       name: ['', Validators.required],
       userAnswer: '',
-      value: [0, Validators.required],
+      value: [0, [Validators.required, Validators.min(0)]],
       type: [0, Validators.required]
     });
 

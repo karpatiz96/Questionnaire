@@ -79,11 +79,13 @@ namespace Questionnaire.UnitTest.Helpers
             {
                 var questionnaires = dbContext.QuestionnaireSheets.OrderBy(q => q.Name).ToList();
 
-                var questions = GetQuestions(questionnaires);
+                var questions = GetQuestions(questionnaires).OrderBy(q => q.Name);
 
-                dbContext.Questions.AddRange(questions);
-
-                dbContext.SaveChanges();
+                foreach (var question in questions)
+                {
+                    dbContext.Questions.Add(question);
+                    dbContext.SaveChanges();
+                }
             }
 
             if (!dbContext.Answers.Any())

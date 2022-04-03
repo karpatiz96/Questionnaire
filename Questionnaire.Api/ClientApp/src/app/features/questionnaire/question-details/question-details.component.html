@@ -7,7 +7,7 @@
         <dl class="row mt-3">
             <dd class="col-sm-6"><h4>{{question.name}}</h4></dd>
             <dd class="col-sm-2">
-              <a class="btn btn-outline-warning" [routerLink]="['/questionnaire/question/edit', question.id]">
+              <a class="btn btn-outline-warning" title="Edit question" [routerLink]="['/questionnaire/question/edit', question.id]">
                 <i class="bi bi-pencil-square"></i>
               </a>
             </dd>
@@ -51,10 +51,10 @@
               <a class="btn btn-outline-primary mr-3" [routerLink]="['/questionnaire/answer', answer.id]">
                 Details
               </a>
-              <a class="btn btn-outline-warning mr-3" *ngIf="!question.visibleToGroup" [routerLink]="['/questionnaire/answer/edit', answer.id]">
+              <a class="btn btn-outline-warning mr-3" title="Edit answer" *ngIf="!question.visibleToGroup" [routerLink]="['/questionnaire/answer/edit', answer.id]">
                 <i class="bi bi-pencil-square"></i>
               </a>
-              <a class="btn btn-outline-danger" *ngIf="!question.visibleToGroup" (click)="delete(answer)">
+              <a class="btn btn-outline-danger" title="Delete answer" *ngIf="!question.visibleToGroup" (click)="delete(answer)">
                 <i class="bi bi-trash"></i>
               </a>
             </td>

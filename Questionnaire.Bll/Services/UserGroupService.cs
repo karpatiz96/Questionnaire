@@ -34,7 +34,7 @@ namespace Questionnaire.Bll.Services
 
             if(userGroup == null)
             {
-                throw new UserGroupNotFoundExcetpion("User not found!");
+                throw new NotFoundException("User not found!");
             }
 
             var userGroupAdmin = await _dbContext.UserGroups
@@ -62,7 +62,7 @@ namespace Questionnaire.Bll.Services
 
             if(userGroup == null)
             {
-                throw new UserGroupNotFoundExcetpion("User is not member of group!");
+                throw new NotFoundException("User is not member of group!");
             }
 
             var userGroupAdmin = await _dbContext.UserGroups

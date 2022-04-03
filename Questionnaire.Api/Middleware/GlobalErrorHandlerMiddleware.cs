@@ -29,22 +29,7 @@ namespace Questionnaire.Api.Middleware
 
                 switch (error)
                 {
-                    case UserGroupNotFoundExcetpion:
-                        response.StatusCode = (int)HttpStatusCode.NotFound;
-                        break;
-                    case InvitationNotFoundException:
-                        response.StatusCode = (int)HttpStatusCode.NotFound;
-                        break;
-                    case QuestionnaireNotFoundException:
-                        response.StatusCode = (int)HttpStatusCode.NotFound;
-                        break;
-                    case GroupNotFoundException:
-                        response.StatusCode = (int)HttpStatusCode.NotFound;
-                        break;
-                    case QuestionNotFoundException:
-                        response.StatusCode = (int)HttpStatusCode.NotFound;
-                        break;
-                    case AnswerNotFoundException:
+                    case NotFoundException:
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
                     case UserNotAdminException:

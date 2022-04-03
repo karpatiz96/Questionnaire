@@ -88,7 +88,7 @@
                     <input type="number" formControlName="points" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.points.errors }" />
                     <div *ngIf="submitted && form.points.errors" class="invalid-feedback">
                         <div *ngIf="form.points.errors.required">User Points is required.</div>
-                        <div *ngIf="form.points.errors.min">User Points must be greater than 0</div>
+                        <div *ngIf="form.points.errors.min">User Points must be greater than -1</div>
                         <div *ngIf="form.points.errors.max">User Points must be lesser than {{question.maximumPoints}}</div>
                     </div>
                 </div>

@@ -24,6 +24,7 @@
             <input type="number" formControlName="value" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.value.errors }" />
             <div *ngIf="submitted && form.value.errors" class="invalid-feedback">
                 <div *ngIf="form.value.errors.required">Answer Points is required</div>
+                <div *ngIf="form.value.errors.min">Answer Points can't be negative</div>
             </div>
         </div>
         <div class="form-group col-sm-3">

@@ -77,7 +77,7 @@ namespace Questionnaire.Bll.Services
 
             if(invitation == null)
             {
-                throw new InvitationNotFoundException("Invitation doesn't exists!");
+                throw new NotFoundException("Invitation doesn't exists!");
             }
 
             if(invitation.Status != InvitationStatus.Undecided)
@@ -121,7 +121,7 @@ namespace Questionnaire.Bll.Services
 
             if(invitation == null)
             {
-                throw new InvitationNotFoundException("Invitation doesn't exists!");
+                throw new NotFoundException("Invitation doesn't exists!");
             }
 
             if(invitation.UserId != userId)
@@ -171,7 +171,7 @@ namespace Questionnaire.Bll.Services
 
             if (invitation == null)
             {
-                throw new InvitationNotFoundException("Invitation doesn't exists!");
+                throw new NotFoundException("Invitation doesn't exists!");
             }
 
             if (invitation.UserId != userId)

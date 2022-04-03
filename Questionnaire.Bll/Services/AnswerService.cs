@@ -214,7 +214,7 @@ namespace Questionnaire.Bll.Services
 
             if(answer == null)
             {
-                throw new AnswerNotFoundException("Answer doesn't exist!");
+                throw new NotFoundException("Answer doesn't exist!");
             }
 
             var userGroup = await _dbContext.UserGroups
@@ -233,7 +233,7 @@ namespace Questionnaire.Bll.Services
 
             if(question == null)
             {
-                throw new QuestionNotFoundException("Question doesn't exist!");
+                throw new NotFoundException("Question doesn't exist!");
             }
 
             var userGroup = await _dbContext.UserGroups
