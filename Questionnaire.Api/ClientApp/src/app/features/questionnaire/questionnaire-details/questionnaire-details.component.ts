@@ -71,16 +71,18 @@ export class QuestionnaireDetailsComponent implements OnInit {
   }
 
   delete(question: QuestionHeaderDto) {
-    this.confirmationDialogService.confirm('Delete Answer', 'Do you really want to delete the answer?').then(result => {
-      this.questionService.delete(question.id)
-      .subscribe(result => {
-        const index = this.questionnaire.questions.indexOf(question);
-        this.questionnaire.questions.splice(index, 1);
-        this.refressQuestions();
-      }, error => {
-        this.errorHandlerService.handleError(error);
-        this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
-      });
+    this.confirmationDialogService.confirm('Delete Question', 'Do you really want to delete the question?').then(result => {
+      if (result) {
+        this.questionService.delete(question.id)
+          .subscribe(result => {
+            const index = this.questionnaire.questions.indexOf(question);
+            this.questionnaire.questions.splice(index, 1);
+            this.refressQuestions();
+          }, error => {
+            this.errorHandlerService.handleError(error);
+            this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+          });
+      }
     }).catch(() => {});
   }
 

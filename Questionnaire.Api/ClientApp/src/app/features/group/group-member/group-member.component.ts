@@ -75,15 +75,17 @@ export class GroupMemberComponent implements OnInit {
     this.confirmationDialogService
       .confirm('Delete User', 'Do you really want to delete the user?')
         .then(result => {
-          this.userGroupService.delete(id).subscribe(() => {
-            const user = this.group.users.find(u => u.id === id);
-            const index = this.group.users.indexOf(user);
-            this.group.users.splice(index, 1);
-            this.refressUsers();
-          }, error => {
-              this.errorHandlerService.handleError(error);
-              this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
-          });
+          if (result) {
+            this.userGroupService.delete(id).subscribe(() => {
+              const user = this.group.users.find(u => u.id === id);
+              const index = this.group.users.indexOf(user);
+              this.group.users.splice(index, 1);
+              this.refressUsers();
+            }, error => {
+                this.errorHandlerService.handleError(error);
+                this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+            });
+          }
     }).catch(() => {});
   }
 
@@ -91,12 +93,14 @@ export class GroupMemberComponent implements OnInit {
     this.confirmationDialogService
       .confirm('Update User', 'Do you really want to make the user admin in the group?')
         .then(result => {
-          this.userGroupService.makeAdmin(id).subscribe(() => {
-            this.loadGroupMembers(this.groupId);
-          }, error => {
-              this.errorHandlerService.handleError(error);
-              this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
-          });
+          if (result) {
+              this.userGroupService.makeAdmin(id).subscribe(() => {
+              this.loadGroupMembers(this.groupId);
+            }, error => {
+                this.errorHandlerService.handleError(error);
+                this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+            });
+          }
         }).catch(() => {});
   }
 
@@ -104,12 +108,14 @@ export class GroupMemberComponent implements OnInit {
     this.confirmationDialogService
       .confirm('Update User', 'Do you really want to revoke admin?')
         .then(result => {
-          this.userGroupService.makeUser(id).subscribe(() => {
-            this.loadGroupMembers(this.groupId);
-          }, error => {
-              this.errorHandlerService.handleError(error);
-              this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
-          });
+          if (result) {
+              this.userGroupService.makeUser(id).subscribe(() => {
+              this.loadGroupMembers(this.groupId);
+            }, error => {
+                this.errorHandlerService.handleError(error);
+                this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+            });
+          }
         }).catch(() => {});
   }
 
@@ -117,15 +123,17 @@ export class GroupMemberComponent implements OnInit {
     this.confirmationDialogService
       .confirm('Delete User', 'Do you really want to delete the user?')
         .then(result => {
-          this.invitationService.delete(id).subscribe(() => {
-            const invitation = this.group.invitations.find(i => i.id === id);
-            const index = this.group.invitations.indexOf(invitation);
-            this.group.invitations.splice(index, 1);
-            this.refressInvitations();
-          }, error => {
-            this.errorHandlerService.handleError(error);
-            this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
-          });
+          if (result) {
+            this.invitationService.delete(id).subscribe(() => {
+              const invitation = this.group.invitations.find(i => i.id === id);
+              const index = this.group.invitations.indexOf(invitation);
+              this.group.invitations.splice(index, 1);
+              this.refressInvitations();
+            }, error => {
+              this.errorHandlerService.handleError(error);
+              this.alertService.error(this.errorHandlerService.errorMessage, { id: 'alert-1' });
+            });
+          }
         }).catch(() => {});
   }
 

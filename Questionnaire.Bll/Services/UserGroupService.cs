@@ -70,9 +70,9 @@ namespace Questionnaire.Bll.Services
                 .Where(u => u.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
-            if(userGroupAdmin == null || userGroupAdmin.Role != "Admin")
+            if(userGroupAdmin == null || userGroupAdmin.Role != "Admin" || !userGroup.MainAdmin)
             {
-                throw new UserNotAdminException("User is not admin in group!");
+                throw new UserNotAdminException("User is not main admin in group!");
             }
 
             userGroup.IsDeleted = true;

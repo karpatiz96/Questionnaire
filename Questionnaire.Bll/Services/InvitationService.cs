@@ -55,6 +55,16 @@ namespace Questionnaire.Bll.Services
                 throw new InvitationValidationException("User is already invited!");
             }
 
+            var userAlreadyMember = await _dbContext.UserGroups
+                .Where(u => u.UserId == user.Id && u.GroupId == invitationNewDto.GroupId)
+                .Where(u => u.IsDeleted == false)
+                .ToListAsync();
+
+            if (userAlreadyMember.Any())
+            {
+                throw new InvitationValidationException("User is already member of the group!");
+            }
+
             var invitation = new Invitation
             {
                 UserId = user.Id,

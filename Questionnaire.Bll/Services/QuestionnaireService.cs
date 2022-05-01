@@ -182,7 +182,7 @@ namespace Questionnaire.Bll.Services
 
             if (userGroup == null)
             {
-                throw new UserNotMemberException("User is not member of Group!");
+                throw new UserNotMemberException("User is not member of the Group!");
             }
 
             var questionnaires = _dbContext.QuestionnaireSheets

@@ -217,6 +217,15 @@ namespace Questionnaire.Bll.Services
                 .Where(q => q.Id == questionnaireId)
                 .FirstOrDefaultAsync();
 
+            var userQuestionnaire = await _dbContext.UserQuestionnaires
+                .Where(q => q.QuestionnaireSheetId == questionnaire.Id && q.UserId == userId)
+                .FirstOrDefaultAsync();
+
+            if(userQuestionnaire == null)
+            {
+                throw new QuestionnaireStartValidationException("Questionnaire is not started yet!");
+            }
+
             var questions = _dbContext.Questions
                 .Include(q => q.QuestionnaireSheet)
                 .Include(q => q.Answers)
@@ -307,6 +316,11 @@ namespace Questionnaire.Bll.Services
                         if(answer.Type && answer.Points != question.MaximumPoints)
                         {
                             answer.Points = question.MaximumPoints;
+                        }
+
+                        if (!answer.Type)
+                        {
+                            answer.Points = 0;
                         }
                     }
                 }

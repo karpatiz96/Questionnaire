@@ -36,6 +36,14 @@ namespace Questionnaire.Api.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "First name")]
+            public string FirstName { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "Last name")]
+            public string LastName { get; set; }
         }
 
         private async Task LoadAsync(User user)
@@ -47,7 +55,9 @@ namespace Questionnaire.Api.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                FirstName = user.FirstName ?? "",
+                LastName = user.LastName ?? ""
             };
         }
 
@@ -88,6 +98,17 @@ namespace Questionnaire.Api.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            if(Input.FirstName != user.FirstName)
+            {
+                user.FirstName = Input.FirstName;
+            }
+
+            if(Input.LastName != user.LastName)
+            {
+                user.LastName = Input.LastName;
+            }
+
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();

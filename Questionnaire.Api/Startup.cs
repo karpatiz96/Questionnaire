@@ -34,7 +34,7 @@ namespace Questionnaire.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddTransient<IGroupService, GroupService>();
             services.AddTransient<IInvitationService, InvitationService>();
