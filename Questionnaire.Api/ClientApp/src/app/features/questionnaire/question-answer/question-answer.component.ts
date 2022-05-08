@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 import { QuestionType } from '../models/questionnaires/questionHeaderDto';
 import { UserQuestionnaireAnswerDetailsDto } from '../models/result/userQuestionnaireAnswerDetailsDto';
 import { UserQuestionnaireService } from '../services/userQuestionnaireService';
@@ -33,7 +34,8 @@ export class QuestionAnswerComponent implements OnInit {
   QuestionTypes = ['True or False', 'Multiple Choice', 'Free Text', 'Concrete Text'];
 
   constructor(private route: ActivatedRoute,
-    private userQuestionnaireService: UserQuestionnaireService) { }
+    private userQuestionnaireService: UserQuestionnaireService,
+    private errorHandlerService: ErrorHandlerService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -47,6 +49,7 @@ export class QuestionAnswerComponent implements OnInit {
       .subscribe(result => {
         this.question = result;
     }, error => {
+      this.errorHandlerService.handleError(error);
       console.log(error);
     });
   }

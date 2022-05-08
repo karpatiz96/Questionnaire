@@ -11,7 +11,7 @@
         <dt class="col-sm-2">Finished:</dt>
         <dd class="col-sm-2">
             <div *ngIf="question.completed">
-                {{question.finished | date: 'yyyy-MM-dd hh:mm'}}
+                {{question.finished | date: 'yyyy-MM-dd HH:mm'}}
             </div>
             <div *ngIf="!question.completed">
                 Not Completed

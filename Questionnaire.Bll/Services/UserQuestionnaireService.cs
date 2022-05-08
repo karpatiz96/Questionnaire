@@ -227,10 +227,10 @@ namespace Questionnaire.Bll.Services
             }
 
             var finalAnswer = await _dbContext.UserQuestionnaireAnswers
-                .Where(u => u.UserQuestionnaireId == userQuestionnaire.Id)
+                .Where(u => u.UserQuestionnaireId == userQuestionnaire.Id && u.Id != userQuestionnaireAnswer.Id)
                 .AnyAsync(u => u.QuestionCompleted == false);
 
-            if (finalAnswer)
+            if (!finalAnswer)
             {
                 userQuestionnaire.Finished = DateTime.UtcNow;
                 userQuestionnaire.Completed = true;

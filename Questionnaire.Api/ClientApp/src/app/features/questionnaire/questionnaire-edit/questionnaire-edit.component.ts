@@ -34,7 +34,7 @@ export class QuestionnaireEditComponent implements OnInit {
         finish: ['', Validators.required],
         randomQuestionOrder: [false],
         limited: [false],
-        timeLimit: [1, Validators.min]
+        timeLimit: [1, Validators.min(1)]
       });
       this.route.params.subscribe(params => {
         this.loadQuestionnaire(params['id']);

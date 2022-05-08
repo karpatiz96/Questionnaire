@@ -38,10 +38,11 @@ namespace Questionnaire.UnitTest.UnitTests
         {
             using(var context = Fixture.CreateContext())
             {
+                //Arrange
                 var groupService = new GroupService(context);
-
+                //Act
                 var groupList = await groupService.GetGroups("123");
-
+                //Assert
                 Assert.Equal(4, groupList.Count());
             }
         }
@@ -51,14 +52,18 @@ namespace Questionnaire.UnitTest.UnitTests
         {
             using(var context = Fixture.CreateContext())
             {
+                //Arrange
                 context.Database.BeginTransaction();
                 var groupService = new GroupService(context);
 
-                var group = await groupService.CreateGroup(new Bll.Dtos.GroupDto { Name = "Group5", Description = "Description5" }, "123");
+                //Act
+                var group = await groupService
+                    .CreateGroup(new Bll.Dtos.GroupDto { Name = "Group5", Description = "Description5" }, "123");
 
                 context.ChangeTracker.Clear();
                 var result = context.Groups.Single(g => g.Name == "Group5");
 
+                //Assert
                 Assert.Equal("Description5", result.Description);
             }
         }

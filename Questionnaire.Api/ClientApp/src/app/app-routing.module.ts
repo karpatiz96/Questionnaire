@@ -14,9 +14,12 @@ const routes: Routes = [
     { path: 'forbidden', component: ForbiddenComponent },
     { path: 'counter', component: CounterComponent },
     { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },
-    { path: 'group', loadChildren: () => import('./features/group/group.module').then(m => m.GroupModule), canActivate: [AuthorizeGuard] },
+    { path: 'group',
+      loadChildren: () => import('./features/group/group.module')
+        .then(m => m.GroupModule), canActivate: [AuthorizeGuard] },
     { path: 'invitation',
-      loadChildren: () => import('./features/invitation/invitation.module').then(m => m.InvitationModule), canActivate: [AuthorizeGuard] },
+      loadChildren: () => import('./features/invitation/invitation.module')
+        .then(m => m.InvitationModule), canActivate: [AuthorizeGuard] },
     { path: 'questionnaire',
       loadChildren: () => import('./features/questionnaire/questionnaire.module')
         .then(m => m.QuestionnaireModule), canActivate: [AuthorizeGuard] }

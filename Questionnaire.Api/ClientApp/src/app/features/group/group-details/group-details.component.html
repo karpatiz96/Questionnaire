@@ -1,4 +1,4 @@
-<h2>Groups you joined</h2>
+<h2>Group Details</h2>
 <div class="row" *ngIf="group">
     <div class="col-sm-12">
         <dl class="row mt-3">
@@ -11,9 +11,9 @@
         </dl>
         <dl class="row ml-5 mt-3">
             <dt class="col-sm-3">Created:</dt>
-            <dd class="col-sm-3">{{group.created | date: 'yyyy-MM-dd hh:mm'}}</dd>
-            <dt class="col-sm-3">Group Admin:</dt>
-            <dd class="col-sm-3"></dd>
+            <dd class="col-sm-3">{{group.created | date: 'yyyy-MM-dd HH:mm'}}</dd>
+            <dt class="col-sm-3">Group Creater:</dt>
+            <dd class="col-sm-3">{{group.groupAdmin}}</dd>
             <dt class="col-sm-3">Members:</dt>
             <dd class="col-sm-3">{{group.members}}</dd>
             <dt class="col-sm-3">
@@ -73,8 +73,8 @@
                     <span class="text-success" *ngIf="questionnaire.evaluated">Yes <i class="bi bi-check-circle-fill"></i></span>
                     <span class="text-danger" *ngIf="!questionnaire.evaluated">No <i class="bi bi-x-circle-fill"></i></span>
                 </div>
-                <div class="col-sm-6"><b class="mr-2">Begining:</b> {{questionnaire.begining | date: 'yyyy-MM-dd hh:mm'}}</div>
-                <div class="col-sm-6"><b class="mr-2">Finish:</b> {{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</div>
+                <div class="col-sm-6"><b class="mr-2">Begining:</b> {{questionnaire.begining | date: 'yyyy-MM-dd HH:mm'}}</div>
+                <div class="col-sm-6"><b class="mr-2">Finish:</b> {{questionnaire.finish | date: 'yyyy-MM-dd HH:mm'}}</div>
             </div>
             <div class="row mt-4 d-flex flex-row-reverse">
                 <div class="col-auto" *ngIf="questionnaire.visibleToGroup && group.groupRole === 'Admin'">

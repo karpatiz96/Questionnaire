@@ -30,6 +30,7 @@ namespace Questionnaire.IntegrationTest.IntegrationTests
         [Fact]
         public async Task Get_GroupDetails()
         {
+            //Arrange
             var provider = TestClaimProvider.WithAdminClaim();
             var client = _factory.WithAuthentication<Questionnaire.Api.Startup>(provider)
                 .CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });

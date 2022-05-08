@@ -36,7 +36,7 @@
     </div>
     <div class="form-row mt-3" *ngIf="form.limited.value">
         <div class="form-group col-sm-3">
-            <label for="timeLimit">Time Limit:</label>
+            <label for="timeLimit">Time Limit(minute):</label>
             <input type="number" formControlName="timeLimit" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.timeLimit.errors }" />
             <div *ngIf="submitted && form.timeLimit.errors" class="invalid-feedback">
                 <div *ngIf="form.timeLimit.errors.min">Time Limit is minimum 1 minute</div>

@@ -314,7 +314,7 @@ namespace Questionnaire.Bll.Services
                     var newAnswer = new Answer();
                     _dbContext.Entry(newAnswer).CurrentValues.SetValues(answerValue);
                     newAnswer.Id = 0;
-                    newAnswer.QuestionId = question.Id;
+                    newAnswer.QuestionId = newQuestion.Id;
                     _dbContext.Answers.Add(newAnswer);
                 }
 

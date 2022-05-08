@@ -24,7 +24,8 @@ namespace Questionnaire.Bll.Services
             Description = g.Description,
             Created = g.Created,
             GroupRole = "User",
-            LastPost = DateTime.UtcNow, //To be updated
+            GroupAdmin = "", 
+            LastPost = DateTime.UtcNow,
             Members = g.UserGroups.Count,
             Questionnaires = new List<QuestionnaireHeaderDto>()
         };
@@ -149,6 +150,11 @@ namespace Questionnaire.Bll.Services
                 throw new UserNotMemberException("User is not member of the group.");
             }
 
+            var admin = await _dbContext.UserGroups
+                .Include(g => g.User)
+                .Where(g => g.GroupId == groupId && g.MainAdmin)
+                .FirstOrDefaultAsync();
+
             var groupDetailsDto = await _dbContext.Groups
                 .Include(g => g.UserGroups)
                     .ThenInclude(g => g.User)
@@ -158,6 +164,7 @@ namespace Questionnaire.Bll.Services
                 .FirstOrDefaultAsync();
 
             groupDetailsDto.GroupRole = userGroup.Role;
+            groupDetailsDto.GroupAdmin = admin != null ? admin.User.Email : "";
 
             var questionnaires = _dbContext.QuestionnaireSheets.Where(q => q.GroupId == groupId);
             if (userGroup.Role != "Admin")
@@ -167,6 +174,12 @@ namespace Questionnaire.Bll.Services
                 .OrderByDescending(q => q.Begining)
                 .Select(QuestionnaireHeaderSelector)
                 .ToListAsync();
+
+            var lastPost = await questionnaires.OrderByDescending(q => q.Begining).FirstOrDefaultAsync();
+            if(lastPost != null)
+            {
+                groupDetailsDto.LastPost = lastPost.LastEdited;
+            }
 
             foreach (var questionnaire in groupDetailsDto.Questionnaires)
             {
@@ -179,7 +192,7 @@ namespace Questionnaire.Bll.Services
                 questionnaire.Start = userQuestionnaire?.Started;
                 questionnaire.CompletedTime = userQuestionnaire?.Finished;
                 questionnaire.Completed = userQuestionnaire != null ? userQuestionnaire.Completed : false;
-                questionnaire.Evaluated = userQuestionnaire != null ? userQuestionnaire.UserQuestionnaireAnswers.Any(u => !u.AnswerEvaluated) : false;
+                questionnaire.Evaluated = userQuestionnaire != null ? (userQuestionnaire.UserQuestionnaireAnswers.Any(u => !u.AnswerEvaluated) ? false : true) : false;
             }
 
             return groupDetailsDto;
