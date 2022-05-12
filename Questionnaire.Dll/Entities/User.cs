@@ -5,10 +5,12 @@ using System.Text;
 
 namespace Questionnaire.Dll.Entities
 {
-    public class User : IdentityUser
+    public class User: IdentityUser
     {
+        [PersonalData]
         public string FirstName { get; set; }
-
+        
+        [PersonalData]
         public string LastName { get; set; }
 
         public ICollection<UserGroup> UserGroups { get; set; }

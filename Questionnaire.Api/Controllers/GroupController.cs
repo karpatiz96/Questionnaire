@@ -58,15 +58,37 @@ namespace Questionnaire.Api.Controllers
             return Ok(groups);
         }
 
+        [HttpGet("list")]
+        public async Task<ActionResult<IEnumerable<GroupListDto>>> GetGroupsList()
+        {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var groups = await _groupService.GetGroupsList(userId);
+
+            return Ok(groups);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<GroupDetailsDto>> GetGroup(int id)
         {
-            var group = await _groupService.GetGroup(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var group = await _groupService.GetGroup(userId, id);
 
             if(group == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Group doesn't exist!" });
             }
+
+            return Ok(group);
+        }
+
+        [HttpGet("update/{id}")]
+        public async Task<ActionResult<GroupDto>> GetGroupById(int id)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var group = await _groupService.GetGroupById(userId, id);
 
             return Ok(group);
         }
@@ -74,11 +96,13 @@ namespace Questionnaire.Api.Controllers
         [HttpGet("member/{id}")]
         public async Task<ActionResult<GroupMemberDto>> GetGroupMember(int id)
         {
-            var groupMemberDto = await _groupService.GetGroupMembers(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var groupMemberDto = await _groupService.GetGroupMembers(userId, id);
 
             if (groupMemberDto == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Group doesn't exist!" });
             }
 
             return Ok(groupMemberDto);
@@ -103,7 +127,9 @@ namespace Questionnaire.Api.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] GroupDto groupDto)
         {
-            await _groupService.UpdateGroup(groupDto);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            await _groupService.UpdateGroup(userId, groupDto);
 
             return NoContent();
         }

@@ -1,0 +1,68 @@
+<h2>Create Question</h2>
+<form [formGroup]="questionForm" (ngSubmit)="onSubmit()" class="mt-4" >
+    <div class="form-row">
+        <div class="form-group col-sm-6">
+            <label for="name">Name:</label>
+            <input type="text" formControlName="name" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.name.errors }" />
+            <div *ngIf="submitted && form.name.errors" class="invalid-feedback">
+                <div *ngIf="form.name.errors.required">Name is required</div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row mt-3">
+        <div class="form-group col-sm-6">
+            <label for="description">Description:</label>
+            <textarea formControlName="description" class="form-control text-area" [ngClass]="{ 'is-invalid': submitted && form.description.errors }" ></textarea>
+            <div *ngIf="submitted && form.description.errors" class="invalid-feedback">
+                <div *ngIf="form.description.errors.required">Description is required</div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row mt-3">
+        <div class="form-group col-sm-3">
+            <label for="type">Question Type:</label>
+            <select formControlName="type" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.type.errors }" >
+                <option *ngFor="let key of keys" [value]="key">{{eQuestionType[key]}}</option>
+            </select>
+            <div *ngIf="submitted && form.type.errors" class="invalid-feedback">
+                <div *ngIf="form.type.errors.required">Question Type is required</div>
+            </div>
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="value">Maximum Points:</label>
+            <input type="number" formControlName="value" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.value.errors }" />
+            <div *ngIf="submitted && form.value.errors" class="invalid-feedback">
+                <div *ngIf="form.value.errors.required">Maximum Points is required</div>
+                <div *ngIf="form.value.errors.min">Maximum Points can't be negative</div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row mt-3">
+        <div class="form-group col-sm-3">
+            <label for="number">Number:</label>
+            <input type="number" formControlName="number" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.number.errors }" />
+            <div *ngIf="submitted && form.number.errors" class="invalid-feedback">
+                <div *ngIf="form.number.errors.required">Number is required</div>
+                <div *ngIf="form.number.errors.min">Number must be greater than 0</div>
+            </div>
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="suggestedTime">Suggested Time:</label>
+            <input type="number" formControlName="suggestedTime" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.suggestedTime.errors }" />
+            <div *ngIf="submitted && form.suggestedTime.errors" class="invalid-feedback">
+                <div *ngIf="form.suggestedTime.errors.required">Suggested Time is required</div>
+                <div *ngIf="form.suggestedTime.errors.required">Suggested Time can't be negative</div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Save
+        </button>
+        <a [routerLink]="['/questionnaire', questionnaireId]" class="btn btn-link">Cancle</a>
+    </div>
+    <div class="row mt-3">
+        <app-alert id="alert-1" class="col-sm-6"></app-alert>
+    </div>
+</form>

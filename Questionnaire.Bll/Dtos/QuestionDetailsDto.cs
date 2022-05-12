@@ -8,6 +8,8 @@ namespace Questionnaire.Bll.Dtos
 {
     public class QuestionDetailsDto : QuestionDto
     {
+        public bool VisibleToGroup { get; set; }
+
         public ICollection<AnswerHeaderDto> Answers { get; set; }
     }
 }

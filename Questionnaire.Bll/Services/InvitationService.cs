@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Questionnaire.Bll.Dtos;
+using Questionnaire.Bll.Exceptions;
 using Questionnaire.Bll.IServices;
 using Questionnaire.Dll;
 using Questionnaire.Dll.Entities;
@@ -35,13 +36,40 @@ namespace Questionnaire.Bll.Services
             Date = g.Created
         };
 
-        public async Task<InvitationNewDto> CreateInvitation(InvitationNewDto invitationNewDto, User user)
+        public async Task<InvitationNewDto> CreateInvitation(string userId, InvitationNewDto invitationNewDto, User user)
         {
+            var userGroup = await GetUserGroupByUserAndGroup(userId, invitationNewDto.GroupId);
+
+            if(userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
+
+            var invitationExists = await _dbContext.Invitations
+                .Where(i => i.UserId == user.Id && i.GroupId == invitationNewDto.GroupId)
+                .Where(i => i.Status == InvitationStatus.Undecided)
+                .ToListAsync();
+
+            if (invitationExists.Any())
+            {
+                throw new InvitationValidationException("User is already invited!");
+            }
+
+            var userAlreadyMember = await _dbContext.UserGroups
+                .Where(u => u.UserId == user.Id && u.GroupId == invitationNewDto.GroupId)
+                .Where(u => u.IsDeleted == false)
+                .ToListAsync();
+
+            if (userAlreadyMember.Any())
+            {
+                throw new InvitationValidationException("User is already member of the group!");
+            }
+
             var invitation = new Invitation
             {
                 UserId = user.Id,
                 GroupId = invitationNewDto.GroupId,
-                Created = DateTime.Now,
+                Created = DateTime.UtcNow,
                 Status = InvitationStatus.Undecided
             };
 
@@ -52,24 +80,27 @@ namespace Questionnaire.Bll.Services
             return invitationNewDto;
         }
 
-        public async Task<Invitation> DeleteInvitation(int id)
+        public async Task<Invitation> DeleteInvitation(string userId, int id)
         {
             var invitation = await _dbContext.Invitations
                 .FirstOrDefaultAsync(i => i.Id == id);
 
-            var user = await _dbContext.Users
-                .Include(u => u.Invitations)
-                .Where(u => u.Id == invitation.UserId)
-                .FirstOrDefaultAsync();
+            if(invitation == null)
+            {
+                throw new NotFoundException("Invitation doesn't exists!");
+            }
 
-            user.Invitations.Remove(invitation);
+            if(invitation.Status != InvitationStatus.Undecided)
+            {
+                throw new InvitationValidationException("Invitation can't be removed, it is already accepted!");
+            }
 
-            var group = await _dbContext.Groups
-                .Include(g => g.Invitations)
-                .Where(g => g.Id == invitation.GroupId)
-                .FirstOrDefaultAsync();
+            var userGroup = await GetUserGroupByUserAndGroup(userId, invitation.GroupId);
 
-            group.Invitations.Remove(invitation);
+            if(userGroup == null || userGroup.Role != "Admin")
+            {
+                throw new UserNotAdminException("User is not admin in group!");
+            }
 
             _dbContext.Invitations.Remove(invitation);
 
@@ -92,25 +123,41 @@ namespace Questionnaire.Bll.Services
             return invitation;
         }
 
-        public async Task<InvitationDto> AcceptInvitation(int invitationId, InvitationStatus status)
+        public async Task<InvitationDto> AcceptInvitation(string userId, int invitationId, InvitationStatus status)
         {
             var invitation = await _dbContext.Invitations
                 .Where(i => i.Id == invitationId)
                 .FirstOrDefaultAsync();
 
+            if(invitation == null)
+            {
+                throw new NotFoundException("Invitation doesn't exists!");
+            }
+
+            if(invitation.UserId != userId)
+            {
+                throw new InvitationValidationException("Invalid User!");
+            }
+
             invitation.Status = status;
 
             _dbContext.Attach(invitation).State = EntityState.Modified;
 
-            var userGroup = new UserGroup
-            {
-                UserId = invitation.UserId,
-                GroupId = invitation.GroupId,
-                Role = "User",
-                MainAdmin = false
-            };
+            var userGroupExists = await GetUserGroupByUserAndGroup(userId, invitation.GroupId);
 
-            _dbContext.UserGroups.Add(userGroup);
+            if (userGroupExists == null)
+            {
+                var userGroup = new UserGroup
+                {
+                    UserId = invitation.UserId,
+                    GroupId = invitation.GroupId,
+                    Role = "User",
+                    MainAdmin = false,
+                    IsDeleted = false
+                };
+
+                _dbContext.UserGroups.Add(userGroup);
+            }
 
             await _dbContext.SaveChangesAsync();
 
@@ -126,11 +173,21 @@ namespace Questionnaire.Bll.Services
             return invitationDto;
         }
 
-        public async Task<InvitationDto> DeclineInvitation(int invitationId, InvitationStatus status)
+        public async Task<InvitationDto> DeclineInvitation(string userId, int invitationId, InvitationStatus status)
         {
             var invitation = await _dbContext.Invitations
                 .Where(i => i.Id == invitationId)
                 .FirstOrDefaultAsync();
+
+            if (invitation == null)
+            {
+                throw new NotFoundException("Invitation doesn't exists!");
+            }
+
+            if (invitation.UserId != userId)
+            {
+                throw new InvitationValidationException("Invalid User!");
+            }
 
             invitation.Status = status;
 
@@ -147,6 +204,16 @@ namespace Questionnaire.Bll.Services
                 .FirstOrDefaultAsync();
 
             return invitationDto;
+        }
+
+        private async Task<UserGroup> GetUserGroupByUserAndGroup(string userId, int groupId)
+        {
+            var userGroup = await _dbContext.UserGroups
+                .Where(u => u.UserId == userId && u.GroupId == groupId)
+                .Where(u => u.IsDeleted == false)
+                .FirstOrDefaultAsync();
+
+            return userGroup;
         }
     }
 }

@@ -10,7 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Questionnaire.Api.Configurations;
 using Questionnaire.Api.Data;
+using Questionnaire.Api.Middleware;
 using Questionnaire.Api.Models;
 using Questionnaire.Api.Services;
 using Questionnaire.Bll.IServices;
@@ -32,7 +34,7 @@ namespace Questionnaire.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddTransient<IGroupService, GroupService>();
             services.AddTransient<IInvitationService, InvitationService>();
@@ -41,8 +43,11 @@ namespace Questionnaire.Api
             services.AddTransient<IAnswerService, AnswerService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserGroupService, UserGroupService>();
+            services.AddTransient<IUserQuestionnaireService, UserQuestionnaireService>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
+
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddDbContext<QuestionnaireDbContext>(options =>
                 options.UseSqlServer(
@@ -57,6 +62,7 @@ namespace Questionnaire.Api
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
             // In production, the Angular files will be served from this directory
@@ -93,6 +99,9 @@ namespace Questionnaire.Api
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
+
+            app.UseMiddleware<GlobalErrorHandlerMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

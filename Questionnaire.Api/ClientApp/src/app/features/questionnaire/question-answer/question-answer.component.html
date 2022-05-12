@@ -1,0 +1,88 @@
+<h2>{{question.questionnaireTitle}}</h2>
+<div class="col-sm-12">
+    <div class="row mt-3">
+        <div class="col-sm-4"><h4>{{question.questionTitle}}</h4></div>
+        <div class="col-sm-2">Points: {{question.points}}/{{question.maximumPoints}}</div>
+    </div>
+    <dl class="row mt-3">
+        <dt class="col-sm-2">Solver:</dt>
+        <dd class="col-sm-2">{{question.userName}}</dd>
+        <dt class="col-sm-8"></dt>
+        <dt class="col-sm-2">Finished:</dt>
+        <dd class="col-sm-2">
+            <div *ngIf="question.completed">
+                {{question.finished | date: 'yyyy-MM-dd HH:mm'}}
+            </div>
+            <div *ngIf="!question.completed">
+                Not Completed
+            </div>
+        </dd>
+        <dt class="col-sm-8"></dt>
+        <dt class="col-sm-2">Evaluated:</dt>
+        <dd class="col-sm-2">{{question.evaluated ? 'Yes' : 'No'}}</dd>
+    </dl>
+    <h5>Description:</h5>
+    <div class="row mt-3">
+        <div class="col-sm-6 ml-5">{{question.description}}</div>
+    </div>
+    <div class="mt-3">
+        <div [ngSwitch]="question.type">
+            <div *ngSwitchCase="questionType.TrueOrFalse" class="row">
+                <div class="col-sm-4">
+                    <b>Answer: </b>
+                    <div *ngFor="let answer of question.answers; let i = index" class="custom-control custom-radio">
+                        <input type="radio" [value]="answer.id" [checked]="question.answerId === answer.id" id="radio{{i}}" class="custom-control-input" >
+                        <label class="custom-control-label" for="radio{{i}}">{{answer.name}}</label>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <b>Correct answer: </b>
+                    <div *ngFor="let answer of question.answers; let i = index" class="custom-control custom-radio">
+                        <input type="radio" [value]="answer.id" [checked]="answer.correct" id="radio{{i}}" class="custom-control-input" >
+                        <label class="custom-control-label" for="radio{{i}}">{{answer.name}}</label>
+                    </div>
+                </div>
+            </div>
+            <div *ngSwitchCase="questionType.MultipleChoice" class="row">
+                <div class="col-sm-4">
+                    <b>Answer: </b>
+                    <div *ngFor="let answer of question.answers; let i = index" class="custom-control custom-radio">
+                        <input type="radio" [value]="answer.id" [checked]="question.answerId === answer.id" id="radio{{i}}" class="custom-control-input" >
+                        <label class="custom-control-label" for="radio{{i}}">{{answer.name}}</label>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <b>Correct answer: </b>
+                    <div *ngFor="let answer of question.answers; let i = index" class="custom-control custom-radio">
+                        <input type="radio" [value]="answer.id" [checked]="answer.correct" id="radio{{i}}" class="custom-control-input" >
+                        <label class="custom-control-label" for="radio{{i}}">{{answer.name}}</label>
+                    </div>
+                </div>
+            </div>
+            <div *ngSwitchCase="questionType.FreeText">
+                <div class="form-group">
+                    <label for="freeText"><b>Answer: </b></label>
+                    <textarea type="text" class="form-control text-area col-sm-6" id="freeText">{{question.userAnswer}}</textarea>
+                </div>
+            </div>
+            <div *ngSwitchCase="questionType.ConcreteText" class="form-row">
+                <div class="form-group col-sm-6">
+                    <label for="concreteText"><b>Answer: </b></label>
+                    <input type="text" class="form-control" value="{{question.userAnswer}}" id="concreteText" />
+                </div>
+                <div class="w-100"></div>
+                <div class="col-sm-6 mt-3">
+                    <label><b>Concrete Answers: </b></label>
+                    <ul class="list-group" *ngFor="let answer of question.answers">
+                        <li class="list-group-item">{{answer.name}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3" *ngIf="question.role === 'Admin'">
+        <div class="col-sm-6">
+            <a class="btn btn-outline-warning float-right" [routerLink]="['/questionnaire/result/question', userQuestionnaireAnswerId, 'edit']">Evaluate</a>
+        </div>
+    </div>
+</div>

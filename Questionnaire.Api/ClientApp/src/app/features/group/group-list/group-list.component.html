@@ -1,6 +1,6 @@
 <h2>Groups you created</h2>
-<div class="row mt-4">
-    <div class="col-sm-2 offset-9">
+<div class="row mt-4 d-flex flex-row-reverse">
+    <div class="col-sm-2">
         <a class="btn btn-success" [routerLink]="['/group/add']">Create new Group</a>
     </div>
 </div>
@@ -22,5 +22,16 @@
             </div>
         </div>
         </div>
+    </div>
+    <div class="d-flex justify-content-left mt-4">
+        <ngb-pagination
+          [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="refressGroups()">
+        </ngb-pagination>
+    
+        <select class="custom-select ml-2" style="width: auto" name="pageSize" [(ngModel)]="pageSize" (ngModelChange)="refressGroups()">
+          <option [ngValue]="2">2 items per page</option>
+          <option [ngValue]="4">4 items per page</option>
+          <option [ngValue]="10">10 items per page</option>
+        </select>
     </div>
 </div>

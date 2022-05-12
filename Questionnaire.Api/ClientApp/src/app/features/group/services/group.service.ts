@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { GroupDetailsDto } from '../models/groupDetailsDto';
 import { GroupDto } from '../models/groupDto';
 import { GroupHeaderDto } from '../models/groupHeaderDto';
@@ -27,8 +28,12 @@ export class GroupService {
     return this.http.get<GroupMemberDto>(`${this.baseUrl}/group/member/${id}`);
    }
 
-   getById(id: number) {
+   getDetailsById(id: number) {
     return this.http.get<GroupDetailsDto>(`${this.baseUrl}/group/${id}`);
+   }
+
+   getById(id: number) {
+    return this.http.get<GroupDetailsDto>(`${this.baseUrl}/group/update/${id}`);
    }
 
    create(groupDto: GroupDto) {

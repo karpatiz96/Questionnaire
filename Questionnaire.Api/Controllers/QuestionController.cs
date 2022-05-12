@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Questionnaire.Bll.Dtos;
+using Questionnaire.Bll.Dtos.ResultDtos;
+using Questionnaire.Bll.Exceptions;
 using Questionnaire.Bll.IServices;
 using Questionnaire.Dll.Entities;
 using System;
@@ -18,23 +20,26 @@ namespace Questionnaire.Api.Controllers
     public class QuestionController : ControllerBase
     {
         private IQuestionService _questionService;
+        private IUserQuestionnaireService _userQuestionnaireService;
         private readonly UserManager<User> userManager;
 
-        public QuestionController(IQuestionService questionService, UserManager<User> UserManager)
+        public QuestionController(IQuestionService questionService, IUserQuestionnaireService userQuestionnaireService, UserManager<User> UserManager)
         {
             _questionService = questionService;
+            _userQuestionnaireService = userQuestionnaireService;
             userManager = UserManager;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<QuestionDetailsDto>> GetQuestion(int id)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            if (user == null)
+            var userGroup = await _questionService.GetUserGroupByQuestionAndUser(userId, id);
+
+            if(userGroup == null || userGroup.Role != "Admin")
             {
-                return NotFound();
+                throw new UserNotAdminException("User is not admin in group!");
             }
 
             var questionDetailsDto = await _questionService.GetQuestion(id);
@@ -42,18 +47,32 @@ namespace Questionnaire.Api.Controllers
             return Ok(questionDetailsDto);
         }
 
+        [HttpGet("update/{id}")]
+        public async Task<ActionResult<QuestionDto>> GetQuestionById(int id)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var questionDto = await _questionService.GetQuestionById(userId, id);
+
+            return Ok(questionDto);
+        }
+
+        [HttpGet("list/{id}")]
+        public async Task <ActionResult<QuestionnaireQuestionListDto>> GetQuestionnaireQuestionList(int id)
+        {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var questions = await _questionService.GetQuestionnaireQuestionList(userId, id);
+
+            return Ok(questions);
+        }
+
         [HttpPost]
         public async Task<ActionResult<QuestionDto>> Post([FromBody] QuestionDto questionDto)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var question = await _questionService.CreateQuestion(questionDto);
+            var question = await _questionService.CreateQuestion(userId, questionDto);
 
             return Ok(question);
         }
@@ -61,15 +80,9 @@ namespace Questionnaire.Api.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] QuestionDto questionDto)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var question = await _questionService.UpdateQuestion(questionDto);
+            var question = await _questionService.UpdateQuestion(userId, questionDto);
 
             return NoContent();
         }
@@ -77,15 +90,9 @@ namespace Questionnaire.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var question = await _questionService.DeleteQuestion(id);
+            var question = await _questionService.DeleteQuestion(userId, id);
 
             return Ok();
         }

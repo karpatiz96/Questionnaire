@@ -8,7 +8,12 @@ import { GroupService } from '../services/group.service';
   styleUrls: ['./group-list.component.css']
 })
 export class GroupListComponent implements OnInit {
-  groups: GroupHeaderDto[];
+  groupAll: GroupHeaderDto[];
+  groups: GroupHeaderDto[] = [];
+
+  page = 1;
+  pageSize = 4;
+  total = 0;
 
   constructor(private groupService: GroupService) { }
 
@@ -19,10 +24,15 @@ export class GroupListComponent implements OnInit {
   loadGroups() {
     this.groupService.getList()
       .subscribe(groups => {
-        this.groups = groups;
+        this.groupAll = groups;
+        this.total = this.groupAll.length;
+        this.refressGroups();
       }, error => {
         console.error(error);
       });
   }
 
+  refressGroups() {
+    this.groups = this.groupAll.slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize);
+  }
 }

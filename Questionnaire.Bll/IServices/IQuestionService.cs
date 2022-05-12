@@ -12,10 +12,17 @@ namespace Questionnaire.Bll.IServices
     {
         Task<QuestionDetailsDto> GetQuestion(int questionId);
 
-        Task<QuestionDto> CreateQuestion(QuestionDto questionDto);
+        Task<QuestionDto> GetQuestionById(string userId, int questionId);
 
-        Task<QuestionDto> UpdateQuestion(QuestionDto questionnaireDto);
+        Task<QuestionnaireQuestionListDto> GetQuestionnaireQuestionList(string userId, int questionnaireId);
 
-        Task<Question> DeleteQuestion(int questionId);
+        Task<QuestionDto> CreateQuestion(string userId, QuestionDto questionDto);
+
+        Task<QuestionDto> UpdateQuestion(string userId, QuestionDto questionDto);
+
+        Task<Question> DeleteQuestion(string userId, int questionId);
+
+        //Return null if userGroup does not exists
+        Task<UserGroup> GetUserGroupByQuestionAndUser(string userId, int questionId);
     }
 }

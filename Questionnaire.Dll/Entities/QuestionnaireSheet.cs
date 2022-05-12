@@ -12,6 +12,8 @@ namespace Questionnaire.Dll.Entities
 
         public string Description { get; set; }
 
+        public bool RandomQuestionOrder { get; set; }
+
         public DateTime Created { get; set; }
 
         public DateTime LastEdited { get; set; }
@@ -21,6 +23,10 @@ namespace Questionnaire.Dll.Entities
         public DateTime Finish { get; set; }
 
         public bool VisibleToGroup { get; set; }
+
+        public bool LimitedTime { get; set; }
+
+        public int TimeLimit { get; set; }
 
         public int GroupId { get; set; }
 

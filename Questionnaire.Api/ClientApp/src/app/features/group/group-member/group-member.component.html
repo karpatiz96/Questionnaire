@@ -1,44 +1,72 @@
 <h2>{{group.name}}</h2>
 <div class="row">
-    
+  <app-alert id="alert-1" class="col-sm-8"></app-alert>
 </div>
-<h4 class="mt-5">Members</h4>
+<h4 class="mt-3">Members</h4>
 <table class="table mt-5">
+  <caption>Members total: {{userTotal}}</caption>
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Role</th>
+        <th scope="col" sortable="name" (sort)="onSortUser($event)">Name</th>
+        <th scope="col" sortable="role" (sort)="onSortUser($event)">Role</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of group.users">
-        <th scope="row"></th>
+      <tr *ngFor="let user of users">
         <td>{{user.name}}</td>
         <td>{{user.role}}</td>
-        <td><button class="btn btn-outline-danger" (click)='removeUser(user.id)'>Remove</button></td>
-        <td><button class="btn btn-outline-danger" (click)='updateUser(user.id)'>Make Admin</button></td>
+        <td><button class="btn btn-outline-danger" *ngIf="!user.main" (click)='removeUser(user.id)'>Remove</button></td>
+        <td>
+          <button class="btn btn-outline-danger" *ngIf="user.role === 'User'" (click)='makeAdmin(user.id)'>Make Admin</button>
+          <button class="btn btn-outline-danger" *ngIf="!user.main && user.role === 'Admin'" (click)='makeUser(user.id)'>Make User</button>
+        </td>
       </tr>
     </tbody>
   </table>
+  <div class="d-flex justify-content-left">
+    <ngb-pagination
+      [collectionSize]="userTotal" [(page)]="userPage" [pageSize]="userPageSize" (pageChange)="refressUsers()">
+    </ngb-pagination>
+
+    <select class="custom-select ml-2" style="width: auto" name="userPageSize" [(ngModel)]="userPageSize" (ngModelChange)="refressUsers()">
+      <option [ngValue]="2">2 items per page</option>
+      <option [ngValue]="4">4 items per page</option>
+      <option [ngValue]="10">10 items per page</option>
+    </select>
+  </div>
 
 <h4 class="mt-5">Invitations</h4>
 <table class="table mt-5">
+  <caption>Total invitations: {{invitationTotal}}</caption>
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Date</th>
+        <th scope="col" sortable="userName" (sort)="onSortInvitation($event)">Name</th>
+        <th scope="col" sortable="date" (sort)="onSortInvitation($event)">Date</th>
         <th scope="col">Status</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let invitation of group.invitations">
-        <th scope="row"></th>
+      <tr *ngFor="let invitation of invitations">
         <td>{{invitation.userName}}</td>
         <td>{{invitation.date | date: 'yyyy-MM-dd'}}</td>
         <td>{{Invitations[invitation.status]}}</td>
-        <td><button class="btn btn-outline-danger" (click)='removeInvitaton(user.id)'>Remove</button></td>
+        <td *ngIf="invitation.status === 0"><button class="btn btn-outline-danger" (click)='removeInvitation(invitation.id)'>Remove</button></td>
       </tr>
     </tbody>
   </table>
+  <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-left">
+      <ngb-pagination
+      [collectionSize]="invitationTotal" [(page)]="invitationPage" [pageSize]="invitationPageSize" (pageChange)="refressInvitations()">
+      </ngb-pagination>
+
+      <select class="custom-select ml-2" style="width: auto" name="invitationPageSize" [(ngModel)]="invitationPageSize" (ngModelChange)="refressInvitations()">
+        <option [ngValue]="2">2 items per page</option>
+        <option [ngValue]="4">4 items per page</option>
+        <option [ngValue]="10">10 items per page</option>
+      </select>
+    </div>
+    <div class="col-sm-2">
+      <a class="btn btn-success" [routerLink]="['/invitation/add']">New Invitation</a>
+    </div>
+  </div>

@@ -13,5 +13,7 @@ namespace Questionnaire.Bll.Dtos
         public String Name { get; set; }
 
         public String Role { get; set; }
+
+        public bool Main { get; set; }
     }
 }

@@ -24,6 +24,12 @@ namespace Questionnaire.Bll.Dtos
 
         public bool VisibleToGroup { get; set; }
 
+        public bool RandomQuestionOrder { get; set; }
+
+        public bool Limited { get; set; }
+
+        public int TimeLimit { get; set; }
+
         public ICollection<QuestionHeaderDto> Questions { get; set; }
     }
 }

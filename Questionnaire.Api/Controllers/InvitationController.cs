@@ -30,14 +30,8 @@ namespace Questionnaire.Api.Controllers
         public async Task<ActionResult<IEnumerable<InvitationDto>>> GetInvitations()
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await UserManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var invitations = await _invitationService.GetInvitations(user.Id);
+            var invitations = await _invitationService.GetInvitations(userId);
 
             return Ok(invitations);
         }
@@ -49,10 +43,12 @@ namespace Questionnaire.Api.Controllers
 
             if (user == null)
             {
-                return BadRequest("User doesn't exists!");
+                return BadRequest(new { message = "User does not exist with such email!" });
             }
 
-            var invitationNewDto = await _invitationService.CreateInvitation(invitation, user);
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var invitationNewDto = await _invitationService.CreateInvitation(userId, invitation, user);
 
             return Ok(invitationNewDto);
         }
@@ -61,14 +57,8 @@ namespace Questionnaire.Api.Controllers
         public async Task<ActionResult<InvitationDto>> Accept(int id)
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await UserManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var invitationDto = await _invitationService.AcceptInvitation(id, Invitation.InvitationStatus.Accepted);
+            var invitationDto = await _invitationService.AcceptInvitation(userId, id, Invitation.InvitationStatus.Accepted);
 
             return Ok(invitationDto);
         }
@@ -77,37 +67,18 @@ namespace Questionnaire.Api.Controllers
         public async Task<ActionResult<InvitationDto>> Decline(int id)
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await UserManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            //invitation belongs to user
-
-            var invitationDto = await _invitationService.DeclineInvitation(id, Invitation.InvitationStatus.Declined);
+            var invitationDto = await _invitationService.DeclineInvitation(userId, id, Invitation.InvitationStatus.Declined);
 
             return Ok(invitationDto);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await UserManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var invitation = await _invitationService.DeleteInvitation(id);
-
-            if(invitation == null)
-            {
-                return BadRequest();
-            }
+            var invitation = await _invitationService.DeleteInvitation(userId, id);
 
             return Ok();
         }

@@ -8,6 +8,8 @@ namespace Questionnaire.Bll.Dtos
     {
         public int Id { get; set; }
 
+        public int UserQuestionnaireId { get; set; }
+
         public String Title { get; set; }
 
         public DateTime Created { get; set; }
@@ -15,6 +17,14 @@ namespace Questionnaire.Bll.Dtos
         public DateTime Begining { get; set; }
 
         public DateTime Finish { get; set; }
+
+        public DateTime? Start { get; set; }
+
+        public DateTime? CompletedTime { get; set; }
+
+        public bool Completed { get; set; }
+
+        public bool Evaluated { get; set; }
 
         public bool VisibleToGroup { get; set; }
     }

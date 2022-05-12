@@ -398,8 +398,17 @@ namespace Questionnaire.Dll.Migrations
                     b.Property<DateTime>("LastEdited")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("LimitedTime")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("RandomQuestionOrder")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TimeLimit")
+                        .HasColumnType("int");
 
                     b.Property<bool>("VisibleToGroup")
                         .HasColumnType("bit");
@@ -492,6 +501,9 @@ namespace Questionnaire.Dll.Migrations
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("MainAdmin")
                         .HasColumnType("bit");
 
@@ -517,8 +529,17 @@ namespace Questionnaire.Dll.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Finished")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("QuestionnaireSheetId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Started")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -539,8 +560,17 @@ namespace Questionnaire.Dll.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("AnswerEvaluated")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("AnswerId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Completed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("QuestionCompleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");

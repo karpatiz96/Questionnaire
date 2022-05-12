@@ -1,0 +1,45 @@
+<h2>{{questionnaire.title}}</h2>
+<div class="col-sm-12">
+    <div class="row mt-4">
+        <div class="col-sm-4"><h4>{{question.title}}</h4></div>
+        <div class="col-sm-4">Maximum Points: {{question.points}}</div>
+        <app-count-down-timer [time]="questionnaire.timeLimit" (notification)="timeFinished($event)" *ngIf="questionnaire.limited"></app-count-down-timer>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-8">{{question.description}}</div>
+    </div>
+    <div class="row">
+        <form [formGroup]="questionnaireAnswerForm" (ngSubmit)="submit()" class="col-sm-6" >
+            <div [ngSwitch]="question.type">
+                <div class="mt-4" *ngSwitchCase="questionType.TrueOrFalse">
+                    <div *ngFor="let answer of question.answers; let i = index" class="custom-control custom-radio">
+                        <input type="radio" [value]="answer.id" id="radio{{i}}" formControlName="answerId" class="custom-control-input" >
+                        <label class="custom-control-label" for="radio{{i}}">{{answer.name}}</label>
+                    </div>
+                </div>
+                <div class="mt-4" *ngSwitchCase="questionType.MultipleChoice">
+                    <div *ngFor="let answer of question.answers; let i = index" class="custom-control custom-radio">
+                        <input type="radio" [value]="answer.id" id="radio{{i}}" formControlName="answerId" class="custom-control-input" >
+                        <label class="custom-control-label" for="radio{{i}}">{{answer.name}}</label>
+                    </div>
+                </div>
+                <div class="form-row mt-4" *ngSwitchCase="questionType.FreeText">
+                    <textarea type="text" formControlName="userAnswer" class="form-control text-area"></textarea>
+                </div>
+                <div class="form-row mt-4" *ngSwitchCase="questionType.ConcreteText">
+                    <input type="text" formControlName="userAnswer" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group mt-3">
+                <button [disabled]="loading" class="btn btn-primary float-right">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    <div *ngIf="final">Finish</div>
+                    <div *ngIf="!final">Next</div>
+                </button>
+            </div>
+            <div class="row mt-3">
+                <app-alert id="alert-1"></app-alert>
+            </div>
+        </form>
+    </div>
+</div>

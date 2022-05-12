@@ -12,12 +12,16 @@ namespace Questionnaire.Bll.IServices
     {
         Task<AnswerDetailsDto> GetAnswer(int answerId);
 
+        Task<AnswerDto> GetAnswerById(string userId, int answerId);
+
         Task<IEnumerable<AnswerHeaderDto>> GetAnswers(int questionId);
 
-        Task<AnswerDto> CreateAnswer(AnswerDto answerDto);
+        Task<AnswerDto> CreateAnswer(string userId, AnswerDto answerDto);
 
-        Task<Answer> UpdateAnswer(AnswerDto answerDto);
+        Task<Answer> UpdateAnswer(string userId, AnswerDto answerDto);
 
-        Task<Answer> DeleteAnswer(int answerId);
+        Task<Answer> DeleteAnswer(string userId, int answerId);
+
+        Task<UserGroup> GetUserGroupByAnswerAndUser(string userId, int answerId);
     }
 }

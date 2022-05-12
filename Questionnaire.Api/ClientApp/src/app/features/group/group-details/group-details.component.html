@@ -1,44 +1,107 @@
-<h2>Groups you joined</h2>
-<div class="row mt-4">
+<h2>Group Details</h2>
+<div class="row" *ngIf="group">
     <div class="col-sm-12">
-        <h4>{{group.name}}</h4>
+        <dl class="row mt-3">
+            <dd class="col-sm-6"><h4>{{group.name}}</h4></dd>
+            <dd class="col-sm-3" style="margin-left: 30px;">
+              <a class="btn btn-outline-primary" title="Edit group" [routerLink]="['/group/edit', group.id]" *ngIf="group.groupRole === 'Admin'">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+            </dd>
+        </dl>
         <dl class="row ml-5 mt-3">
             <dt class="col-sm-3">Created:</dt>
-            <dd class="col-sm-3">{{group.created | date: 'yyyy-MM-dd hh:mm'}}</dd>
-            <dt class="col-sm-3">Group Admin:</dt>
+            <dd class="col-sm-3">{{group.created | date: 'yyyy-MM-dd HH:mm'}}</dd>
+            <dt class="col-sm-3">Group Creater:</dt>
             <dd class="col-sm-3">{{group.groupAdmin}}</dd>
             <dt class="col-sm-3">Members:</dt>
             <dd class="col-sm-3">{{group.members}}</dd>
             <dt class="col-sm-3">
-                <a class="btn btn-primary" [routerLink]="['/group/member', group.id]">Members</a>    
+                <a class="btn btn-primary" [routerLink]="['/group/member', group.id]" *ngIf="group.groupRole === 'Admin'">Members</a>    
             </dt>
         </dl>
         <h5>Group Description:</h5>
         <div class="row mt-3">
             <p class="ml-5">{{group.description}}</p>
-            <a class="btn btn-primary offset-8" [routerLink]="['/group/edit', group.id]">Edit</a>    
         </div>
     </div>
 </div>
-<h4 class="mt-5">Questionnaires</h4>
-<div class="row mt-3">
-    <a class="btn btn-success offset-8" [routerLink]="['/group/questionnaire/add', group.id]">New Questionnaire</a>    
+<div class="row mt-3 d-flex justify-content-between">
+    <h4 class="ml-3">Questionnaires</h4>
 </div>
-<div class="row mt-4">
-    <div class="col-sm-12" *ngFor="let questionnaire of group.questionnaires">
+<form [formGroup]="questionnaireForm" (ngSubmit)="searchQuestionnaires()" class="mt-2 ml-2">
+    <div class="form-row d-flex align-items-end">
+        <div class="col-sm-3 my-1">
+            <label for="from">From</label>
+            <input type="date" formControlName="from" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.from.errors }" />
+        </div>
+        <div class="col-sm-3 my-1">
+            <label for="to">To</label>
+            <input type="date" formControlName="to" class="form-control" [ngClass]="{ 'is-invalid': submitted && form.to.errors }" />
+        </div>
+        <div class="col-sm-3 my-1" *ngIf="group.groupRole === 'Admin'">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="visible" formControlName="visible">
+                <label class="form-check-label" for="visible">
+                  Show not visible questionnaires
+                </label>
+              </div>
+        </div>
+        <div class="col-sm-1 my-1">
+            <button [disabled]="loading" class="btn btn-success">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Search
+            </button>
+        </div>
+        <div *ngIf="group.groupRole === 'Admin'" class="col-sm-2 my-1">
+            <a class="btn btn-success" [routerLink]="['/questionnaire/add', group.id]">New Questionnaire</a>    
+        </div>
+    </div>
+</form>
+<div class="row" *ngIf="group">
+    <div class="col-sm-6" *ngFor="let questionnaire of questionnaires">
         <div class="card mt-4">
         <div class="card-body">
-            <h4>{{questionnaire.title}}</h4>
-            <dl class="row ml-5 mt-3">
-                <dt class="col-sm-3">Begining:</dt>
-                <dd class="col-sm-3">{{questionnaire.begining | date: 'yyyy-MM-dd hh:mm'}}</dd>
-                <dt class="col-sm-3">Finish:</dt>
-                <dd class="col-sm-3">{{questionnaire.finish | date: 'yyyy-MM-dd hh:mm'}}</dd>
-            </dl>
-            <div class="col-sm-2 offset-8">
-                <a class="btn btn-primary" [routerLink]="['/group/questionnaire', questionnaire.id]">Details</a>
+            <h5>{{questionnaire.title}}</h5>
+            <div class="row mt-3">
+                <div class="col-sm-6"><b class="mr-2">Status:</b>
+                    <span class="text-warning" *ngIf="!questionnaire.start">Not Started <i class="bi bi-question-circle-fill"></i></span>
+                    <span class="text-danger" *ngIf="questionnaire.start && !questionnaire.completed">Unfinished <i class="bi bi-x-circle-fill"></i></span>
+                    <span class="text-success" *ngIf="questionnaire.start && questionnaire.completed">Completed <i class="bi bi-check-circle-fill"></i></span>
+                </div>
+                <div class="col-sm-6"><b class="mr-2">Evaluated:</b>
+                    <span class="text-success" *ngIf="questionnaire.evaluated">Yes <i class="bi bi-check-circle-fill"></i></span>
+                    <span class="text-danger" *ngIf="!questionnaire.evaluated">No <i class="bi bi-x-circle-fill"></i></span>
+                </div>
+                <div class="col-sm-6"><b class="mr-2">Begining:</b> {{questionnaire.begining | date: 'yyyy-MM-dd HH:mm'}}</div>
+                <div class="col-sm-6"><b class="mr-2">Finish:</b> {{questionnaire.finish | date: 'yyyy-MM-dd HH:mm'}}</div>
+            </div>
+            <div class="row mt-4 d-flex flex-row-reverse">
+                <div class="col-auto" *ngIf="questionnaire.visibleToGroup && group.groupRole === 'Admin'">
+                    <a class="btn btn-success" [routerLink]="['/questionnaire', questionnaire.id, 'list']">Results</a>
+                </div>
+                <div class="col-auto" *ngIf="questionnaire.userQuestionnaireId > 0 && group.groupRole === 'User'">
+                    <a class="btn btn-success" [routerLink]="['/questionnaire/result', questionnaire.userQuestionnaireId]">Result</a>
+                </div>
+                <div class="col-auto" *ngIf="questionnaire.visibleToGroup && questionnaire.userQuestionnaireId < 0">
+                    <a class="btn btn-success" [routerLink]="['/questionnaire', questionnaire.id, 'start']">Start</a>
+                </div>
+                <div class="col-auto" *ngIf="group.groupRole === 'Admin'">
+                    <a class="btn btn-primary" [routerLink]="['/questionnaire', questionnaire.id]">Details</a>
+                </div>
             </div>
         </div>
         </div>
     </div>
+</div>
+<div class="d-flex justify-content-right mt-3">
+    <ngb-pagination
+      [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="refressQuestionnaires()">
+    </ngb-pagination>
+
+    <select class="custom-select ml-2" style="width: auto" name="pageSize" [(ngModel)]="pageSize" (ngModelChange)="refressQuestionnaires()">
+      <option [ngValue]="2">2 items per page</option>
+      <option [ngValue]="4">4 items per page</option>
+      <option [ngValue]="10">10 items per page</option>
+    </select>
 </div>

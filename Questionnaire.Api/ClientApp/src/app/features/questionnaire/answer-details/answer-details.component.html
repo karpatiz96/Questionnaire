@@ -1,0 +1,20 @@
+<h2>Answer Details</h2>
+<div class="row">
+    <div class="col-sm-12">
+        <dl class="row mt-3">
+            <dt class="col-sm-2">Name:</dt>
+            <dd class="col-sm-2">{{answer.name}}</dd>
+            <dt class="col-sm-2">Concrete Answer:</dt>
+            <dd class="col-sm-2">{{answer.userAnswer}}</dd>
+        </dl>
+        <dl class="row mt-3">
+            <dt class="col-sm-2">Answer Type</dt>
+            <dd class="col-sm-2">{{AnswerTypes[answer.type]}}</dd>
+            <dt class="col-sm-2">Points:</dt>
+            <dd class="col-sm-2">{{answer.value}} points</dd>
+        </dl>
+        <div class="row mt-3" *ngIf="!answer.visibleToGroup">
+            <a class="btn btn-outline-primary offset-6 col-sm-1" [routerLink]="['/questionnaire/answer/edit', answer.id]">Edit</a>
+        </div>
+    </div>
+</div>

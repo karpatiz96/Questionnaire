@@ -21,5 +21,7 @@ namespace Questionnaire.Bll.Dtos
         public AnswerType Type { get; set; }
 
         public int Value { get; set; }
+
+        public bool VisibleToGroup { get; set; }
     }
 }

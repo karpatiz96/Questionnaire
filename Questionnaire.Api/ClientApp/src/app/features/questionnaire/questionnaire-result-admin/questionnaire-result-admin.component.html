@@ -1,0 +1,65 @@
+<h2>Questionnaire Results</h2>
+<div class="col-sm-12">
+    <div class="row mt-4">
+        <div class="col-sm-6">
+            <h4>{{questionnaire.title}}</h4>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-8">
+          {{questionnaire.description}}
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-8"><b>From:</b> {{questionnaire.begining | date: 'yyyy-MM-dd HH:mm'}} - <b>To:</b> {{questionnaire.finish | date: 'yyyy-MM-dd HH:mm'}}</div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-6"><b>Questions:</b> {{questionnaire.questions}} <b>Members:</b> {{questionnaire.members}}</div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-6"><b>Solved:</b> {{questionnaire.solved}}</div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <h4 class="row mt-4">Questionnaires</h4>
+    <div class="row mt-3">
+        <table class="table table-striped">
+          <caption>Questionnaires total: {{total}}</caption>
+            <thead>
+              <tr>
+                <th scope="col" sortable="userName" (sort)="onSort($event)">User Name</th>
+                <th scope="col" sortable="points" (sort)="onSort($event)">Points</th>
+                <th scope="col" sortable="start" (sort)="onSort($event)">Started</th>
+                <th scope="col" sortable="completedTime" (sort)="onSort($event)">Finished</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let result of results">
+                <td>{{result.userName}}</td>
+                <td>{{result.points}}</td>
+                <td>{{result.start | date: 'yyyy-MM-dd HH:mm'}}</td>
+                <td>
+                  <div *ngIf="result.completed">
+                    {{result.completedTime | date: 'yyyy-MM-dd HH:mm'}}
+                  </div>
+                  <div *ngIf="!result.completed">
+                    Not Completed
+                  </div>
+                </td>
+                <td><a class="btn btn-outline-primary" [routerLink]="['/questionnaire/result', result.id]">Details</a></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between">
+            <ngb-pagination
+              [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="refressResults()">
+            </ngb-pagination>
+        
+            <select class="custom-select ml-2" style="width: auto" name="pageSize" [(ngModel)]="pageSize" (ngModelChange)="refressResults()">
+              <option [ngValue]="2">2 items per page</option>
+              <option [ngValue]="4">4 items per page</option>
+              <option [ngValue]="10">10 items per page</option>
+            </select>
+          </div>
+    </div>
+</div>
