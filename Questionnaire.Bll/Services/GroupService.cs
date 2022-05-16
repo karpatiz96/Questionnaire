@@ -36,7 +36,9 @@ namespace Questionnaire.Bll.Services
             Name = g.Name,
             Created = g.Created,
             Members = g.UserGroups.Count,
-            LastPost = DateTime.UtcNow
+            LastPost = g.Created,
+            LastPostName = "",
+            QuestionnairePosted = false
         };
 
         public static Expression<Func<Group, GroupListDto>> GroupListSelector { get; } = g => new GroupListDto
@@ -244,6 +246,29 @@ namespace Questionnaire.Bll.Services
                 .Select(GroupHeaderSelector)
                 .ToListAsync();
 
+            foreach(var group in groups)
+            {
+                var questionnaires = await _dbContext.QuestionnaireSheets
+                    .Where(q => q.GroupId == group.Id)
+                    .Where(q => q.VisibleToGroup)
+                    .OrderByDescending(q => q.Begining)
+                    .ToListAsync();
+
+                var lastQuestionnaire = questionnaires
+                    .FirstOrDefault();
+
+                if (lastQuestionnaire != null)
+                {
+                    group.QuestionnairePosted = true;
+                    group.LastPost = lastQuestionnaire.Begining;
+                    group.LastPostName = lastQuestionnaire.Name;
+                }
+                else
+                {
+                    group.QuestionnairePosted = false;
+                }
+            }
+
             return groups;
         }
 
@@ -254,6 +279,29 @@ namespace Questionnaire.Bll.Services
                .Where(g => g.UserGroups.Any(ug => ug.UserId == userId && ug.MainAdmin && ug.IsDeleted == false))
                .Select(GroupHeaderSelector)
                .ToListAsync();
+
+            foreach (var group in groups)
+            {
+                var questionnaires = await _dbContext.QuestionnaireSheets
+                    .Where(q => q.GroupId == group.Id)
+                    .Where(q => q.VisibleToGroup)
+                    .OrderByDescending(q => q.Begining)
+                    .ToListAsync();
+
+                var lastQuestionnaire = questionnaires
+                    .FirstOrDefault();
+
+                if (lastQuestionnaire != null)
+                {
+                    group.QuestionnairePosted = true;
+                    group.LastPost = lastQuestionnaire.Begining;
+                    group.LastPostName = lastQuestionnaire.Name;
+                }
+                else
+                {
+                    group.QuestionnairePosted = false;
+                }
+            }
 
             return groups;
         }

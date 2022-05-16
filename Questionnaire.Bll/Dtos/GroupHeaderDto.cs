@@ -8,11 +8,15 @@ namespace Questionnaire.Bll.Dtos
     {
         public int Id { get; set; }
 
-        public String Name { get; set; }
+        public string Name { get; set; }
 
         public DateTime Created { get; set; }
 
         public DateTime LastPost { get; set; }
+
+        public string LastPostName { get; set; }
+
+        public bool QuestionnairePosted { get; set; }
 
         public int Members { get; set; }
     }

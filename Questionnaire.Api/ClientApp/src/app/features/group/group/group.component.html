@@ -11,11 +11,15 @@
             <h4>{{group.name}}</h4>
             <dl class="row ml-5 mt-3">
                 <dt class="col-sm-3">Created:</dt>
-                <dd class="col-sm-3">{{group.created | date: 'yyyy-MM-dd hh:mm'}}</dd>
+                <dd class="col-sm-3">{{group.created | date: 'yyyy-MM-dd HH:mm'}}</dd>
                 <dt class="col-sm-3">Last Post:</dt>
-                <dd class="col-sm-3">{{group.lastPosted | date: 'yyyy-MM-dd hh:mm'}}</dd>
+                <dd class="col-sm-3" *ngIf="group.questionnairePosted">{{group.lastPost | date: 'yyyy-MM-dd HH:mm'}}</dd>
+                <dd class="col-sm-3" *ngIf="!group.questionnairePosted">NA</dd>
                 <dt class="col-sm-3">Members:</dt>
                 <dd class="col-sm-3">{{group.members}}</dd>
+                <dt class="col-sm-3">Last Questionnaire:</dt>
+                <dd class="col-sm-3" *ngIf="group.questionnairePosted">{{group.lastPostName}}</dd>
+                <dd class="col-sm-3" *ngIf="!group.questionnairePosted">No questionnaire posted yet.</dd>
             </dl>
             <div class="col-sm-2 offset-8">
                 <a class="btn btn-primary" [routerLink]="['/group', group.id]">Details</a>
