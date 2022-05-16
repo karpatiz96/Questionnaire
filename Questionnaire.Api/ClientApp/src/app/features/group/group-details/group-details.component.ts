@@ -64,6 +64,18 @@ export class GroupDetailsComponent implements OnInit {
     });
   }
 
+  isEvaluated(questionnaire: QuestionnaireHeaderDto): boolean {
+    if (this.group.groupRole === 'User') {
+      if (questionnaire.evaluated) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    return false;
+  }
+
   get form() {
     return this.questionnaireForm.controls;
   }

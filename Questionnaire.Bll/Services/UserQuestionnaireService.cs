@@ -249,13 +249,26 @@ namespace Questionnaire.Bll.Services
             }
 
             var userQuestionnaire = await _dbContext.UserQuestionnaires
+                .Include(u => u.QuestionnaireSheet)
+                .Include(u => u.UserQuestionnaireAnswers)
                 .Where(u => u.Id == userQuestionnaireId)
                 .FirstOrDefaultAsync();
 
             if(userGroup.Role != "Admin" && userQuestionnaire.UserId != userId)
             {
-                //Todo exception
                 throw new QuestionnaireResultValidationException("User is not admin or solver!");
+            }
+
+            var now = DateTime.UtcNow;
+            if(userGroup.Role != "Admin" && userQuestionnaire.QuestionnaireSheet.Finish > now)
+            {
+                throw new QuestionnaireResultValidationException("Questionnaire is not finished!");
+            }
+
+            var notEvaluated = userQuestionnaire.UserQuestionnaireAnswers.Any(u => !u.AnswerEvaluated);
+            if(userGroup.Role != "Admin" && notEvaluated)
+            {
+                throw new QuestionnaireResultValidationException("Questionnaire is not evaluated!");
             }
 
             var userQuestionnaireResult = await _dbContext.UserQuestionnaires

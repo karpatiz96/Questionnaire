@@ -80,7 +80,7 @@
                 <div class="col-auto" *ngIf="questionnaire.visibleToGroup && group.groupRole === 'Admin'">
                     <a class="btn btn-success" [routerLink]="['/questionnaire', questionnaire.id, 'list']">Results</a>
                 </div>
-                <div class="col-auto" *ngIf="questionnaire.userQuestionnaireId > 0 && group.groupRole === 'User'">
+                <div class="col-auto" *ngIf="questionnaire.userQuestionnaireId > 0 && group.groupRole === 'User' && isEvaluated(questionnaire)">
                     <a class="btn btn-success" [routerLink]="['/questionnaire/result', questionnaire.userQuestionnaireId]">Result</a>
                 </div>
                 <div class="col-auto" *ngIf="questionnaire.visibleToGroup && questionnaire.userQuestionnaireId < 0">
