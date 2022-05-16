@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Questionnaire.Api.Configurations;
-using Questionnaire.Api.Data;
 using Questionnaire.Api.Middleware;
 using Questionnaire.Api.Models;
 using Questionnaire.Api.Services;

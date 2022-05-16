@@ -28,7 +28,7 @@ th[sortable] {
 th[sortable].desc:after {
   content: '';
   display: block;
-  background: url('assets/sort-down-solid.svg') no-repeat;
+  background: url('assets/arrow-down.svg') no-repeat;
   background-size: contain;
   width: 20px;
   height: 20px;
@@ -39,7 +39,7 @@ th[sortable].desc:after {
 th[sortable].asc:after {
   content: '';
   display: block;
-  background: url('assets/sort-up-solid.svg') no-repeat;
+  background: url('assets/arrow-up.svg') no-repeat;
   background-size: contain;
   width: 20px;
   height: 20px;
