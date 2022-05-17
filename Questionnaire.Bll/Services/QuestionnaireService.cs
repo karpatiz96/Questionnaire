@@ -231,7 +231,6 @@ namespace Questionnaire.Bll.Services
             var questionnaire = await _dbContext.QuestionnaireSheets
                 .FirstOrDefaultAsync(g => g.Id == questionnaireDto.Id);
 
-            //Todo Questionnaire is visible exception
             if (questionnaire.VisibleToGroup)
             {
                 throw new QuestionnaireNotEditableException("Questionnaire is visible, it can't be edited!");

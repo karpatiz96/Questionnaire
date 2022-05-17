@@ -103,7 +103,6 @@ namespace Questionnaire.Bll.Services
 
             if (questionnaire.VisibleToGroup)
             {
-                //Todo error Questionnaire can't be edited
                 throw new QuestionnaireNotEditableException("Questionnaire is visible, it can't be edited!");
             }
 
@@ -157,7 +156,7 @@ namespace Questionnaire.Bll.Services
 
             if(questionnaire.VisibleToGroup || questionnaire.UserQuestionnaires.Any())
             {
-                //Todo throw error questionnaire can't be edited
+                //Throw error questionnaire can't be edited
                 throw new QuestionnaireNotEditableException("Questionnaire is visible, it can't be edited!");
             }
 
